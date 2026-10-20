@@ -304,15 +304,15 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /* ================= DADOS ================= */
 const wrestlers = [
  // --- LENDÁRIOS (IDs 1 a 6) ---
- {id:1,  name:'Charlotte Flair',   initials:'CF',    brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/charlotte-flair.png'},
+ {id:1,  name:'Charlotte Flair',   initials:'QUEEN',    brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/charlotte-flair.png'},
  {id:2,  name:'CM Punk',           initials:'PUNK',  brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'★', image:'img/cm-punk.png'},
- {id:3,  name:'John Cena',         initials:'JC',    brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
+ {id:3,  name:'John Cena',         initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
  {id:4,  name:'Roman Reigns',      initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
- {id:5,  name:'Seth Rollins',      initials:'SR',    brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
- {id:6,  name:'Paige',             initials:'P',     brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/paige.png'},
+ {id:5,  name:'Seth Rollins',      initials:'SETH',    brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
+ {id:6,  name:'Paige',             initials:'PAIGE',     brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/paige.png'},
 
  // --- ÉPICOS ---
- {id:7,  name:'Alexa Bliss',       initials:'AB',    brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/alexa-bliss.png'},
+ {id:7,  name:'Alexa Bliss',       initials:'ALEXA',    brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/alexa-bliss.png'},
  {id:8,  name:'Bianca Belair',     initials:'EST',   brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/bianca-belair.png'},
  {id:9,  name:'Cody Rhodes',       initials:'CR',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
  {id:10, name:'Iyo Sky',           initials:'SKY',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/iyo-sky.png'},
@@ -320,22 +320,22 @@ const wrestlers = [
  {id:12, name:'Liv Morgan',        initials:'LIV',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
  {id:13, name:'Rhea Ripley',       initials:'MAMI',  brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
  {id:14, name:'Shinsuke Nakamura', initials:'SN',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/shinsuke-nakamura.png'},
- {id:15, name:'Tiffany Stratton',  initials:'TIF',   brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/tiffany-stratton.png'},
+ {id:15, name:'Tiffany Stratton',  initials:'TIFFY',   brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/tiffany-stratton.png'},
  {id:16, name:'Asuka',             initials:'ASUKA', brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/asuka.png'},
 
  // --- RAROS ---
- {id:17, name:'Blake Monroe',      initials:'BM',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/blake-monroe.png'},
- {id:18, name:'Giulia',            initials:'G',     brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/giulia.png'},
- {id:19, name:'Jade Cargill',      initials:'JC',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/jade-cargill.png'},
+ {id:17, name:'Blake Monroe',      initials:'BLAKE',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/blake-monroe.png'},
+ {id:18, name:'Giulia',            initials:'GIULIA',     brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/giulia.png'},
+ {id:19, name:'Jade Cargill',      initials:'JADE',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/jade-cargill.png'},
  {id:20, name:'Penta',             initials:'PENTA', brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/penta.png'},
- {id:21, name:'Roxanne Perez',     initials:'RXP',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/roxanne-perez.png'},
+ {id:21, name:'Roxanne Perez',     initials:'ROXY',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/roxanne-perez.png'},
 
  // --- COMUNS ---
- {id:22, name:'Lash Legend',       initials:'LL',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lash-legend.png'},
- {id:23, name:'Lola Vice',         initials:'LV',    brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lola-vice.png'},
+ {id:22, name:'Lash Legend',       initials:'LASH',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lash-legend.png'},
+ {id:23, name:'Lola Vice',         initials:'LOLA',    brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lola-vice.png'},
  {id:24, name:'Lyra Valkyria',     initials:'LYRA',  brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lyra-valkyria.png'},
  {id:25, name:'Sol Ruca',          initials:'SOL',   brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/sol-ruca.png'},
- {id:26, name:'Tatum Paxley',      initials:'TP',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/tatum-paxley.png'}
+ {id:26, name:'Tatum Paxley',      initials:'TATUM',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/tatum-paxley.png'}
 ];
 
 const rarityColors={'Comum':'#c5c8d0','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#ffd15b'};
