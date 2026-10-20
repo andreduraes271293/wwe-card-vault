@@ -63,7 +63,10 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .card.owned:after{content:'✓ NA COLEÇÃO';position:absolute;top:9px;right:8px;background:var(--rarity-color);color:#1a1710;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5}
 .card.new-badge:before{content:'NOVO';position:absolute;top:9px;left:8px;background:#c8102e;color:#fff;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5;animation:pop .5s ease}
 @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
-.card-art{height:100%;display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,var(--rarity-color) 0%,#27242d 42%,#111218 76%);overflow:hidden}
+
+/* AQUI ESTÁ A ALTERAÇÃO: O fundo deixou de usar a cor da raridade e ficou escuro */
+.card-art{height:100%;display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,#3a3e47 0%,#1c1e25 42%,#0c0d10 76%);overflow:hidden}
+
 .card-art:before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#ffffff24,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff05 18px 20px);z-index:1}
 .card:hover .card-art:before{background:linear-gradient(160deg,#ffffff40,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px)}
 .card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:2;filter:contrast(1.05) saturate(1.05);transition:transform .35s ease;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);mask-image: linear-gradient(to bottom, black 70%, transparent 100%)}
@@ -552,7 +555,6 @@ function renderCard(w){
   
  const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
 
- // Caminho da imagem do logotipo da marca
  const brandImage = `img/${w.brand}.png`;
  
  return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" aria-label="${w.name}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
