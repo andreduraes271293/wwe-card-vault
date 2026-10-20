@@ -63,10 +63,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .card.owned:after{content:'✓ NA COLEÇÃO';position:absolute;top:9px;right:8px;background:var(--rarity-color);color:#1a1710;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5}
 .card.new-badge:before{content:'NOVO';position:absolute;top:9px;left:8px;background:#c8102e;color:#fff;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5;animation:pop .5s ease}
 @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
-
-/* AQUI ESTÁ A ALTERAÇÃO: O fundo deixou de usar a cor da raridade e ficou escuro */
 .card-art{height:100%;display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,#3a3e47 0%,#1c1e25 42%,#0c0d10 76%);overflow:hidden}
-
 .card-art:before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#ffffff24,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff05 18px 20px);z-index:1}
 .card:hover .card-art:before{background:linear-gradient(160deg,#ffffff40,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px)}
 .card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:2;filter:contrast(1.05) saturate(1.05);transition:transform .35s ease;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);mask-image: linear-gradient(to bottom, black 70%, transparent 100%)}
@@ -82,16 +79,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .rarity{font-weight:900;color:var(--rarity-color,#dedede)}
 .gender-badge{font-size:9px;font-weight:900;color:#9da1ab;letter-spacing:.5px}
 .dup-badge{position:absolute;bottom:10px;right:10px;background:#c8102e;color:#fff;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;z-index:5;box-shadow:0 2px 5px #0008}
-
-/* --- LOGÓTIPO DA MARCA EM IMAGEM --- */
-.brand-img {
-  height: 18px;
-  width: auto;
-  object-fit: contain;
-  vertical-align: middle;
-  margin-right: 6px;
-  margin-bottom: 2px;
-}
+.brand-img {height: 18px; width: auto; object-fit: contain; vertical-align: middle; margin-right: 6px; margin-bottom: 2px;}
 
 .empty{padding:45px 25px;text-align:center;color:#9da1ab;border:1px dashed #3b3e47;border-radius:12px;grid-column:1/-1}
 .empty strong{display:block;color:#f5f5f6;font-size:16px;margin:10px 0 6px;font-family:var(--site-font-heading);letter-spacing:.5px}
@@ -185,7 +173,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 </header>
 <main class="shell" id="main-content" style="display:none">
  <section class="stats" aria-label="Estatísticas da coleção">
-  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 30</small></strong></div>
+  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 22</small></strong></div>
   <div class="stat"><label>Álbum completo</label><strong id="percent">0%</strong><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
   <div class="stat"><label>Saquetas abertas</label><strong id="packsOpened">0</strong></div>
   <div class="stat"><label>Raridades</label><strong id="rarityBreakdown" style="font-size:14px;line-height:1.5">—</strong></div>
@@ -221,7 +209,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
  </div>
  <div class="section-head">
   <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
-  <span id="visibleCount" style="color:#9da1ab;font-size:12px">30 cromos</span>
+  <span id="visibleCount" style="color:#9da1ab;font-size:12px">22 cromos</span>
  </div>
  <div class="grid" id="cards" aria-live="polite"></div>
  <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
@@ -276,7 +264,6 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
     <div class="trade-tab" data-target="history">Histórico</div>
   </div>
 
-  <!-- Enviar Oferta -->
   <div class="trade-content active" id="tab-send">
     <p style="font-size:12px;color:#9da1ab;margin-top:0">Só podes trocar cromos que tenhas em duplicado. Só podes pedir cromos que te faltam.</p>
     <select class="trade-select" id="tradeMyCard">
@@ -289,14 +276,12 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
     <button class="btn" id="submitTrade" style="width:100%;margin-top:10px;background:#f59e0b;color:#18130b;">Enviar Proposta</button>
   </div>
 
-  <!-- Recebidas -->
   <div class="trade-content" id="tab-receive">
     <div class="trade-list" id="receivedList">
       <p style="text-align:center;color:#9da1ab;font-size:12px;">A procurar trocas...</p>
     </div>
   </div>
 
-  <!-- Histórico -->
   <div class="trade-content" id="tab-history">
     <div class="trade-list" id="historyList">
       <p style="text-align:center;color:#9da1ab;font-size:12px;">O teu histórico está vazio.</p>
@@ -318,50 +303,38 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= DADOS ================= */
 const wrestlers=[
- // --- RAW ---
- {id:1, name:'Roman Reigns',  initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
- {id:2, name:'CM Punk',       initials:'PUNK',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'★', image:'img/cm-punk.png'},
- {id:3, name:'Seth Rollins',  initials:'SR',    brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
- {id:4, name:'LA Knight',     initials:'YEAH',  brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'★', image:'img/la-knight.png'},
- {id:5, name:'Jey Uso',       initials:'YEET',  brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/jey-uso.png'},
- {id:6, name:'Jimmy Uso',     initials:'JU',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/jimmy-uso.png'},
- {id:7, name:'Bron Breakker', initials:'BB',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/bron-breakker.png'},
- {id:8, name:'Chad Gable',    initials:'CG',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/chad-gable.png'},
- {id:9, name:'Penta',         initials:'PENTA', brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/penta.png'},
- {id:10,name:'Rey Mysterio',  initials:'RM',    brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/rey-mysterio.png'},
- {id:11,name:'Liv Morgan',    initials:'LIV',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
- {id:12,name:'Becky Lynch',   initials:'BL',    brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'★', image:'img/becky-lynch.png'},
- {id:13,name:'Iyo Sky',       initials:'SKY',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/iyo-sky.png'},
- {id:14,name:'Bayley',        initials:'BAY',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/bayley.png'},
- {id:15,name:'Roxanne Perez', initials:'RXP',   brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/roxanne-perez.png'},
-
- // --- SMACKDOWN ---
- {id:16,name:'Cody Rhodes',   initials:'CR',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
- {id:18,name:'Randy Orton',   initials:'V1',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'🐍',image:'img/randy-orton.png'},
- {id:19,name:'Gunther',       initials:'GUN',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/gunther.png'},
- {id:20,name:'Drew McIntyre', initials:'DREW',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/drew-mcintyre.png'},
- {id:21,name:'Kevin Owens',   initials:'KO',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/kevin-owens.png'},
- {id:22,name:'Sami Zayn',     initials:'SZ',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/sami-zayn.png'},
- {id:23,name:'Damian Priest', initials:'DP',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/damian-priest.png'},
- {id:24,name:'Trick Williams',initials:'TW',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/trick-williams.png'},
- {id:25,name:'Rhea Ripley',   initials:'MAMI',  brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
- {id:26,name:'Charlotte Flair',initials:'CF',   brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/charlotte-flair.png'},
- {id:27,name:'Bianca Belair', initials:'EST',   brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/bianca-belair.png'},
- {id:28,name:'Jade Cargill',  initials:'JC',    brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/jade-cargill.png'},
- {id:29,name:'Tiffany Stratton',initials:'TIF', brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/tiffany-stratton.png'},
- {id:30,name:'Chelsea Green', initials:'CG',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/chelsea-green.png'},
- 
- // --- LEGENDS ---
- {id:17,name:'John Cena',     initials:'JC',    brand:'Legends', rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'}
+ {id:1, name:'Alexa Bliss',    initials:'AB',  brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/alexa-bliss.png'},
+ {id:2, name:'Bianca Belair',  initials:'EST', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/bianca-belair.png'},
+ {id:3, name:'Blake Monroe',   initials:'BM',  brand:'NXT',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/blake-monroe.png'},
+ {id:4, name:'Charlotte Flair',initials:'CF',  brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/charlotte-flair.png'},
+ {id:5, name:'CM Punk',        initials:'PUNK',brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'★', image:'img/cm-punk.png'},
+ {id:6, name:'Cody Rhodes',    initials:'CR',  brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
+ {id:7, name:'Giulia',         initials:'G',   brand:'NXT',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/giulia.png'},
+ {id:8, name:'Iyo Sky',        initials:'SKY', brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/iyo-sky.png'},
+ {id:9, name:'Jade Cargill',   initials:'JC',  brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/jade-cargill.png'},
+ {id:10,name:'John Cena',      initials:'JC',  brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
+ {id:11,name:'LA Knight',      initials:'YEAH',brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'★', image:'img/la-knight.png'},
+ {id:12,name:'Lash Legend',    initials:'LL',  brand:'NXT',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lash-legend.png'},
+ {id:13,name:'Liv Morgan',     initials:'LIV', brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
+ {id:14,name:'Lola Vice',      initials:'LV',  brand:'NXT',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/lola-vice.png'},
+ {id:15,name:'Lyra Valkyria',  initials:'LYRA',brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/lyra-valkyria.png'},
+ {id:16,name:'Paige',          initials:'P',   brand:'Legends',   rarity:'Lendário', gender:'Female', belt:'♛', image:'img/paige.png'},
+ {id:17,name:'Penta',          initials:'PENTA',brand:'RAW',      rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/penta.png'},
+ {id:18,name:'Rhea Ripley',    initials:'MAMI',brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
+ {id:19,name:'Roman Reigns',   initials:'OTC', brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
+ {id:20,name:'Roxanne Perez',  initials:'RXP', brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/roxanne-perez.png'},
+ {id:21,name:'Seth Rollins',   initials:'SR',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
+ {id:22,name:'Shinsuke Nakamura',initials:'SN',brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/shinsuke-nakamura.png'},
+ {id:23,name:'Sol Ruca',       initials:'SOL', brand:'NXT',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/sol-ruca.png'},
+ {id:24,name:'Tatum Paxley',   initials:'TP',  brand:'NXT',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/tatum-paxley.png'},
+ {id:25,name:'Tiffany Stratton',initials:'TIF',brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/tiffany-stratton.png'},
+ {id:26,name:'Asuka',          initials:'ASUKA',brand:'RAW',      rarity:'Épico',    gender:'Female', belt:'✦', image:'img/asuka.png'}
 ];
 
 const rarityColors={'Comum':'#c5c8d0','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#ffd15b'};
 const rarityWeights={'Comum':55,'Raro':28,'Épico':13,'Lendário':4};
 const RARITIES=Object.keys(rarityWeights);
-
-// Damos um "peso" numérico à raridade para podermos ordenar. (Lendário primeiro, Comum último).
 const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
-
 const PACK_SIZE=3;
 const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
 const genderLabels={Male:'Masculino',Female:'Feminino'};
@@ -605,8 +578,6 @@ function render(){
  });
 
  // AQUI ESTÁ A NOVA LÓGICA DE ORDENAÇÃO:
- // 1º Critério: Raridade (Lendário -> Comum)
- // 2º Critério: ID (se ambos forem Lendários, o ID 1 fica antes do 16).
  list.sort((a, b) => {
    const rarDiff = rarityOrder[a.rarity] - rarityOrder[b.rarity];
    if (rarDiff !== 0) return rarDiff;
@@ -795,7 +766,6 @@ async function loadTrades() {
   const receivedList = document.getElementById('receivedList');
   const historyList = document.getElementById('historyList');
 
-  // 1. Recebidas (Apenas pendentes onde sou o recetor)
   const { data: received, error: errRec } = await supabaseClient
     .from('trades_with_usernames')
     .select('*')
@@ -828,7 +798,6 @@ async function loadTrades() {
     receivedList.innerHTML = '<p style="text-align:center;color:#9da1ab;font-size:12px;">Não tens propostas pendentes.</p>';
   }
 
-  // 2. Histórico
   const { data: history, error: errHist } = await supabaseClient
     .from('trades_with_usernames')
     .select('*')
@@ -887,7 +856,6 @@ document.getElementById('submitTrade').addEventListener('click', async () => {
     return toast('Amigo não encontrado. O nome de Twitch está correto?');
   }
 
-  // VALIDAÇÃO ROBUSTA: O amigo tem a carta em duplicado?
   const { data: friendCards } = await supabaseClient
     .from('collections')
     .select('card_id')
@@ -918,7 +886,6 @@ document.getElementById('submitTrade').addEventListener('click', async () => {
   await loadTrades();
 });
 
-// BOTÃO ACEITAR BLINDADO
 window.acceptTrade = async function(tradeId, btnElement) {
   btnElement.disabled = true;
   btnElement.innerHTML = 'A processar...';
@@ -954,7 +921,6 @@ window.acceptTrade = async function(tradeId, btnElement) {
   }
 };
 
-// BOTÃO RECUSAR BLINDADO
 window.rejectTrade = async function(tradeId, btnElement) {
   btnElement.disabled = true;
   btnElement.innerHTML = '...';
@@ -972,7 +938,6 @@ window.rejectTrade = async function(tradeId, btnElement) {
   }
 };
 
-/* ================= TECLADO / INIT ================= */
 function setupKeyboard(){
  document.addEventListener('keydown',e=>{
   const packOpen=$('modalBackdrop').classList.contains('show');
