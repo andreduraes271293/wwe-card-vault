@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WWE Card Vault</title>
+<style>
+:root {
+ --site-primary:#c8102e; --site-on-primary:#ffffff;
+ --site-secondary:#15171c; --site-on-secondary:#ffffff;
+ --site-background:#0c0d10; --site-on-background:#f5f5f6;
+ --site-font-body:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --site-font-heading:Impact,"Arial Narrow",ui-sans-serif,sans-serif;
+ --site-heading-scale:1; --site-spacing-scale:1; --site-radius-scale:1; --site-decoration-opacity:1;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:light-dark(#f2f2f4,var(--site-background));color:light-dark(#18191d,var(--site-on-background));font-family:var(--site-font-body);-webkit-font-smoothing:antialiased}
+#app{min-height:100vh;background-color:var(--site-background);color:var(--site-on-background);border-radius:0}
+header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);padding:22px clamp(18px,5vw,64px) 25px;border-bottom:1px solid #ffffff22}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--site-font-heading);font-size:calc(25px * var(--site-heading-scale));letter-spacing:1.8px}
+.brand span{color:#ffd15b}
+.top-pill{border:1px solid #ffffff66;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;letter-spacing:1px}
+.hero{max-width:1200px;margin:35px auto 4px}
+.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#ffcf62;font-weight:900}
+.hero h1{font-family:var(--site-font-heading);font-size:clamp(40px,7vw,76px);line-height:.96;margin:12px 0;letter-spacing:1px}
+.hero p{max-width:600px;color:#e7dfe2;line-height:1.6;margin:0}
+.shell{max-width:1200px;margin:auto;padding:26px clamp(16px,4vw,40px) 60px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.stat{background:#17191f;border:1px solid #ffffff14;border-radius:calc(14px * var(--site-radius-scale));padding:17px}
+.stat label{display:block;color:#a7aab3;font-size:11px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800}
+.stat strong{display:block;font-size:26px;margin-top:7px}
+.stat small{font-size:13px;color:#a7aab3}
+.progress-track{height:5px;background:#34363e;border-radius:99px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#c8102e,#ffd15b);transition:width .35s ease}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0}
+.search{flex:1;min-width:180px;background:#17191f;border:1px solid #343740;color:#fff;padding:12px 14px;border-radius:9px;font:inherit}
+.search:focus,.filter:focus{outline:2px solid #ffd15b;outline-offset:2px}
+.filter{background:#17191f;color:#f7f7f8;border:1px solid #343740;padding:12px;border-radius:9px;font:inherit}
+.btn{border:0;border-radius:9px;padding:12px 16px;background:var(--site-primary);color:white;cursor:pointer;font:inherit;font-weight:800;transition:transform .15s,filter .15s;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid #ffd15b;outline-offset:2px}
+.btn:active{transform:translateY(0)}
+.btn.secondary{background:#282b33;border:1px solid #444751}
+.btn.ghost{background:transparent;border:1px solid #444751;color:#c3c5cc}
+.btn.pulse{animation:pulse 2.4s infinite}
+.btn.twitch{background:#9146FF;color:white;}
+.btn.twitch:hover{background:#772ce8;}
+.btn.disabled{background:#343740;color:#828691;cursor:not-allowed;transform:none}
+.btn.disabled:hover{filter:none;transform:none}
+.btn.trade-btn{background:#f59e0b;color:#18130b;}
+.btn.trade-btn:hover{background:#fbbf24;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #c8102e66}50%{box-shadow:0 0 0 8px #c8102e00}}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
+.section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;letter-spacing:.7px}
+.section-head p{color:#9da1ab;font-size:12px;margin:5px 0 0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+
+/* --- CARTAS --- */
+.card{position:relative;aspect-ratio:3/4.15;border-radius:calc(12px * var(--site-radius-scale));overflow:hidden;border:2px solid var(--rarity-color, #ffffff26);background:#1c1e25;cursor:pointer;text-align:left;color:white;padding:0;min-width:0;box-shadow:0 8px 20px #0004;transition:transform .18s,border-color .18s,box-shadow .18s;font:inherit}
+.card:hover{transform:translateY(-4px);border-color:var(--rarity-color, #ffffff);box-shadow:0 14px 30px #0006, 0 0 15px var(--rarity-color)}
+.card:focus-visible{outline:2px solid var(--rarity-color);outline-offset:3px}
+.card.owned{box-shadow:0 0 15px #0008, inset 0 0 0 1px var(--rarity-color)}
+.card.owned:after{content:'✓ NA COLEÇÃO';position:absolute;top:9px;right:8px;background:var(--rarity-color);color:#1a1710;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5}
+.card.new-badge:before{content:'NOVO';position:absolute;top:9px;left:8px;background:#c8102e;color:#fff;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.card-art{height:100%;display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,var(--rarity-color) 0%,#27242d 42%,#111218 76%);overflow:hidden}
+.card-art:before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#ffffff24,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff05 18px 20px);z-index:1}
+.card:hover .card-art:before{background:linear-gradient(160deg,#ffffff40,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px)}
+.card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:2;filter:contrast(1.05) saturate(1.05);transition:transform .35s ease;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);mask-image: linear-gradient(to bottom, black 70%, transparent 100%)}
+.card:hover .card-photo{transform:scale(1.04)}
+.card-art:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 40%,#07080bf2 100%);z-index:3;pointer-events:none}
+.initials{position:relative;z-index:4;font-family:var(--site-font-heading);font-size:clamp(37px,6vw,72px);font-style:italic;text-shadow:0 5px 0 #0008,0 0 22px #fff5;transform:rotate(-8deg);letter-spacing:-2px}
+.belt{position:absolute;top:17%;z-index:4;font-size:22px;color:var(--rarity-color); filter:drop-shadow(0 3px 3px #0008)}
+.card.has-photo .belt,.card.has-photo .initials{opacity:0;pointer-events:none}
+.card-bottom{position:absolute;bottom:0;left:0;right:0;padding:42px 11px 12px;background:linear-gradient(transparent,#07080bf2 35%);z-index:4}
+.card-number{font-size:9px;color:var(--rarity-color);letter-spacing:1.7px;font-weight:900}
+.card-name{font-family:var(--site-font-heading);font-size:clamp(16px,2vw,22px);line-height:1.05;margin-top:5px}
+.card-meta{display:flex;justify-content:space-between;align-items:center;gap:4px;margin-top:8px;font-size:9px;text-transform:uppercase;color:#c3c5cc}
+.rarity{font-weight:900;color:var(--rarity-color,#dedede)}
+.gender-badge{font-size:9px;font-weight:900;color:#9da1ab;letter-spacing:.5px}
+.dup-badge{position:absolute;bottom:10px;right:10px;background:#c8102e;color:#fff;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;z-index:5;box-shadow:0 2px 5px #0008}
+
+/* --- LOGÓTIPO DA MARCA EM IMAGEM --- */
+.brand-img {
+  height: 18px;
+  width: auto;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 6px;
+  margin-bottom: 2px;
+}
+
+.empty{padding:45px 25px;text-align:center;color:#9da1ab;border:1px dashed #3b3e47;border-radius:12px;grid-column:1/-1}
+.empty strong{display:block;color:#f5f5f6;font-size:16px;margin:10px 0 6px;font-family:var(--site-font-heading);letter-spacing:.5px}
+.empty .empty-icon{font-size:38px;display:block;margin-bottom:6px;opacity:.7}
+.footer-note{margin-top:36px;color:#828691;font-size:11px;line-height:1.6;border-top:1px solid #ffffff15;padding-top:18px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#ffd15b;color:#18130b;padding:12px 18px;border-radius:9px;font-size:13px;font-weight:900;box-shadow:0 8px 30px #0008;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-backdrop{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:18px;z-index:40;backdrop-filter:blur(3px)}
+.modal-backdrop.show{display:grid;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{max-width:420px;width:100%;background:#181a20;border:1px solid #ffffff25;border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes slideUp{from{transform:translateY(20px) scale(.95);opacity:0}to{transform:none;opacity:1}}
+.modal h3{font-family:var(--site-font-heading);font-size:30px;margin:0 0 8px}
+.modal p{color:#b8bbc4;font-size:13px;line-height:1.5}
+.modal-actions{display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.toast-hint{font-size:11px;color:#828691;margin-top:14px}
+.pack-cards{display:flex;justify-content:center;gap:8px;margin:20px 0;perspective:800px}
+.mini{width:82px;aspect-ratio:3/4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--site-font-heading);font-size:24px;font-style:italic;border:2px solid var(--rarity-color);box-shadow:0 4px 12px #0008;transform:rotateY(180deg);opacity:0;transition:transform .55s,opacity .3s;position:relative;overflow:hidden}
+.mini .mini-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1}
+.mini .mini-initials{position:relative;z-index:1}
+.mini::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2}
+.mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
+.mini.revealed{transform:rotateY(0);opacity:1}
+.detail-backdrop{position:fixed;inset:0;background:#000d;display:none;place-items:center;padding:18px;z-index:45;backdrop-filter:blur(4px)}
+.detail-backdrop.show{display:grid;animation:fadeIn .2s ease}
+.detail{max-width:720px;width:100%;background:#181a20;border:2px solid var(--rarity-color);border-radius:18px;padding:22px;display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative}
+.detail-photo-wrap{position:relative;border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 30%,var(--rarity-color,#bd1936),#15161c 75%);aspect-ratio:3/4.15;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff22}
+.detail-photo-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);}
+.detail-photo-wrap .initials{font-size:72px}
+.detail-info h3{font-family:var(--site-font-heading);font-size:34px;margin:0 0 4px;letter-spacing:.5px;line-height:1}
+.detail-info .detail-brand{color:#9da1ab;font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:14px;display:block}
+.detail-info .detail-rarity{display:inline-block;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#00000055;color:var(--rarity-color,#dedede);border:1px solid var(--rarity-color,#dedede);margin-bottom:16px}
+.detail-info .detail-gender{display:inline-block;margin-left:6px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#2a2d36;color:#c3c5cc;border:1px solid #444751;margin-bottom:16px}
+.detail-info .detail-status{font-size:13px;color:#c3c5cc;line-height:1.6;margin-bottom:18px}
+.detail-info .detail-status strong{color:#ffd15b}
+.detail-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end;margin-top:20px}
+.detail-close{position:absolute;top:10px;right:12px;background:transparent;border:0;color:#9da1ab;font-size:22px;cursor:pointer;padding:6px 10px;border-radius:8px;line-height:1}
+.detail-close:hover{background:#ffffff12;color:#fff}
+.user-info{display:flex;align-items:center;gap:12px;background:#00000055;padding:6px 14px;border-radius:999px;border:1px solid #ffffff22}
+.user-info img{width:28px;height:28px;border-radius:50%;border:1px solid #fff}
+.user-info span{font-size:13px;font-weight:800;color:#fff}
+
+/* --- MODAL TROCAS --- */
+.trade-modal{max-width:600px;width:100%;background:#181a20;border:2px solid #f59e0b;border-radius:18px;padding:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative}
+.trade-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #ffffff22;padding-bottom:15px}
+.trade-header h3{font-family:var(--site-font-heading);font-size:30px;margin:0;color:#f59e0b}
+.trade-tabs{display:flex;gap:10px;margin-bottom:20px}
+.trade-tab{flex:1;padding:10px;text-align:center;background:#282b33;border-radius:8px;cursor:pointer;font-weight:800;color:#c3c5cc;border:1px solid transparent}
+.trade-tab.active{background:#f59e0b;color:#18130b;border-color:#f59e0b}
+.trade-content{display:none}
+.trade-content.active{display:block}
+.trade-select{width:100%;padding:12px;background:#17191f;border:1px solid #343740;color:#fff;border-radius:9px;font:inherit;margin-bottom:15px}
+.trade-input{width:100%;padding:12px;background:#17191f;border:1px solid #343740;color:#fff;border-radius:9px;font:inherit;margin-bottom:15px}
+.trade-list{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;padding-right:5px}
+.trade-item{background:#22252e;border:1px solid #ffffff14;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.trade-item-info{display:flex;flex-direction:column;gap:4px}
+.trade-item-title{font-weight:900;font-size:14px}
+.trade-item-sub{font-size:11px;color:#9da1ab;text-transform:uppercase}
+.trade-item-cards{display:flex;align-items:center;gap:10px;font-size:12px;color:#c3c5cc}
+.trade-arrow{color:#f59e0b;font-size:18px;font-weight:900}
+.trade-actions-sm{display:flex;gap:6px}
+.trade-actions-sm .btn{padding:6px 10px;font-size:11px}
+@media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
+@media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{width:70px;font-size:20px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body><div id="app">
+<header>
+ <div class="topline">
+  <div class="brand">WWE <span>CARD VAULT</span></div>
+  <div id="auth-area">
+    <button class="btn twitch" id="loginBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 2L1 5.295v14.51h4.659V22h4.066l2.61-2.195h3.799L23 13.266V2H4.265zm16.32 10.263L16.95 16.01h-4.659l-2.42 2.195v-2.195H5.32V3.562h15.265v8.701zm-4.636-5.35v6.042h-1.515V6.913h1.515zm-4.154 0v6.042H10.28V6.913h1.515z"/></svg>
+      Entrar com Twitch
+    </button>
+    <div class="user-info" id="userProfile" style="display:none">
+      <img id="userAvatar" src="" alt="Avatar">
+      <span id="userName">A carregar...</span>
+      <button class="btn ghost" id="logoutBtn" style="padding:4px 8px;font-size:10px;margin-left:8px;">Sair</button>
+    </div>
+  </div>
+ </div>
+ <div class="hero">
+  <div class="eyebrow">A tua coleção começa aqui</div>
+  <h1>COLECIONA.<br>COMPLETA. DOMINA.</h1>
+  <p>Constrói o teu álbum de Superstars. Descobre cromos, acompanha o progresso e abre saquetas para encontrar raridades.</p>
+ </div>
+</header>
+<main class="shell" id="main-content" style="display:none">
+ <section class="stats" aria-label="Estatísticas da coleção">
+  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 30</small></strong></div>
+  <div class="stat"><label>Álbum completo</label><strong id="percent">0%</strong><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
+  <div class="stat"><label>Saquetas abertas</label><strong id="packsOpened">0</strong></div>
+  <div class="stat"><label>Raridades</label><strong id="rarityBreakdown" style="font-size:14px;line-height:1.5">—</strong></div>
+ </section>
+ <div class="toolbar">
+  <input class="search" id="search" placeholder="🔎  Procurar Superstar..." aria-label="Procurar Superstar">
+  <select class="filter" id="category" aria-label="Filtrar por categoria">
+   <option value="all">Todas as categorias</option>
+   <option value="RAW">RAW</option>
+   <option value="SmackDown">SmackDown</option>
+   <option value="NXT">NXT</option>
+   <option value="Legends">Legends</option>
+  </select>
+  <select class="filter" id="genderFilter" aria-label="Filtrar por género">
+   <option value="all">Todos os géneros</option>
+   <option value="Male">Masculino</option>
+   <option value="Female">Feminino</option>
+  </select>
+  <select class="filter" id="rarityFilter" aria-label="Filtrar por raridade">
+   <option value="all">Todas as raridades</option>
+   <option value="Comum">Comum</option>
+   <option value="Raro">Raro</option>
+   <option value="Épico">Épico</option>
+   <option value="Lendário">Lendário</option>
+  </select>
+  <select class="filter" id="ownership" aria-label="Filtrar cromos">
+   <option value="all">Todos os cromos</option>
+   <option value="owned">Na coleção</option>
+   <option value="missing">Em falta</option>
+  </select>
+  <button class="btn pulse" id="openPack">✦ Abrir saqueta</button>
+  <button class="btn trade-btn" id="openTradeBtn" style="display:none">🔄 Trocas</button>
+ </div>
+ <div class="section-head">
+  <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
+  <span id="visibleCount" style="color:#9da1ab;font-size:12px">30 cromos</span>
+ </div>
+ <div class="grid" id="cards" aria-live="polite"></div>
+ <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
+</main>
+<div id="welcome-screen" class="shell" style="text-align:center;padding-top:60px;display:none">
+  <h2 style="font-family:var(--site-font-heading);font-size:36px;margin-bottom:10px">BEM-VINDO À ARENA</h2>
+  <p style="color:#9da1ab;margin-bottom:24px">Faz login com a tua conta Twitch para começares a colecionar e guardares o teu progresso na nuvem.</p>
+</div>
+
+<!-- Modal saqueta -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <div class="modal" id="modalBox">
+  <h3 id="modalTitle">SAQUETA ABERTA!</h3>
+  <p id="modalText">Encontraste novos cromos.</p>
+  <div class="pack-cards" id="packCards"></div>
+  <div class="modal-actions">
+   <button class="btn" id="claimPack">Guardar cromos</button>
+   <button class="btn secondary" id="closeModal">Fechar</button>
+  </div>
+  <div class="toast-hint">Dica: podes fechar com ESC</div>
+ </div>
+</div>
+
+<!-- Modal detalhe -->
+<div class="detail-backdrop" id="detailBackdrop" role="dialog" aria-modal="true" aria-labelledby="detailName">
+ <div class="detail" id="detailBox">
+  <button class="detail-close" id="detailClose" aria-label="Fechar detalhes">✕</button>
+  <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
+  <div class="detail-info">
+   <h3 id="detailName">—</h3>
+   <span class="detail-brand" id="detailBrand">—</span>
+   <span class="detail-rarity" id="detailRarity">—</span>
+   <span class="detail-gender" id="detailGender">—</span>
+   <p class="detail-status" id="detailStatus">—</p>
+   <div class="detail-actions">
+    <button class="btn secondary" id="detailClose2">Fechar</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- Modal Trocas -->
+<div class="detail-backdrop" id="tradeBackdrop" role="dialog" aria-modal="true">
+ <div class="trade-modal">
+  <button class="detail-close" id="tradeClose" aria-label="Fechar">✕</button>
+  <div class="trade-header">
+    <h3>🔄 MERCADO DE TROCAS</h3>
+  </div>
+  <div class="trade-tabs">
+    <div class="trade-tab active" data-target="send">Enviar Oferta</div>
+    <div class="trade-tab" data-target="receive">Recebidas</div>
+    <div class="trade-tab" data-target="history">Histórico</div>
+  </div>
+
+  <!-- Enviar Oferta -->
+  <div class="trade-content active" id="tab-send">
+    <p style="font-size:12px;color:#9da1ab;margin-top:0">Só podes trocar cromos que tenhas em duplicado. Só podes pedir cromos que te faltam.</p>
+    <select class="trade-select" id="tradeMyCard">
+      <option value="">O cromo que eu dou...</option>
+    </select>
+    <input type="text" class="trade-input" id="tradeFriendName" placeholder="Nome de Twitch do amigo">
+    <select class="trade-select" id="tradeTheirCard">
+      <option value="">O cromo que eu quero...</option>
+    </select>
+    <button class="btn" id="submitTrade" style="width:100%;margin-top:10px;background:#f59e0b;color:#18130b;">Enviar Proposta</button>
+  </div>
+
+  <!-- Recebidas -->
+  <div class="trade-content" id="tab-receive">
+    <div class="trade-list" id="receivedList">
+      <p style="text-align:center;color:#9da1ab;font-size:12px;">A procurar trocas...</p>
+    </div>
+  </div>
+
+  <!-- Histórico -->
+  <div class="trade-content" id="tab-history">
+    <div class="trade-list" id="historyList">
+      <p style="text-align:center;color:#9da1ab;font-size:12px;">O teu histórico está vazio.</p>
+    </div>
+  </div>
+ </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ================= CONFIGURAÇÃO SUPABASE ================= */
+const SUPABASE_URL = 'https://zrrrpikpmfimmccmbqyo.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ================= DADOS ================= */
+const wrestlers=[
+ // --- RAW ---
+ {id:1, name:'Roman Reigns',  initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/Roman Reigns.png'},
+ {id:2, name:'CM Punk',       initials:'PUNK',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'★', image:'img/CM Punk.png'},
+ {id:3, name:'Seth Rollins',  initials:'SR',    brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/Seth Rollins.png'},
+ {id:4, name:'LA Knight',     initials:'YEAH',  brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'★', image:'img/LA Knight.png'},
+ {id:5, name:'Jey Uso',       initials:'YEET',  brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/Jey Uso.png'},
+ {id:6, name:'Jimmy Uso',     initials:'JU',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/Jimmy Uso.png'},
+ {id:7, name:'Bron Breakker', initials:'BB',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/Bron Breakker.png'},
+ {id:8, name:'Chad Gable',    initials:'CG',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/Chad Gable.png'},
+ {id:9, name:'Penta',         initials:'PENTA', brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/Penta.png'},
+ {id:10,name:'Rey Mysterio',  initials:'RM',    brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/Rey Mysterio.png'},
+ {id:11,name:'Liv Morgan',    initials:'LIV',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'♛', image:'img/Liv Morgan.png'},
+ {id:12,name:'Becky Lynch',   initials:'BL',    brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'★', image:'img/Becky Lynch.png'},
+ {id:13,name:'Iyo Sky',       initials:'SKY',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/Iyo Sky.png'},
+ {id:14,name:'Bayley',        initials:'BAY',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/Bayley.png'},
+ {id:15,name:'Roxanne Perez', initials:'RXP',   brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/Roxanne Perez.png'},
+
+ // --- SMACKDOWN ---
+ {id:16,name:'Cody Rhodes',   initials:'CR',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/Cody Rhodes.png'},
+ {id:17,name:'John Cena',     initials:'JC',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'★', image:'img/John Cena.png'},
+ {id:18,name:'Randy Orton',   initials:'V1',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'🐍',image:'img/Randy Orton.png'},
+ {id:19,name:'Gunther',       initials:'GUN',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/Gunther.png'},
+ {id:20,name:'Drew McIntyre', initials:'DREW',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/Drew McIntyre.png'},
+ {id:21,name:'Kevin Owens',   initials:'KO',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/Kevin Owens.png'},
+ {id:22,name:'Sami Zayn',     initials:'SZ',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/Sami Zayn.png'},
+ {id:23,name:'Damian Priest', initials:'DP',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/Damian Priest.png'},
+ {id:24,name:'Trick Williams',initials:'TW',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/Trick Williams.png'},
+ {id:25,name:'Rhea Ripley',   initials:'MAMI',  brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/Rhea Ripley.png'},
+ {id:26,name:'Charlotte Flair',initials:'CF',   brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/Charlotte Flair.png'},
+ {id:27,name:'Bianca Belair', initials:'EST',   brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/Bianca Belair.png'},
+ {id:28,name:'Jade Cargill',  initials:'JC',    brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/Jade Cargill.png'},
+ {id:29,name:'Tiffany Stratton',initials:'TIF', brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/Tiffany Stratton.png'},
+ {id:30,name:'Chelsea Green', initials:'CG',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/Chelsea Green.png'}
+];
+
+const rarityColors={'Comum':'#c5c8d0','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#ffd15b'};
+const rarityWeights={'Comum':55,'Raro':28,'Épico':13,'Lendário':4};
+const RARITIES=Object.keys(rarityWeights);
+const PACK_SIZE=3;
+const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
+const genderLabels={Male:'Masculino',Female:'Feminino'};
+const MAX_PACKS_PER_DAY = 3;
+
+/* ================= ESTADO GLOBAL ================= */
+let state = { ownedCounts: {}, packs: 0, recent: new Set() };
+let currentUser=null;
+let pending=[];
+let detailId=null;
+
+/* ================= LÓGICA SUPABASE ================= */
+async function initAuth() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  handleUser(session?.user);
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    handleUser(session?.user);
+  });
+}
+
+async function handleUser(user) {
+  currentUser = user;
+  if (user) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    document.getElementById('openTradeBtn').style.display = 'inline-flex';
+    const profile = document.getElementById('userProfile');
+    profile.style.display = 'flex';
+    const twitchName = user.user_metadata.custom_claims?.global_name || user.user_metadata.name || 'Twitch User';
+    document.getElementById('userName').textContent = twitchName;
+    if (user.user_metadata.avatar_url) document.getElementById('userAvatar').src = user.user_metadata.avatar_url;
+    
+    await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() });
+    await loadState();
+  } else {
+    document.getElementById('loginBtn').style.display = 'flex';
+    document.getElementById('userProfile').style.display = 'none';
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('welcome-screen').style.display = 'block';
+    document.getElementById('openTradeBtn').style.display = 'none';
+    state.ownedCounts = {};
+    state.packs = 0;
+    render();
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signInWithOAuth({
+    provider: 'twitch',
+    options: { redirectTo: window.location.origin + window.location.pathname }
+  });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signOut();
+});
+
+async function loadState() {
+  if (!currentUser) return;
+  try {
+    const { data: cardsData, error: cardsError } = await supabaseClient
+      .from('collections')
+      .select('card_id')
+      .eq('user_id', currentUser.id);
+    if (cardsError) throw cardsError;
+    
+    state.ownedCounts = {};
+    cardsData.forEach(d => {
+        const id = Number(d.card_id);
+        state.ownedCounts[id] = (state.ownedCounts[id] || 0) + 1;
+    });
+
+    const today = new Date().toISOString().split('T')[0];
+    const { data: packData, error: packError } = await supabaseClient
+      .from('daily_packs')
+      .select('count')
+      .eq('user_id', currentUser.id)
+      .eq('date', today)
+      .single();
+
+    if (packError && packError.code !== 'PGRST116') throw packError;
+    state.packs = packData ? Number(packData.count) : 0;
+    
+    render();
+  } catch (e) {
+    console.error('Erro detalhado:', e);
+    toast('Erro ao carregar. Verifica a consola (F12).');
+  }
+}
+
+async function saveCardToCloud(cardId) {
+  if (!currentUser) return;
+  try {
+    await supabaseClient.from('collections').insert([{ user_id: currentUser.id, card_id: cardId }]);
+  } catch (e) {
+    console.error('Erro ao guardar cromo:', e);
+  }
+}
+
+/* ================= LÓGICA DO JOGO ================= */
+const $=id=>document.getElementById(id);
+const rand=n=>Math.floor(Math.random()*n);
+const norm=s=>String(s||'').trim().toLowerCase();
+
+function weightedPick(pool){
+ const byRarity={};
+ pool.forEach(w=>{(byRarity[w.rarity]=byRarity[w.rarity]||[]).push(w);});
+ const available=RARITIES.filter(r=>byRarity[r]&&byRarity[r].length);
+ if(!available.length)return null;
+ const total=available.reduce((s,r)=>s+rarityWeights[r],0);
+ let roll=Math.random()*total;
+ for(const r of available){
+  roll-=rarityWeights[r];
+  if(roll<=0){const arr=byRarity[r];return arr[rand(arr.length)];}
+ }
+ return byRarity[available[available.length-1]][0];
+}
+
+function pickPack(){
+ const missing=wrestlers.filter(w=>!state.ownedCounts[w.id]);
+ const pool=missing.length>=PACK_SIZE?missing:wrestlers;
+ const picked=new Set();
+ let guard=0;
+ while(picked.size<PACK_SIZE&&guard<pool.length*10){
+  const w=weightedPick(pool.filter(x=>!picked.has(x.id)));
+  if(w)picked.add(w);
+  guard++;
+ }
+ return [...picked];
+}
+
+let toastTimer;
+function toast(msg){
+ const t=$('toast');
+ t.textContent=msg;
+ t.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+function updateStats(){
+ const total=wrestlers.length;
+ const n = Object.keys(state.ownedCounts).length;
+ 
+ $('ownedCount').innerHTML=`${n} <small>/ ${total}</small>`;
+ const pct=total?Math.round(n/total*100):0;
+ $('percent').textContent=pct+'%';
+ $('progress').style.width=pct+'%';
+ $('packsOpened').innerHTML = `${state.packs} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
+
+ const counts={};
+ RARITIES.forEach(r=>counts[r]=0);
+ Object.keys(state.ownedCounts).forEach(id=>{
+     const w=WRESTLER_MAP.get(Number(id));
+     if(w) counts[w.rarity]++;
+ });
+ const totalByRarity={};
+ wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
+ $('rarityBreakdown').innerHTML=RARITIES.map(r=>{
+  const got=counts[r],tot=totalByRarity[r]||0;
+  if(!tot)return '';
+  return `<span style="color:${rarityColors[r]}">${r}</span> <span style="color:#a7aab3">${got}/${tot}</span>`;
+ }).join(' · ');
+
+ updatePackButton();
+}
+
+function updatePackButton() {
+  const btn = $('openPack');
+  const remaining = MAX_PACKS_PER_DAY - state.packs;
+  
+  if (remaining > 0) {
+    btn.innerHTML = `✦ Abrir saqueta (${remaining})`;
+    btn.classList.remove('disabled');
+    btn.disabled = false;
+  } else {
+    btn.innerHTML = `Esgotadas por hoje`;
+    btn.classList.add('disabled');
+    btn.disabled = true;
+  }
+}
+
+function renderCard(w){
+ const qty = state.ownedCounts[w.id] || 0;
+ const has = qty > 0;
+ const isNew=state.recent.has(w.id);
+ const classes=['card'];
+ if(has)classes.push('owned');
+ if(isNew&&has)classes.push('new-badge');
+ if(has&&w.image)classes.push('has-photo');
+
+ const art = (has&&w.image)
+  ? `<img class="card-photo" src="${w.image}" alt="${w.name}" loading="lazy"
+        onerror="this.remove();this.closest('.card').classList.remove('has-photo');">`
+  : '';
+  
+ const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
+
+ // Caminho da imagem do logotipo da marca
+ const brandImage = `img/${w.brand}.png`;
+ 
+ return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" aria-label="${w.name}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
+  <div class="card-art">
+   ${art}
+   <span class="belt">${w.belt}</span>
+   <span class="initials">${w.initials}</span>
+  </div>
+  ${dupBadge}
+  <div class="card-bottom">
+   <div class="card-number">WWE · ${String(w.id).padStart(3,'0')}</div>
+   <div class="card-name">${w.name}</div>
+   <div class="card-meta">
+    <span>
+      <img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'"> 
+      <span class="gender-badge">${w.gender==='Female'?'♀':'♂'}</span>
+    </span>
+    <span class="rarity">${w.rarity}</span>
+   </div>
+  </div>
+ </button>`;
+}
+
+function render(){
+ const q=norm($('search').value);
+ const cat=norm($('category').value);
+ const gen=$('genderFilter').value;
+ const rar=$('rarityFilter').value;
+ const own=$('ownership').value;
+
+ const list=wrestlers.filter(w=>{
+  if(q){
+   const hay=norm(w.name)+' '+norm(w.brand);
+   if(!hay.includes(q))return false;
+  }
+  if(cat!=='all'&&norm(w.brand)!==cat)return false;
+  if(gen!=='all'&&w.gender!==gen)return false;
+  if(rar!=='all'&&w.rarity!==rar)return false;
+  if(own==='owned'&&!state.ownedCounts[w.id])return false;
+  if(own==='missing'&&state.ownedCounts[w.id])return false;
+  return true;
+ });
+
+ $('visibleCount').textContent=`${list.length} ${list.length===1?'cromo':'cromos'}`;
+
+ if(list.length===0){
+  $('cards').innerHTML=`<div class="empty">
+   <span class="empty-icon">🃏</span>
+   <strong>Nenhum cromo encontrado</strong>
+   Tenta ajustar os filtros ou limpar a pesquisa.
+   <div style="margin-top:14px"><button class="btn secondary" id="clearFilters">Limpar filtros</button></div>
+  </div>`;
+  const cf=$('clearFilters');
+  if(cf)cf.addEventListener('click',clearFilters);
+ }else{
+  $('cards').innerHTML=list.map(renderCard).join('');
+  $('cards').querySelectorAll('.card').forEach(b=>{
+   b.addEventListener('click',()=>openDetail(Number(b.dataset.id)));
+  });
+ }
+ updateStats();
+}
+
+function clearFilters(){
+ $('search').value='';
+ $('category').value='all';
+ $('genderFilter').value='all';
+ $('rarityFilter').value='all';
+ $('ownership').value='all';
+ render();
+}
+
+function openPack(){
+ if(state.packs >= MAX_PACKS_PER_DAY) {
+   toast('Já abriste as 3 saquetas de hoje. Volta amanhã!');
+   return;
+ }
+
+ pending=pickPack();
+ state.packs++;
+ 
+ const today = new Date().toISOString().split('T')[0];
+ supabaseClient.from('daily_packs').upsert(
+   { user_id: currentUser.id, date: today, count: state.packs },
+   { onConflict: 'user_id,date' }
+ ).then(({error}) => { if(error) console.error(error); });
+
+ const missing=wrestlers.filter(w=>!state.ownedCounts[w.id]);
+ $('modalText').textContent=missing.length
+  ? `A tua saqueta contém ${pending.length} cromos. Guarda os que ainda não tens.`
+  : 'Já tens a coleção completa! Esta saqueta contém duplicados para reveres.';
+
+ $('packCards').innerHTML=pending.map(w=>{
+  const inner = w.image
+   ? `<img class="mini-photo" src="${w.image}" alt="" onerror="this.remove();this.parentElement.querySelector('.mini-initials').style.opacity=1;">`
+   : '';
+  return `<div class="mini" style="--rarity-color:${rarityColors[w.rarity]}; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)">
+   ${inner}
+   <span class="mini-initials" style="z-index:1;${w.image?'position:absolute;opacity:0':''}">${w.initials}</span>
+   <span class="mini-rarity" style="color:${rarityColors[w.rarity]}">${w.rarity}</span>
+  </div>`;
+ }).join('');
+
+ $('modalBackdrop').classList.add('show');
+ $('claimPack').focus();
+
+ requestAnimationFrame(()=>{
+  $('packCards').querySelectorAll('.mini').forEach((el,i)=>{
+   setTimeout(()=>el.classList.add('revealed'),120+i*160);
+  });
+ });
+ updateStats();
+}
+
+function claim(){
+ let added=0;
+ pending.forEach(w=>{
+  saveCardToCloud(w.id);
+  
+  if(!state.ownedCounts[w.id]){
+    state.ownedCounts[w.id] = 1;
+    state.recent.add(w.id);
+    added++;
+  } else {
+    state.ownedCounts[w.id]++;
+  }
+ });
+ closeModal();
+ render();
+ if(added){
+  toast(`${added} novo${added===1?' cromo':'s cromos'} guardado${added===1?'':'s'}!`);
+  setTimeout(()=>{state.recent.clear();render();},5000);
+ }else{
+  toast('Desta vez, só duplicados.');
+ }
+}
+
+function closeModal(){
+ $('modalBackdrop').classList.remove('show');
+ pending=[];
+}
+
+function openDetail(id){
+ const w=WRESTLER_MAP.get(id);
+ if(!w)return;
+ detailId=id;
+ const qty = state.ownedCounts[w.id] || 0;
+ const has = qty > 0;
+
+ const photoWrap=$('detailPhotoWrap');
+ photoWrap.style.setProperty('--rarity-color',rarityColors[w.rarity]);
+ const art = (has&&w.image)
+  ? `<img src="${w.image}" alt="${w.name}" onerror="this.remove();this.parentElement.querySelector('.initials').style.opacity=1;">`
+  : '';
+ photoWrap.innerHTML=`${art}<span class="initials" style="${(has&&w.image)?'opacity:0':''}">${w.initials}</span>`;
+
+ $('detailName').textContent=w.name;
+ $('detailBrand').textContent=w.brand;
+ const rar=$('detailRarity');
+ rar.textContent=w.rarity;
+ rar.style.setProperty('--rarity-color',rarityColors[w.rarity]);
+ $('detailGender').textContent=(w.gender==='Female'?'♀ ':'♂ ')+genderLabels[w.gender];
+ $('detailBox').style.setProperty('--rarity-color',rarityColors[w.rarity]);
+
+ $('detailStatus').innerHTML=has
+  ? `Tens <strong>${qty} unidade(s)</strong> deste cromo na tua coleção.`
+  : `Ainda <strong>não tens</strong> este cromo. Tenta a tua sorte numa saqueta!`;
+
+ $('detailBackdrop').classList.add('show');
+ $('detailClose2').focus();
+}
+
+function closeDetail(){
+ $('detailBackdrop').classList.remove('show');
+ detailId=null;
+}
+
+/* ================= SISTEMA DE TROCAS ================= */
+const openTradeBtn = document.getElementById('openTradeBtn');
+const tradeBackdrop = document.getElementById('tradeBackdrop');
+
+openTradeBtn.addEventListener('click', async () => {
+  tradeBackdrop.classList.add('show');
+  await populateTradeSelects();
+  await loadTrades();
+});
+
+document.getElementById('tradeClose').addEventListener('click', () => {
+  tradeBackdrop.classList.remove('show');
+});
+
+document.querySelectorAll('.trade-tab').forEach(tab => {
+  tab.addEventListener('click', (e) => {
+    document.querySelectorAll('.trade-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.trade-content').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('tab-' + e.target.dataset.target).classList.add('active');
+  });
+});
+
+async function populateTradeSelects() {
+  const myCardSelect = document.getElementById('tradeMyCard');
+  myCardSelect.innerHTML = '<option value="">O cromo que eu dou...</option>';
+  
+  Object.keys(state.ownedCounts).forEach(id => {
+    const qty = state.ownedCounts[id];
+    if (qty > 1) {
+      const w = WRESTLER_MAP.get(Number(id));
+      if (w) myCardSelect.innerHTML += `<option value="${w.id}">${w.name} (x${qty})</option>`;
+    }
+  });
+
+  const theirCardSelect = document.getElementById('tradeTheirCard');
+  theirCardSelect.innerHTML = '<option value="">O cromo que eu quero...</option>';
+  wrestlers.forEach(w => {
+    if (!state.ownedCounts[w.id]) {
+      theirCardSelect.innerHTML += `<option value="${w.id}">${w.name} (${w.rarity})</option>`;
+    }
+  });
+}
+
+async function loadTrades() {
+  const receivedList = document.getElementById('receivedList');
+  const historyList = document.getElementById('historyList');
+
+  // 1. Recebidas (Apenas pendentes onde sou o recetor)
+  const { data: received, error: errRec } = await supabaseClient
+    .from('trades_with_usernames')
+    .select('*')
+    .eq('receiver_id', currentUser.id)
+    .eq('status', 'pending');
+
+  if (errRec) console.error(errRec);
+  
+  if (received && received.length > 0) {
+    receivedList.innerHTML = received.map(t => {
+      const give = WRESTLER_MAP.get(t.receiver_card_id) || {name:'Desconhecido'};
+      const get = WRESTLER_MAP.get(t.sender_card_id) || {name:'Desconhecido'};
+      const senderName = t.sender_username || 'Desconhecido';
+      return `
+        <div class="trade-item">
+          <div class="trade-item-info">
+            <div class="trade-item-sub">Proposta de: <strong>${senderName}</strong></div>
+            <div class="trade-item-cards">
+              Dás: <strong>${give.name}</strong> <span class="trade-arrow">⇄</span> Recebes: <strong>${get.name}</strong>
+            </div>
+          </div>
+          <div class="trade-actions-sm">
+            <button class="btn" style="background:#22c55e" onclick="acceptTrade(${t.id}, this)">Aceitar</button>
+            <button class="btn secondary" onclick="rejectTrade(${t.id}, this)">Recusar</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    receivedList.innerHTML = '<p style="text-align:center;color:#9da1ab;font-size:12px;">Não tens propostas pendentes.</p>';
+  }
+
+  // 2. Histórico
+  const { data: history, error: errHist } = await supabaseClient
+    .from('trades_with_usernames')
+    .select('*')
+    .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+    .neq('status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (errHist) console.error(errHist);
+
+  if (history && history.length > 0) {
+    historyList.innerHTML = history.map(t => {
+      const isSender = t.sender_id === currentUser.id;
+      const otherName = isSender ? (t.receiver_username || '?') : (t.sender_username || '?');
+      
+      const give = WRESTLER_MAP.get(isSender ? t.sender_card_id : t.receiver_card_id) || {name:'?'};
+      const get = WRESTLER_MAP.get(isSender ? t.receiver_card_id : t.sender_card_id) || {name:'?'};
+      const statusColor = t.status === 'accepted' ? '#22c55e' : '#ef4444';
+      
+      const title = isSender ? `Para: <strong>${otherName}</strong>` : `De: <strong>${otherName}</strong>`;
+
+      return `
+        <div class="trade-item">
+          <div class="trade-item-info">
+            <div class="trade-item-sub" style="color:${statusColor};font-weight:900">${t.status.toUpperCase()}</div>
+            <div class="trade-item-sub" style="font-size:10px;margin-bottom:2px">${title}</div>
+            <div class="trade-item-cards">Dei: ${give.name} | Recebi: ${get.name}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    historyList.innerHTML = '<p style="text-align:center;color:#9da1ab;font-size:12px;">Ainda não fizeste nenhuma troca.</p>';
+  }
+}
+
+document.getElementById('submitTrade').addEventListener('click', async () => {
+  const myCardId = Number(document.getElementById('tradeMyCard').value);
+  const friendName = document.getElementById('tradeFriendName').value.trim().toLowerCase();
+  const theirCardId = Number(document.getElementById('tradeTheirCard').value);
+
+  if (!myCardId || !friendName || !theirCardId) {
+    return toast('Preenche todos os campos!');
+  }
+
+  if (friendName === document.getElementById('userName').textContent.toLowerCase()) {
+    return toast('Não podes trocar contigo próprio!');
+  }
+
+  const { data: friendData, error: friendErr } = await supabaseClient
+    .from('profiles')
+    .select('user_id')
+    .eq('username', friendName)
+    .single();
+
+  if (friendErr || !friendData) {
+    return toast('Amigo não encontrado. O nome de Twitch está correto?');
+  }
+
+  // VALIDAÇÃO ROBUSTA: O amigo tem a carta em duplicado?
+  const { data: friendCards } = await supabaseClient
+    .from('collections')
+    .select('card_id')
+    .eq('user_id', friendData.user_id)
+    .eq('card_id', theirCardId);
+
+  if (!friendCards || friendCards.length < 2) {
+    return toast(`O teu amigo não tem o cromo "${WRESTLER_MAP.get(theirCardId).name}" em duplicado.`);
+  }
+
+  const { error: sendErr } = await supabaseClient
+    .from('trades')
+    .insert({
+      sender_id: currentUser.id,
+      receiver_id: friendData.user_id,
+      sender_card_id: myCardId,
+      receiver_card_id: theirCardId
+    });
+
+  if (sendErr) {
+    return toast('Erro ao enviar a troca.');
+  }
+
+  toast('Proposta enviada com sucesso!');
+  document.getElementById('tradeMyCard').value = '';
+  document.getElementById('tradeFriendName').value = '';
+  document.getElementById('tradeTheirCard').value = '';
+  await loadTrades();
+});
+
+// BOTÃO ACEITAR BLINDADO
+window.acceptTrade = async function(tradeId, btnElement) {
+  btnElement.disabled = true;
+  btnElement.innerHTML = 'A processar...';
+
+  try {
+    const { data: trade, error } = await supabaseClient.from('trades').select('*').eq('id', tradeId).single();
+    
+    if (error || !trade || trade.status !== 'pending') {
+      return toast('Esta troca já foi processada ou cancelada.');
+    }
+
+    const { data: recCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.receiver_id).eq('card_id', trade.receiver_card_id).limit(1);
+    if (recCard && recCard.length) await supabaseClient.from('collections').delete().eq('id', recCard[0].id);
+
+    const { data: senCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.sender_id).eq('card_id', trade.sender_card_id).limit(1);
+    if (senCard && senCard.length) await supabaseClient.from('collections').delete().eq('id', senCard[0].id);
+
+    await supabaseClient.from('collections').insert([{ user_id: trade.receiver_id, card_id: trade.sender_card_id }]);
+    await supabaseClient.from('collections').insert([{ user_id: trade.sender_id, card_id: trade.receiver_card_id }]);
+
+    await supabaseClient.from('trades').update({ status: 'accepted' }).eq('id', tradeId);
+
+    toast('Troca realizada com sucesso!');
+    await loadState();
+    await loadTrades();
+    populateTradeSelects();
+    
+  } catch (e) {
+    console.error(e);
+    toast('Erro ao processar a troca.');
+    btnElement.disabled = false;
+    btnElement.innerHTML = 'Aceitar';
+  }
+};
+
+// BOTÃO RECUSAR BLINDADO
+window.rejectTrade = async function(tradeId, btnElement) {
+  btnElement.disabled = true;
+  btnElement.innerHTML = '...';
+
+  try {
+    const { data: trade } = await supabaseClient.from('trades').select('status').eq('id', tradeId).single();
+    if (!trade || trade.status !== 'pending') return;
+
+    await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
+    toast('Proposta recusada.');
+    await loadTrades();
+  } catch(e) {
+    btnElement.disabled = false;
+    btnElement.innerHTML = 'Recusar';
+  }
+};
+
+/* ================= TECLADO / INIT ================= */
+function setupKeyboard(){
+ document.addEventListener('keydown',e=>{
+  const packOpen=$('modalBackdrop').classList.contains('show');
+  const detailOpen=$('detailBackdrop').classList.contains('show');
+  const tradeOpen=$('tradeBackdrop').classList.contains('show');
+
+  if(e.key==='Escape'){
+   if(packOpen){e.preventDefault();closeModal();}
+   else if(detailOpen){e.preventDefault();closeDetail();}
+   else if(tradeOpen){e.preventDefault();$('tradeBackdrop').classList.remove('show');}
+   return;
+  }
+  if(!packOpen&&!detailOpen&&!tradeOpen)return;
+
+  if(e.key==='Enter'&&packOpen){
+   e.preventDefault();
+   claim();
+  }
+ });
+ $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeModal();});
+ $('detailBackdrop').addEventListener('click',e=>{if(e.target===$('detailBackdrop'))closeDetail();});
+ $('tradeBackdrop').addEventListener('click',e=>{if(e.target===$('tradeBackdrop'))$('tradeBackdrop').classList.remove('show');});
+}
+
+function init(){
+ $('search').addEventListener('input',render);
+ $('category').addEventListener('change',render);
+ $('genderFilter').addEventListener('change',render);
+ $('rarityFilter').addEventListener('change',render);
+ $('ownership').addEventListener('change',render);
+ $('openPack').addEventListener('click',openPack);
+ $('claimPack').addEventListener('click',claim);
+ $('closeModal').addEventListener('click',closeModal);
+ $('detailClose').addEventListener('click',closeDetail);
+ $('detailClose2').addEventListener('click',closeDetail);
+ setupKeyboard();
+ 
+ initAuth();
+}
+init();
+</script>
+</body></html>
