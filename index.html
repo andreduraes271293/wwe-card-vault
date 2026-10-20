@@ -173,7 +173,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 </header>
 <main class="shell" id="main-content" style="display:none">
  <section class="stats" aria-label="Estatísticas da coleção">
-  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 26</small></strong></div>
+  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 62</small></strong></div>
   <div class="stat"><label>Álbum completo</label><strong id="percent">0%</strong><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
   <div class="stat"><label>Saquetas abertas</label><strong id="packsOpened">0</strong></div>
   <div class="stat"><label>Raridades</label><strong id="rarityBreakdown" style="font-size:14px;line-height:1.5">—</strong></div>
@@ -209,7 +209,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
  </div>
  <div class="section-head">
   <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
-  <span id="visibleCount" style="color:#9da1ab;font-size:12px">26 cromos</span>
+  <span id="visibleCount" style="color:#9da1ab;font-size:12px">62 cromos</span>
  </div>
  <div class="grid" id="cards" aria-live="polite"></div>
  <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
@@ -301,44 +301,82 @@ const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ================= DADOS ================= */
+/* ================= DADOS (Lista Completa e Corrigida) ================= */
 const wrestlers = [
- // --- LENDÁRIOS (IDs 1 a 6) ---
- {id:1,  name:'Charlotte Flair',   initials:'QUEEN',    brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/charlotte-flair.png'},
- {id:2,  name:'CM Punk',           initials:'PUNK',  brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'★', image:'img/cm-punk.png'},
- {id:3,  name:'John Cena',         initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
- {id:4,  name:'Roman Reigns',      initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
- {id:5,  name:'Seth Rollins',      initials:'SETH',    brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
- {id:6,  name:'Paige',             initials:'PAIGE',     brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/paige.png'},
+ // LENDÁRIOS (IDs 1 a 10)
+ {id:1,  name:'John Cena',        initials:'JC',    brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
+ {id:2,  name:'Rey Mysterio',     initials:'RM',    brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/rey-mysterio.png'},
+ {id:3,  name:'Jacob Fatu',       initials:'JF',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/jacob-fatu.png'},
+ {id:4,  name:'Becky Lynch',      initials:'BL',    brand:'RAW',       rarity:'Lendário', gender:'Female', belt:'★', image:'img/becky-lynch.png'},
+ {id:5,  name:'Bayley',           initials:'BAY',   brand:'RAW',       rarity:'Lendário', gender:'Female', belt:'✦', image:'img/bayley.png'},
+ {id:6,  name:'Charlotte Flair',  initials:'CF',    brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/charlotte-flair.png'},
+ {id:7,  name:'CM Punk',          initials:'PUNK',  brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'★', image:'img/cm-punk.png'},
+ {id:8,  name:'Stephanie Vaquer', initials:'SV',    brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/stephanie-vaquer.png'},
+ {id:9,  name:'Roman Reigns',     initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
+ {id:10, name:'Seth Rollins',     initials:'SR',    brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
+ 
+ // ÉPICOS (IDs 11 a 30)
+ {id:11, name:'Paige',            initials:'PAIGE', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'♛', image:'img/paige.png'},
+ {id:12, name:'Bron Breakker',    initials:'BRON',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/bron-breakker.png'},
+ {id:13, name:'Dominik Mysterio', initials:'DOM',   brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/dominik-mysterio.png'},
+ {id:14, name:'Jey Uso',          initials:'YEET',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/jey-uso.png'},
+ {id:15, name:'Jimmy Uso',        initials:'JIMMY', brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/jimmy-uso.png'},
+ {id:16, name:'Logan Paul',       initials:'LOGAN', brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/logan-paul.png'},
+ {id:17, name:'Chad Gable',       initials:'CHAD',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/chad-gable.png'},
+ {id:18, name:'Carmelo Hayes',    initials:'HAYES', brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/carmelo-hayes.png'},
+ {id:19, name:'Naomi',            initials:'NAOMI', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/naomi.png'},
+ {id:20, name:'Montez Ford',      initials:'MF',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/montez-ford.png'},
+ {id:21, name:'Rusev',            initials:'RUSEV', brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/rusev.png'},
+ {id:22, name:'Dragon Lee',       initials:'DL',    brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/dragon-lee.png'},
+ {id:23, name:'Oba Femi',         initials:'OBA',   brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'★', image:'img/oba-femi.png'},
+ {id:24, name:'Solo Sikoa',       initials:'SOLO',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/solo-sikoa.png'},
+ {id:25, name:'Maxxine Dupri',    initials:'DUPRI', brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/maxxine-duprie.png'},
+ {id:26, name:'Jaida Parker',     initials:'JAIDA', brand:'NXT',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/jaida-parker.png'},
+ {id:27, name:'Alexa Bliss',      initials:'ALEXA', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/alexa-bliss.png'},
+ {id:28, name:'Cody Rhodes',      initials:'CODY',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
+ {id:29, name:'Iyo Sky',          initials:'SKY',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/iyo-sky.png'},
+ {id:30, name:'LA Knight',        initials:'YEAH',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'★', image:'img/la-knight.png'},
+ {id:31, name:'Liv Morgan',       initials:'LIV',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
+ {id:32, name:'Rhea Ripley',      initials:'MAMI',  brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
+ {id:33, name:'Shinsuke Nakamura',initials:'SN',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/shinsuke-nakamura.png'},
+ {id:34, name:'Tiffany Stratton', initials:'TIFFY', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/tiffany-stratton.png'},
+ {id:35, name:'Asuka',            initials:'ASUKA', brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/asuka.png'},
 
- // --- ÉPICOS ---
- {id:7,  name:'Alexa Bliss',       initials:'ALEXA',    brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/alexa-bliss.png'},
- {id:8,  name:'Bianca Belair',     initials:'EST',   brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/bianca-belair.png'},
- {id:9,  name:'Cody Rhodes',       initials:'CR',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
- {id:10, name:'Iyo Sky',           initials:'SKY',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/iyo-sky.png'},
- {id:11, name:'LA Knight',         initials:'YEAH',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'★', image:'img/la-knight.png'},
- {id:12, name:'Liv Morgan',        initials:'LIV',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
- {id:13, name:'Rhea Ripley',       initials:'MAMI',  brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
- {id:14, name:'Shinsuke Nakamura', initials:'SN',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/shinsuke-nakamura.png'},
- {id:15, name:'Tiffany Stratton',  initials:'TIFFY',   brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/tiffany-stratton.png'},
- {id:16, name:'Asuka',             initials:'ASUKA', brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/asuka.png'},
+ // RAROS (IDs 36 a 54)
+ {id:36, name:'Austin Theory',    initials:'AT',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/austin-theory.png'},
+ {id:37, name:'Bronson Reed',     initials:'BR',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/bronson-reed.png'},
+ {id:38, name:'Ethan Page',       initials:'EP',    brand:'NXT',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/ethan-page.png'},
+ {id:39, name:'Je\'Von Evans',    initials:'JE',    brand:'NXT',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/jevon-evans.png'},
+ {id:40, name:'JD McDonagh',      initials:'JD',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/jd-mcdonagh.png'},
+ {id:41, name:'Ivy Nile',         initials:'IN',    brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/ivy-nile.png'},
+ {id:42, name:'Raquel Rodriguez', initials:'RR',    brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/raquel-rodriguez.png'},
+ {id:43, name:'Royce Keys',       initials:'RK',    brand:'NXT',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/royce-keys.png'},
+ {id:44, name:'Angelo Dawkins',   initials:'AD',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/angelo-dawkins.png'},
+ {id:45, name:'Otis',             initials:'O',     brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/otis.png'},
+ {id:46, name:'Joaquin Wilde',    initials:'JW',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/joaquin-wilde.png'},
+ {id:47, name:'Cruz Del Toro',    initials:'CDT',   brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/cruz-del-toro.png'},
+ {id:48, name:'Rayo Americano',   initials:'RA',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/rayo-americano.png'},
+ {id:49, name:'El Grande Americano',initials:'EGA', brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/el-grande-americano.png'},
+ {id:50, name:'Blake Monroe',     initials:'BM',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/blake-monroe.png'},
+ {id:51, name:'Giulia',           initials:'G',     brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/giulia.png'},
+ {id:52, name:'Jade Cargill',     initials:'JC',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/jade-cargill.png'},
+ {id:53, name:'Penta',            initials:'PENTA', brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/penta.png'},
+ {id:54, name:'Roxanne Perez',    initials:'RXP',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/roxanne-perez.png'},
 
- // --- RAROS ---
- {id:17, name:'Blake Monroe',      initials:'BLAKE',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/blake-monroe.png'},
- {id:18, name:'Giulia',            initials:'GIULIA',     brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/giulia.png'},
- {id:19, name:'Jade Cargill',      initials:'JADE',    brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/jade-cargill.png'},
- {id:20, name:'Penta',             initials:'PENTA', brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/penta.png'},
- {id:21, name:'Roxanne Perez',     initials:'ROXY',   brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/roxanne-perez.png'},
-
- // --- COMUNS ---
- {id:22, name:'Lash Legend',       initials:'LASH',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lash-legend.png'},
- {id:23, name:'Lola Vice',         initials:'LOLA',    brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lola-vice.png'},
- {id:24, name:'Lyra Valkyria',     initials:'LYRA',  brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lyra-valkyria.png'},
- {id:25, name:'Sol Ruca',          initials:'SOL',   brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/sol-ruca.png'},
- {id:26, name:'Tatum Paxley',      initials:'TATUM',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/tatum-paxley.png'}
+ // COMUNS (IDs 55 a 62)
+ {id:55, name:'Akira Tozawa',     initials:'AT',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/akira-tozawa.png'},
+ {id:56, name:'Big Cass',         initials:'BC',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/big-cass.png'},
+ {id:57, name:'Bronco Nima',      initials:'BN',    brand:'NXT',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/bronco-nima.png'},
+ {id:58, name:'Lucien Price',     initials:'LP',    brand:'NXT',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/lucien-price.png'},
+ {id:59, name:'Lola Vice',        initials:'LV',    brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lola-vice.png'},
+ {id:60, name:'Lyra Valkyria',    initials:'LYRA',  brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lyra-valkyria.png'},
+ {id:61, name:'Sol Ruca',         initials:'SOL',   brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/sol-ruca.png'},
+ {id:62, name:'Tatum Paxley',     initials:'TP',    brand:'SmackDown', rarity:'Comum',    gender:'Female', belt:'✦', image:'img/tatum-paxley.png'}
 ];
 
 const rarityColors={'Comum':'#c5c8d0','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#ffd15b'};
+
+// Probabilidades exatas solicitadas
 const rarityWeights={'Comum':55,'Raro':28,'Épico':13,'Lendário':4};
 const RARITIES=Object.keys(rarityWeights);
 const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
@@ -534,8 +572,11 @@ function renderCard(w){
  if(isNew&&has)classes.push('new-badge');
  if(has&&w.image)classes.push('has-photo');
 
+ const timestamp = new Date().getTime();
+ const finalImage = w.image + '?t=' + timestamp;
+
  const art = (has&&w.image)
-  ? `<img class="card-photo" src="${w.image}" alt="${w.name}" loading="lazy"
+  ? `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
         onerror="this.remove();this.closest('.card').classList.remove('has-photo');">`
   : '';
   
@@ -643,8 +684,11 @@ function openPack(){
   : 'Já tens a coleção completa! Esta saqueta contém duplicados para reveres.';
 
  $('packCards').innerHTML=pending.map(w=>{
+  const timestamp = new Date().getTime();
+  const finalImage = w.image + '?t=' + timestamp;
+
   const inner = w.image
-   ? `<img class="mini-photo" src="${w.image}" alt="" onerror="this.remove();this.parentElement.querySelector('.mini-initials').style.opacity=1;">`
+   ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();this.parentElement.querySelector('.mini-initials').style.opacity=1;">`
    : '';
   return `<div class="mini" style="--rarity-color:${rarityColors[w.rarity]}; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)">
    ${inner}
@@ -701,8 +745,12 @@ function openDetail(id){
 
  const photoWrap=$('detailPhotoWrap');
  photoWrap.style.setProperty('--rarity-color',rarityColors[w.rarity]);
+ 
+ const timestamp = new Date().getTime();
+ const finalImage = w.image + '?t=' + timestamp;
+
  const art = (has&&w.image)
-  ? `<img src="${w.image}" alt="${w.name}" onerror="this.remove();this.parentElement.querySelector('.initials').style.opacity=1;">`
+  ? `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();this.parentElement.querySelector('.initials').style.opacity=1;">`
   : '';
  photoWrap.innerHTML=`${art}<span class="initials" style="${(has&&w.image)?'opacity:0':''}">${w.initials}</span>`;
 
