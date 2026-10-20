@@ -451,7 +451,7 @@ async function loadState() {
         state.ownedCounts[id] = (state.ownedCounts[id] || 0) + 1;
     });
 
-    // AQUI ESTÁ A CORREÇÃO DO FUSO HORÁRIO
+    // CORREÇÃO DO FUSO HORÁRIO
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     
@@ -540,11 +540,13 @@ function updateStats(){
  });
  const totalByRarity={};
  wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
- $('rarityBreakdown').innerHTML=RARITIES.map(r=>{
-  const got=counts[r],tot=totalByRarity[r]||0;
-  if(!tot)return '';
-  return `<span style="color:${rarityColors[r]}">${r}</span> <span style="color:#a7aab3">${got}/${tot}</span>`;
- }).join(' · ');
+ 
+ // AQUI ESTÁ A ALTERAÇÃO PARA LINHA A LINHA
+ $('rarityBreakdown').innerHTML = RARITIES.map(r => {
+    const got = counts[r], tot = totalByRarity[r] || 0;
+    if(!tot) return '';
+    return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#a7aab3">${got}/${tot}</span></div>`;
+ }).join('');
 
  updatePackButton();
 }
@@ -673,7 +675,6 @@ function openPack(){
  pending=pickPack();
  state.packs++;
  
- // USA A HORA LOCAL AQUI TAMBÉM
  const now = new Date();
  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
  
