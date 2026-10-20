@@ -316,7 +316,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ================= DADOS ATUALIZADOS ================= */
+/* ================= DADOS ================= */
 const wrestlers=[
  // --- RAW ---
  {id:1, name:'Roman Reigns',  initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
@@ -358,6 +358,10 @@ const wrestlers=[
 const rarityColors={'Comum':'#c5c8d0','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#ffd15b'};
 const rarityWeights={'Comum':55,'Raro':28,'Épico':13,'Lendário':4};
 const RARITIES=Object.keys(rarityWeights);
+
+// Damos um "peso" numérico à raridade para podermos ordenar. (Lendário primeiro, Comum último).
+const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
+
 const PACK_SIZE=3;
 const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
 const genderLabels={Male:'Masculino',Female:'Feminino'};
@@ -598,6 +602,15 @@ function render(){
   if(own==='owned'&&!state.ownedCounts[w.id])return false;
   if(own==='missing'&&state.ownedCounts[w.id])return false;
   return true;
+ });
+
+ // AQUI ESTÁ A NOVA LÓGICA DE ORDENAÇÃO:
+ // 1º Critério: Raridade (Lendário -> Comum)
+ // 2º Critério: ID (se ambos forem Lendários, o ID 1 fica antes do 16).
+ list.sort((a, b) => {
+   const rarDiff = rarityOrder[a.rarity] - rarityOrder[b.rarity];
+   if (rarDiff !== 0) return rarDiff;
+   return a.id - b.id;
  });
 
  $('visibleCount').textContent=`${list.length} ${list.length===1?'cromo':'cromos'}`;
