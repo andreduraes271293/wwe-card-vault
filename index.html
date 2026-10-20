@@ -301,7 +301,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ================= DADOS (Lista Completa e Corrigida) ================= */
+/* ================= DADOS (Lista Completa) ================= */
 const wrestlers = [
  // LENDÁRIOS (IDs 1 a 10)
  {id:1,  name:'John Cena',        initials:'JC',    brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
@@ -315,7 +315,7 @@ const wrestlers = [
  {id:9,  name:'Roman Reigns',     initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
  {id:10, name:'Seth Rollins',     initials:'SR',    brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
  
- // ÉPICOS (IDs 11 a 30)
+ // ÉPICOS (IDs 11 a 35)
  {id:11, name:'Paige',            initials:'PAIGE', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'♛', image:'img/paige.png'},
  {id:12, name:'Bron Breakker',    initials:'BRON',  brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/bron-breakker.png'},
  {id:13, name:'Dominik Mysterio', initials:'DOM',   brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/dominik-mysterio.png'},
@@ -331,7 +331,7 @@ const wrestlers = [
  {id:23, name:'Oba Femi',         initials:'OBA',   brand:'RAW',       rarity:'Épico',    gender:'Male',   belt:'★', image:'img/oba-femi.png'},
  {id:24, name:'Solo Sikoa',       initials:'SOLO',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/solo-sikoa.png'},
  {id:25, name:'Maxxine Dupri',    initials:'DUPRI', brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/maxxine-duprie.png'},
- {id:26, name:'Jaida Parker',     initials:'JAIDA', brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/jaida-parker.png'},
+ {id:26, name:'Jaida Parker',     initials:'JAIDA', brand:'NXT',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/jaida-parker.png'},
  {id:27, name:'Alexa Bliss',      initials:'ALEXA', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/alexa-bliss.png'},
  {id:28, name:'Cody Rhodes',      initials:'CODY',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
  {id:29, name:'Iyo Sky',          initials:'SKY',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/iyo-sky.png'},
@@ -345,12 +345,12 @@ const wrestlers = [
  // RAROS (IDs 36 a 54)
  {id:36, name:'Austin Theory',    initials:'AT',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/austin-theory.png'},
  {id:37, name:'Bronson Reed',     initials:'BR',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/bronson-reed.png'},
- {id:38, name:'Ethan Page',       initials:'EP',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/ethan-page.png'},
- {id:39, name:'Je\'Von Evans',    initials:'JE',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/jevon-evans.png'},
+ {id:38, name:'Ethan Page',       initials:'EP',    brand:'NXT',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/ethan-page.png'},
+ {id:39, name:'Je\'Von Evans',    initials:'JE',    brand:'NXT',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/jevon-evans.png'},
  {id:40, name:'JD McDonagh',      initials:'JD',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/jd-mcdonagh.png'},
  {id:41, name:'Ivy Nile',         initials:'IN',    brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/ivy-nile.png'},
  {id:42, name:'Raquel Rodriguez', initials:'RR',    brand:'RAW',       rarity:'Raro',     gender:'Female', belt:'✦', image:'img/raquel-rodriguez.png'},
- {id:43, name:'Royce Keys',       initials:'RK',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/royce-keys.png'},
+ {id:43, name:'Royce Keys',       initials:'RK',    brand:'NXT',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/royce-keys.png'},
  {id:44, name:'Angelo Dawkins',   initials:'AD',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/angelo-dawkins.png'},
  {id:45, name:'Otis',             initials:'O',     brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/otis.png'},
  {id:46, name:'Joaquin Wilde',    initials:'JW',    brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/joaquin-wilde.png'},
@@ -366,8 +366,8 @@ const wrestlers = [
  // COMUNS (IDs 55 a 62)
  {id:55, name:'Akira Tozawa',     initials:'AT',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/akira-tozawa.png'},
  {id:56, name:'Big Cass',         initials:'BC',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/big-cass.png'},
- {id:57, name:'Bronco Nima',      initials:'BN',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/bronco-nima.png'},
- {id:58, name:'Lucien Price',     initials:'LP',    brand:'RAW',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/lucien-price.png'},
+ {id:57, name:'Bronco Nima',      initials:'BN',    brand:'NXT',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/bronco-nima.png'},
+ {id:58, name:'Lucien Price',     initials:'LP',    brand:'NXT',       rarity:'Comum',    gender:'Male',   belt:'✦', image:'img/lucien-price.png'},
  {id:59, name:'Lola Vice',        initials:'LV',    brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lola-vice.png'},
  {id:60, name:'Lyra Valkyria',    initials:'LYRA',  brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/lyra-valkyria.png'},
  {id:61, name:'Sol Ruca',         initials:'SOL',   brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/sol-ruca.png'},
@@ -375,8 +375,6 @@ const wrestlers = [
 ];
 
 const rarityColors={'Comum':'#c5c8d0','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#ffd15b'};
-
-// Probabilidades exatas solicitadas
 const rarityWeights={'Comum':55,'Raro':28,'Épico':13,'Lendário':4};
 const RARITIES=Object.keys(rarityWeights);
 const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
@@ -453,7 +451,10 @@ async function loadState() {
         state.ownedCounts[id] = (state.ownedCounts[id] || 0) + 1;
     });
 
-    const today = new Date().toISOString().split('T')[0];
+    // AQUI ESTÁ A CORREÇÃO DO FUSO HORÁRIO
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    
     const { data: packData, error: packError } = await supabaseClient
       .from('daily_packs')
       .select('count')
@@ -672,7 +673,10 @@ function openPack(){
  pending=pickPack();
  state.packs++;
  
- const today = new Date().toISOString().split('T')[0];
+ // USA A HORA LOCAL AQUI TAMBÉM
+ const now = new Date();
+ const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+ 
  supabaseClient.from('daily_packs').upsert(
    { user_id: currentUser.id, date: today, count: state.packs },
    { onConflict: 'user_id,date' }
