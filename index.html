@@ -64,9 +64,25 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .card:hover{transform:translateY(-4px);border-color:var(--rarity-color, #ffffff);box-shadow:0 14px 30px #0006, 0 0 15px var(--rarity-color)}
 .card:focus-visible{outline:2px solid var(--rarity-color);outline-offset:3px}
 .card.owned{box-shadow:0 0 15px #0008, inset 0 0 0 1px var(--rarity-color)}
-.card.owned:after{content:'✓ NA COLEÇÃO';position:absolute;top:9px;right:8px;background:var(--rarity-color);color:#1a1710;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5}
-.card.new-badge:before{content:'NOVO';position:absolute;top:9px;left:8px;background:#c8102e;color:#fff;font-size:8px;font-weight:1000;padding:5px 6px;border-radius:4px;letter-spacing:.5px;z-index:5;animation:pop .5s ease}
+/* carimbo "NA COLEÇÃO" removido */
+.card.owned:after{content:none !important;display:none !important}
+
+/* "NOVO!" já sem rotação */
+.card.new-badge:before{
+  content:'NOVO!';
+  position:absolute;
+  top:9px;left:8px;
+  background:#e0a010;color:#2b1d0e;
+  border-radius:4px;
+  font-family:var(--site-font-heading);
+  font-size:9px;font-weight:1000;
+  padding:5px 7px;letter-spacing:.5px;
+  z-index:11;
+  animation:pop .5s ease;
+  transform:none;
+}
 @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+
 .card-art{height:100%;display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,#3a3e47 0%,#1c1e25 42%,#0c0d10 76%);overflow:hidden}
 .card-art:before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#ffffff24,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff05 18px 20px);z-index:1}
 .card:hover .card-art:before{background:linear-gradient(160deg,#ffffff40,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px)}
@@ -301,23 +317,6 @@ main.shell::after{
 .card-meta{ color:#7a5a2b; }
 .card-meta .rarity{ color:#8a0f20; font-weight: 900; }
 .gender-badge{ color:#7a5a2b; }
-.card.owned:after{
-  content:'✓ COLADO';
-  background:#fffaf0;color:#8a0f20;border:2px solid #8a0f20;
-  font-family: var(--site-font-heading);
-  transform: rotate(-6deg);
-  box-shadow:0 2px 6px #0003;
-  padding:4px 7px;letter-spacing:.5px;
-}
-.card.new-badge:before{
-  content:'NOVO!';
-  background:#e0a010;color:#2b1d0e;
-  border-radius: 50% 40% 55% 45%;
-  transform: rotate(-12deg);
-  font-family: var(--site-font-heading);
-  padding:6px 8px;z-index:11;
-}
-.card::before{ z-index:9; }
 .dup-badge{
   background:#8a0f20;color:#fff;border:2px solid #fffaf0;border-radius:50%;
   width:32px;height:32px;display:grid;place-items:center;
@@ -340,7 +339,6 @@ main.shell::after{
 }
 .card.missing .initials,
 .card.missing .belt{ opacity: 0 !important; pointer-events: none; }
-.card.missing .card-art::after{ content: none; }
 .card.missing .card-art > .missing-q{
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -487,18 +485,18 @@ main.shell::after{
     0 0 26px #d99aff88;
 }
 
-/* LENDÁRIO */
+/* LENDÁRIO — dourado mais escuro/saturado */
 .card[data-rarity="Lendário"] .card-art{
   background:
-    radial-gradient(ellipse at 50% 30%, #ffd15b44, transparent 60%),
+    radial-gradient(ellipse at 50% 30%, #e8a80044, transparent 60%),
     radial-gradient(ellipse at 50% 34%, #3a3e47 0%, #1c1e25 42%, #0c0d10 76%);
   box-shadow:
     inset 0 0 0 2px var(--rarity-color),
     inset 0 0 0 4px #fff8d040,
-    inset 0 0 32px #ffd15b77;
+    inset 0 0 32px #e8a80077;
 }
 .card[data-rarity="Lendário"] .card-photo{
-  filter: contrast(1.1) saturate(1.25) drop-shadow(0 0 10px #ffd15baa);
+  filter: contrast(1.1) saturate(1.3) drop-shadow(0 0 10px #e8a800aa);
 }
 .card[data-rarity="Lendário"]:hover{
   box-shadow:
@@ -507,7 +505,7 @@ main.shell::after{
     inset 0 0 0 3px var(--rarity-color),
     inset 0 0 0 5px #fffaf0,
     inset 0 0 0 1px #c9b78a,
-    0 0 34px #ffd15b99;
+    0 0 34px #e8a80099;
 }
 .card[data-rarity="Lendário"]::after{
   content:'';
@@ -516,12 +514,12 @@ main.shell::after{
   border-radius: 2px;
   background: linear-gradient(115deg,
     transparent 30%,
-    #ffffffaa 45%,
-    #ffffff00 55%,
+    #fff8d0aa 45%,
+    #fff8d000 55%,
     transparent 70%);
   background-size: 260% 260%;
   background-position: 120% 0;
-  mix-blend-mode: screen;
+  mix-blend-mode: overlay;
   pointer-events: none;
   z-index: 3;
   animation: shineGold 5s ease-in-out infinite;
@@ -561,7 +559,7 @@ main.shell::after{
     0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);
 }
 
-/* Legenda das raridades */
+/* Legenda das raridades — com as novas cores */
 .rarity-legend{
   display:flex;
   flex-wrap:wrap;
@@ -583,10 +581,49 @@ main.shell::after{
   border:2px solid #fffaf0;
   box-shadow: inset 0 0 0 2px #c9b78a;
 }
-.rarity-legend i.r-comum{ background:#c5c8d0; box-shadow: inset 0 0 0 2px #c5c8d0; }
+.rarity-legend i.r-comum{ background:#2b2b2b; box-shadow: inset 0 0 0 2px #2b2b2b; }
 .rarity-legend i.r-raro{ background:#65c9ff; box-shadow: inset 0 0 0 2px #65c9ff; }
 .rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
-.rarity-legend i.r-lendario{ background:#ffd15b; box-shadow: inset 0 0 0 2px #ffd15b; }
+.rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
+
+/* ============================================================
+   MODAL DETALHE: nome e unidades com cor da raridade + imagem do show
+   ============================================================ */
+.detail-info h3#detailName{
+  color: var(--rarity-color);
+  text-shadow: 0 2px 0 #00000025;
+}
+.detail-info .detail-status strong{
+  color: var(--rarity-color) !important;
+  font-weight: 900;
+}
+.detail.missing .detail-info h3#detailName{
+  color: #a89070;
+}
+.detail.missing .detail-info .detail-status strong{
+  color: #a89070 !important;
+}
+
+.detail-info .detail-brand{
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.detail-info .detail-brand img{
+  height: 26px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px #0006);
+}
+.detail-info .detail-brand .brand-fallback{
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #7a5a2b;
+}
 
 /* Responsivos */
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
@@ -871,7 +908,7 @@ const wrestlers = [
  {id:113, name:'Danhausen',       initials:'DANH',  brand:'Free Agent', rarity:'Comum',    gender:'Male', belt:'✦', image:'img/danhausen.png'}
 ];
 
-const rarityColors={'Comum':'#c5c8d0','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#ffd15b'};
+const rarityColors={'Comum':'#2b2b2b','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#e8a800'};
 const rarityWeights={'Comum':55,'Raro':28,'Épico':13,'Lendário':4};
 const RARITIES=Object.keys(rarityWeights);
 const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
@@ -1070,7 +1107,7 @@ function renderCard(w){
  }
 
  const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
- const brandImage = `img/${w.brand.toLowerCase()}.png`;
+ const brandImage = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
  const displayName = has ? w.name : '???';
  const displayNumber = has ? String(w.id).padStart(3,'0') : '—';
 
@@ -1199,7 +1236,7 @@ function openPack(){
  const bestRarity = pending.reduce((best,w)=>{
    return (rarityOrder[w.rarity] || 99) < (rarityOrder[best] || 99) ? w.rarity : best;
  }, 'Comum');
- $('modalBox').style.setProperty('--pack-glow', (rarityColors[bestRarity] || '#ffd15b') + '66');
+ $('modalBox').style.setProperty('--pack-glow', (rarityColors[bestRarity] || '#e8a800') + '66');
 
  $('packCards').innerHTML=pending.map((w,i)=>{
   const timestamp = new Date().getTime();
@@ -1264,7 +1301,7 @@ function openDetail(id){
  const has = qty > 0;
 
  const photoWrap=$('detailPhotoWrap');
- photoWrap.style.setProperty('--rarity-color',rarityColors[w.rarity]);
+ photoWrap.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
 
  const timestamp = new Date().getTime();
  const finalImage = w.image + '?t=' + timestamp;
@@ -1275,12 +1312,21 @@ function openDetail(id){
  photoWrap.innerHTML=`${art}<span class="initials" style="${(has&&w.image)?'opacity:0':''}">${has ? w.initials : '?'}</span>`;
 
  $('detailName').textContent = has ? w.name : '???';
- $('detailBrand').textContent=w.brand;
+
+ const brandImg = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ $('detailBrand').innerHTML =
+   `<img src="${brandImg}" alt="${w.brand}"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+    <span class="brand-fallback" style="display:none">${w.brand}</span>`;
+
  const rar=$('detailRarity');
  rar.textContent = has ? w.rarity : 'Em falta';
  rar.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
+
  $('detailGender').textContent=(w.gender==='Female'?'♀ ':'♂ ')+genderLabels[w.gender];
+
  $('detailBox').style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
+ $('detailBox').classList.toggle('missing', !has);
 
  $('detailStatus').innerHTML=has
   ? `Tens <strong>${qty} unidade(s)</strong> deste cromo na tua coleção.`
