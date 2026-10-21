@@ -140,7 +140,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .trade-actions-sm{display:flex;gap:6px}
 .trade-actions-sm .btn{padding:6px 10px;font-size:11px}
 
-/* --- ABERTURA DE SAQUETA: BACKDROP RADIAL --- */
+/* --- ABERTURA DE SAQUETA --- */
 .modal{overflow:hidden;position:relative}
 .modal::before{
   content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
@@ -148,13 +148,9 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
   opacity:0;transition:opacity .6s ease;
 }
 .modal-backdrop.show .modal::before{opacity:1;animation:backdropPulse 2.6s ease-in-out infinite}
-@keyframes backdropPulse{
-  0%,100%{opacity:.55;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.06)}
-}
+@keyframes backdropPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 .modal > *{position:relative;z-index:1}
 
-/* --- MINI CARDS --- */
 .pack-cards{display:flex;justify-content:center;gap:10px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
 .mini{
   width:82px;aspect-ratio:3/4;border-radius:9px;
@@ -179,7 +175,6 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .mini.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,var(--rarity-color),transparent 70%);opacity:.5;animation:cardGlow 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
 @keyframes cardGlow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.85;transform:scale(1.18)}}
 
-/* Duplicados na saqueta */
 .mini.duplicate{border-color:#6b7280 !important;animation:cardBurstDup .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
 @keyframes cardBurstDup{
   0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
@@ -197,7 +192,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .mini.duplicate.revealed .dup-veil{opacity:1;transition-delay:calc(var(--burst-delay,0ms) + 500ms);}
 
 /* ============================================================
-   TEMA CADERNETA / ÁLBUM DE CROMOS FÍSICO
+   TEMA CADERNETA
    ============================================================ */
 body{
   background:
@@ -223,81 +218,36 @@ main.shell{
   max-width: 1180px;
 }
 main.shell::before{
-  content:'';
-  position:absolute;
-  left:-11px; top:30px; bottom:30px;
-  width:8px;
+  content:'';position:absolute;left:-11px;top:30px;bottom:30px;width:8px;
   background-image: radial-gradient(circle, #2b1d0e 0 3px, transparent 3.5px);
-  background-size: 8px 38px;
-  background-repeat: repeat-y;
-  background-position: center top;
-  opacity:.8;
-  pointer-events:none;
+  background-size: 8px 38px;background-repeat: repeat-y;background-position: center top;
+  opacity:.8;pointer-events:none;
 }
 main.shell::after{
   content:'★ ÁLBUM OFICIAL ★';
-  position:absolute;
-  top:-14px; right:22px;
-  background:#c8102e;
-  color:#fff;
+  position:absolute;top:-14px;right:22px;
+  background:#c8102e;color:#fff;
   font-family:var(--site-font-heading);
-  font-size:12px;
-  letter-spacing:2px;
-  padding:6px 14px;
-  border-radius:6px;
+  font-size:12px;letter-spacing:2px;
+  padding:6px 14px;border-radius:6px;
   box-shadow:0 4px 10px #0008;
   transform:rotate(2deg);
 }
-
-/* Stats em etiquetas */
-.stat{
-  background:#fffaf0;
-  border:1px solid #c9b78a;
-  border-radius:6px;
-  box-shadow: 2px 2px 0 #c9b78a80;
-  color:#2b1d0e;
-  position:relative;
-}
-.stat::before{
-  content:'';
-  position:absolute;
-  top:-8px; left:50%;
-  transform:translateX(-50%) rotate(-2deg);
-  width:60px; height:16px;
-  background:#f4d77a80;
-  border-left:1px dashed #b89a4a;
-  border-right:1px dashed #b89a4a;
-  opacity:.9;
-}
+.stat{background:#fffaf0;border:1px solid #c9b78a;border-radius:6px;box-shadow:2px 2px 0 #c9b78a80;color:#2b1d0e;position:relative;}
+.stat::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-2deg);width:60px;height:16px;background:#f4d77a80;border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;opacity:.9;}
 .stat label{ color:#7a5a2b; }
 .stat strong{ color:#2b1d0e; }
 .stat small{ color:#7a5a2b; }
 .progress-track{ background:#e2d3b1; }
 .progress-fill{ background: linear-gradient(90deg,#8a0f20,#c8102e,#e0a010); }
-
-/* Toolbar em papel */
-.search, .filter{
-  background:#fffaf0;
-  border:1px solid #b8a070;
-  color:#2b1d0e;
-  box-shadow: inset 1px 1px 2px #00000010;
-}
+.search, .filter{background:#fffaf0;border:1px solid #b8a070;color:#2b1d0e;box-shadow:inset 1px 1px 2px #00000010;}
 .search::placeholder{ color:#9b8a6a; }
-.search:focus,.filter:focus{
-  outline:2px solid #c8102e;
-  outline-offset:1px;
-}
-
-.section-head h2{
-  color:#5a1a12;
-  text-shadow: 1px 1px 0 #e8d9b8;
-  letter-spacing:1.5px;
-}
+.search:focus,.filter:focus{outline:2px solid #c8102e;outline-offset:1px;}
+.section-head h2{color:#5a1a12;text-shadow:1px 1px 0 #e8d9b8;letter-spacing:1.5px;}
 .section-head p{ color:#7a5a2b; }
 
-/* ============ CROMOS COMO "COLADOS" NA PÁGINA ============ */
+/* ============ CROMOS COMO "COLADOS" ============ */
 .grid{ gap: 22px 18px; padding-top: 8px; }
-
 .card{
   background:#fffaf0;
   border: 3px solid #fffaf0;
@@ -317,8 +267,6 @@ main.shell::after{
     0 14px 26px #00000040,
     inset 0 0 0 1px #c9b78a;
 }
-
-/* moldura interna do cromo */
 .card-art{
   position: relative;
   inset: auto;
@@ -328,91 +276,59 @@ main.shell::after{
   overflow: hidden;
   box-shadow: inset 0 0 0 2px var(--rarity-color);
 }
-
-/* fita adesiva */
 .card::before{
   content:'';
-  position:absolute;
-  top:-9px; left:50%;
+  position:absolute;top:-9px;left:50%;
   transform:translateX(-50%) rotate(-3deg);
-  width:62px; height:18px;
+  width:62px;height:18px;
   background: linear-gradient(180deg,#f7e08aee,#e8c95fcc);
   border-left:1px dashed #b89a4a;
   border-right:1px dashed #b89a4a;
   box-shadow:0 1px 3px #0004;
-  z-index:10;
-  pointer-events:none;
+  z-index:10;pointer-events:none;
   transition: transform .18s ease;
 }
 .card:hover::before{ transform:translateX(-50%) rotate(1deg); }
-
-/* rodapé impresso do cromo */
 .card-bottom{
-  position:absolute;
-  left:6px; right:6px; bottom:6px;
+  position:absolute;left:6px;right:6px;bottom:6px;
   padding: 8px 8px 6px;
   background: #fffaf0;
   border-top: 1px dashed #b8a070;
   color: #2b1d0e;
 }
 .card-number{ color:#8a6a2b; }
-.card-name{
-  color:#2b1d0e;
-  font-family: var(--site-font-heading);
-  text-shadow: none;
-}
+.card-name{ color:#2b1d0e; font-family: var(--site-font-heading); text-shadow: none; }
 .card-meta{ color:#7a5a2b; }
 .card-meta .rarity{ color:#8a0f20; font-weight: 900; }
 .gender-badge{ color:#7a5a2b; }
-
-/* Badge "NA COLEÇÃO" como carimbo */
 .card.owned:after{
   content:'✓ COLADO';
-  background:#fffaf0;
-  color:#8a0f20;
-  border:2px solid #8a0f20;
+  background:#fffaf0;color:#8a0f20;border:2px solid #8a0f20;
   font-family: var(--site-font-heading);
   transform: rotate(-6deg);
   box-shadow:0 2px 6px #0003;
-  padding:4px 7px;
-  letter-spacing:.5px;
+  padding:4px 7px;letter-spacing:.5px;
 }
 .card.new-badge:before{
   content:'NOVO!';
-  background:#e0a010;
-  color:#2b1d0e;
+  background:#e0a010;color:#2b1d0e;
   border-radius: 50% 40% 55% 45%;
   transform: rotate(-12deg);
   font-family: var(--site-font-heading);
-  padding:6px 8px;
-  z-index:11;
+  padding:6px 8px;z-index:11;
 }
-/* a fita adesiva passa a ter z-index inferior ao novo badge para não tapar */
 .card::before{ z-index:9; }
-
 .dup-badge{
-  background:#8a0f20;
-  color:#fff;
-  border:2px solid #fffaf0;
-  border-radius:50%;
-  width:32px; height:32px;
-  display:grid;
-  place-items:center;
-  bottom: 52px; right: 8px;
-  font-size:11px;
-  box-shadow: 0 2px 6px #0006;
+  background:#8a0f20;color:#fff;border:2px solid #fffaf0;border-radius:50%;
+  width:32px;height:32px;display:grid;place-items:center;
+  bottom: 52px; right: 8px;font-size:11px;box-shadow: 0 2px 6px #0006;
 }
-
 .initials{ color:#fff; text-shadow: 0 3px 0 #0009, 0 0 18px #fff6; }
 
-/* ============ CROMOS EM FALTA (B) ============ */
-/* Silhueta cinzenta tracejada com "?" em vez de imagem */
-.card.missing{
-  background:#f0e6cf;
-}
+/* ============ CROMOS EM FALTA ============ */
+.card.missing{ background:#f0e6cf; }
 .card.missing .card-art{
-  background:
-    repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px);
+  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px);
   box-shadow: inset 0 0 0 2px #b8a070;
   filter: grayscale(1);
 }
@@ -423,14 +339,8 @@ main.shell::after{
   background: linear-gradient(180deg,#0000 40%,#c9b78a99 100%);
 }
 .card.missing .initials,
-.card.missing .belt{
-  opacity: 0 !important;
-  pointer-events: none;
-}
-/* "?" gigante no centro */
-.card.missing .card-art::after{
-  content: none; /* anula o gradiente original */
-}
+.card.missing .belt{ opacity: 0 !important; pointer-events: none; }
+.card.missing .card-art::after{ content: none; }
 .card.missing .card-art > .missing-q{
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -438,10 +348,8 @@ main.shell::after{
   font-size: clamp(48px, 8vw, 92px);
   color: #b8a070;
   text-shadow: 0 3px 0 #ffffff80;
-  z-index: 3;
-  pointer-events: none;
+  z-index: 3; pointer-events: none;
 }
-/* "silhueta" de um lutador por baixo do "?" */
 .card.missing .card-art > .missing-silhouette{
   position: absolute; inset: 0;
   background:
@@ -450,18 +358,12 @@ main.shell::after{
     radial-gradient(ellipse 40% 20% at 50% 92%, #b8a070 0 100%, transparent 101%);
   filter: blur(.4px);
   opacity: .55;
-  z-index: 2;
-  pointer-events: none;
+  z-index: 2; pointer-events: none;
 }
-/* nome fica escondido nos em falta (mostra "???") */
-.card.missing .card-name{
-  color:#a89070;
-  font-style: italic;
-  letter-spacing: 1px;
-}
+.card.missing .card-name{ color:#a89070;font-style: italic;letter-spacing: 1px; }
 .card.missing .card-number{ color:#a89070; }
 
-/* ============ EFEITO VIRAR DE PÁGINA (C) ============ */
+/* ============ VIRAR DE PÁGINA ============ */
 @keyframes turnPage{
   0%   { opacity: 0; transform: rotateY(-14deg) translateX(-24px); filter: blur(2px); }
   60%  { opacity: 1; transform: rotateY(4deg)  translateX(6px);  filter: blur(0);  }
@@ -470,15 +372,12 @@ main.shell::after{
 .grid.turning .card{
   animation: turnPage .5s cubic-bezier(.2,.8,.2,1) both;
   transform-origin: left center;
-  /* stagger via --i */
   animation-delay: calc(var(--i, 0) * 12ms);
 }
-/* véu de "página a virar" sobre a grelha */
 .grid{ position: relative; }
 .grid.turning::after{
   content:'';
-  position:absolute;
-  inset:0;
+  position:absolute;inset:0;
   background: linear-gradient(90deg, #fdf6e3cc 0%, #fdf6e300 60%);
   transform-origin: left center;
   animation: pageVeil .55s ease-out both;
@@ -492,7 +391,7 @@ main.shell::after{
   100% { opacity:0; transform: scaleX(1); }
 }
 
-/* Modais também em papel */
+/* Modais em papel */
 .modal, .detail, .trade-modal{
   background: #fffaf0 !important;
   border: 2px solid #b8a070 !important;
@@ -503,24 +402,16 @@ main.shell::after{
     0 0 0 6px #fffaf0,
     0 0 0 7px #b8a070;
 }
-.modal h3, .detail h3, .trade-header h3{
-  color:#8a0f20;
-  font-family: var(--site-font-heading);
-}
+.modal h3, .detail h3, .trade-header h3{ color:#8a0f20;font-family: var(--site-font-heading); }
 .modal p, .detail-status, .trade-modal p{ color:#5a4020; }
 .detail-info .detail-brand{ color:#7a5a2b; }
-.detail-info .detail-gender{
-  background:#e8d9b8;
-  color:#5a4020;
-  border-color:#b8a070;
-}
+.detail-info .detail-gender{ background:#e8d9b8;color:#5a4020;border-color:#b8a070; }
 .detail-info .detail-rarity{ background:#fffaf0; }
 .detail-info .detail-status strong{ color:#8a0f20; }
-
-.trade-tab{ background:#e8d9b8; color:#5a4020; border-color:#c9b78a; }
-.trade-tab.active{ background:#8a0f20; color:#fff; border-color:#8a0f20; }
-.trade-select, .trade-input{ background:#fffaf0; color:#2b1d0e; border-color:#b8a070; }
-.trade-item{ background:#f5ebd2; border-color:#c9b78a; color:#2b1d0e; }
+.trade-tab{ background:#e8d9b8;color:#5a4020;border-color:#c9b78a; }
+.trade-tab.active{ background:#8a0f20;color:#fff;border-color:#8a0f20; }
+.trade-select, .trade-input{ background:#fffaf0;color:#2b1d0e;border-color:#b8a070; }
+.trade-item{ background:#f5ebd2;border-color:#c9b78a;color:#2b1d0e; }
 .trade-item-sub{ color:#7a5a2b; }
 .trade-item-cards{ color:#5a4020; }
 
@@ -529,9 +420,177 @@ main.shell::after{
   main.shell::after{ font-size:10px; padding:4px 10px; right:10px; }
 }
 
-/* Responsivos originais (mantidos) */
+/* ============================================================
+   DIFERENCIAÇÃO POR RARIDADE
+   ============================================================ */
+.card{
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a;
+}
+.card .card-art{
+  box-shadow:
+    inset 0 0 0 2px var(--rarity-color),
+    inset 0 0 22px color-mix(in srgb, var(--rarity-color) 35%, transparent);
+}
+.card .card-meta .rarity{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
+.card .card-number{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
+
+/* RARO */
+.card[data-rarity="Raro"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #65c9ff22, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #3a3e47 0%, #1c1e25 42%, #0c0d10 76%);
+}
+.card[data-rarity="Raro"] .card-photo{
+  filter: contrast(1.06) saturate(1.15) drop-shadow(0 0 6px #65c9ff88);
+}
+.card[data-rarity="Raro"]:hover{
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a,
+    0 0 22px #65c9ff66;
+}
+
+/* ÉPICO */
+.card[data-rarity="Épico"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #d99aff33, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #3a3e47 0%, #1c1e25 42%, #0c0d10 76%);
+  box-shadow:
+    inset 0 0 0 2px var(--rarity-color),
+    inset 0 0 0 4px #ffffff40,
+    inset 0 0 28px #d99aff55;
+}
+.card[data-rarity="Épico"] .card-photo{
+  filter: contrast(1.08) saturate(1.2) drop-shadow(0 0 8px #d99aff88);
+}
+.card[data-rarity="Épico"]:hover{
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a,
+    0 0 26px #d99aff88;
+}
+
+/* LENDÁRIO */
+.card[data-rarity="Lendário"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #ffd15b44, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #3a3e47 0%, #1c1e25 42%, #0c0d10 76%);
+  box-shadow:
+    inset 0 0 0 2px var(--rarity-color),
+    inset 0 0 0 4px #fff8d040,
+    inset 0 0 32px #ffd15b77;
+}
+.card[data-rarity="Lendário"] .card-photo{
+  filter: contrast(1.1) saturate(1.25) drop-shadow(0 0 10px #ffd15baa);
+}
+.card[data-rarity="Lendário"]:hover{
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a,
+    0 0 34px #ffd15b99;
+}
+.card[data-rarity="Lendário"]::after{
+  content:'';
+  position:absolute;
+  inset: 6px 6px 46px;
+  border-radius: 2px;
+  background: linear-gradient(115deg,
+    transparent 30%,
+    #ffffffaa 45%,
+    #ffffff00 55%,
+    transparent 70%);
+  background-size: 260% 260%;
+  background-position: 120% 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 3;
+  animation: shineGold 5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+@keyframes shineGold{
+  0%, 60%   { background-position: 120% 0; opacity: 0; }
+  65%       { opacity: 1; }
+  100%      { background-position: -20% 0; opacity: 0; }
+}
+
+/* EM FALTA — mantêm papel cinzento, sem cor de raridade */
+.card.missing{
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 3px #b8a070,
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a !important;
+}
+.card.missing .card-art{
+  box-shadow: inset 0 0 0 2px #b8a070 !important;
+  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px) !important;
+  filter: grayscale(1);
+}
+.card.missing .card-meta .rarity,
+.card.missing .card-number{
+  color:#a89070 !important;
+  text-shadow: none !important;
+}
+.card.missing::after{ display: none !important; }
+
+/* Mini-cards da saqueta: reforçar cor */
+.mini{
+  box-shadow:
+    0 4px 12px #0008,
+    0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);
+}
+
+/* Legenda das raridades */
+.rarity-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin: 6px 0 18px;
+  font-size: 11px;
+  font-style: italic;
+  color:#7a5a2b;
+}
+.rarity-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.rarity-legend i{
+  display:inline-block;
+  width:14px;height:14px;
+  border-radius:3px;
+  border:2px solid #fffaf0;
+  box-shadow: inset 0 0 0 2px #c9b78a;
+}
+.rarity-legend i.r-comum{ background:#c5c8d0; box-shadow: inset 0 0 0 2px #c5c8d0; }
+.rarity-legend i.r-raro{ background:#65c9ff; box-shadow: inset 0 0 0 2px #65c9ff; }
+.rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
+.rarity-legend i.r-lendario{ background:#ffd15b; box-shadow: inset 0 0 0 2px #ffd15b; }
+
+/* Responsivos */
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
 @media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{width:70px;font-size:20px}#openPack{min-width:0;width:100%}}
 </style>
@@ -598,6 +657,12 @@ main.shell::after{
  <div class="section-head">
   <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
   <span id="visibleCount" style="color:#7a5a2b;font-size:12px;font-style:italic">113 cromos</span>
+ </div>
+ <div class="rarity-legend" aria-label="Legenda de raridades">
+  <span><i class="r-comum"></i> Comum</span>
+  <span><i class="r-raro"></i> Raro</span>
+  <span><i class="r-epico"></i> Épico</span>
+  <span><i class="r-lendario"></i> Lendário</span>
  </div>
  <div class="grid" id="cards" aria-live="polite"></div>
  <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
@@ -840,7 +905,6 @@ async function handleUser(user) {
     const twitchName = user.user_metadata.custom_claims?.global_name || user.user_metadata.name || 'Twitch User';
     document.getElementById('userName').textContent = twitchName;
     if (user.user_metadata.avatar_url) document.getElementById('userAvatar').src = user.user_metadata.avatar_url;
-    
     await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() });
     await loadState();
   } else {
@@ -872,23 +936,18 @@ async function loadState() {
     const { data: cardsData, error: cardsError } = await supabaseClient
       .from('collections').select('card_id').eq('user_id', currentUser.id);
     if (cardsError) throw cardsError;
-    
     state.ownedCounts = {};
     cardsData.forEach(d => {
         const id = Number(d.card_id);
         state.ownedCounts[id] = (state.ownedCounts[id] || 0) + 1;
     });
-
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    
     const { data: packData, error: packError } = await supabaseClient
       .from('daily_packs').select('count')
       .eq('user_id', currentUser.id).eq('date', today).single();
-
     if (packError && packError.code !== 'PGRST116') throw packError;
     state.packs = packData ? (Number(packData.count) || 0) : 0;
-    
     render();
   } catch (e) {
     console.error('Erro detalhado:', e);
@@ -950,15 +1009,12 @@ function updateStats(){
  const n = Object.keys(state.ownedCounts)
    .filter(id => state.ownedCounts[id] > 0 && WRESTLER_MAP.has(Number(id)))
    .length;
- 
  $('ownedCount').innerHTML=`${n} <small>/ ${total}</small>`;
  const pct=total?Math.round(n/total*100):0;
  $('percent').textContent=pct+'%';
  $('progress').style.width=pct+'%';
- 
  const packsSafe = Number(state.packs) || 0;
  $('packsOpened').innerHTML = `${packsSafe} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
-
  const counts={};
  RARITIES.forEach(r=>counts[r]=0);
  Object.keys(state.ownedCounts).forEach(id=>{
@@ -967,13 +1023,11 @@ function updateStats(){
  });
  const totalByRarity={};
  wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
- 
  $('rarityBreakdown').innerHTML = RARITIES.map(r => {
     const got = counts[r], tot = totalByRarity[r] || 0;
     if(!tot) return '';
     return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#7a5a2b">${got}/${tot}</span></div>`;
  }).join('');
-
  updatePackButton();
 }
 
@@ -981,7 +1035,6 @@ function updatePackButton() {
   const btn = $('openPack');
   const packsSafe = Number(state.packs) || 0;
   const remaining = MAX_PACKS_PER_DAY - packsSafe;
-  
   if (remaining > 0) {
     btn.innerHTML = `✦ Abrir saqueta (${remaining})`;
     btn.classList.remove('disabled');
@@ -993,7 +1046,6 @@ function updatePackButton() {
   }
 }
 
-/* === RENDER CARD (agora com silhueta para os em falta) === */
 function renderCard(w){
  const qty = state.ownedCounts[w.id] || 0;
  const has = qty > 0;
@@ -1012,18 +1064,17 @@ function renderCard(w){
    art = `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
         onerror="this.remove();this.closest('.card').classList.remove('has-photo');">`;
  } else if(!has){
-   // silhueta cinzenta tracejada com "?" e sem nome
    art = `<div class="missing-silhouette"></div><div class="missing-q">?</div>`;
  } else {
    art = '';
  }
-  
+
  const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
  const brandImage = `img/${w.brand.toLowerCase()}.png`;
  const displayName = has ? w.name : '???';
  const displayNumber = has ? String(w.id).padStart(3,'0') : '—';
 
- return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" aria-label="${has?w.name:'Cromo em falta'}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
+ return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" data-rarity="${has ? w.rarity : 'missing'}" aria-label="${has?w.name:'Cromo em falta'}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
   <div class="card-art">
    ${art}
    ${has ? `<span class="belt">${w.belt}</span><span class="initials">${w.initials}</span>` : ''}
@@ -1043,7 +1094,6 @@ function renderCard(w){
  </button>`;
 }
 
-/* === RENDER com efeito de virar página (C) === */
 function render(){
  const q=norm($('search').value);
  const cat=norm($('category').value);
@@ -1089,17 +1139,14 @@ function render(){
   if(cf)cf.addEventListener('click',clearFilters);
  }else{
   grid.innerHTML=list.map((w, i) => {
-    // injecta --i para o stagger da animação de virar página
-    return renderCard(w).replace('class="card', `style="--i:${i}" class="card`);
+    return renderCard(w).replace('class="card', `style="--i:${i}; --rarity-color:${rarityColors[w.rarity]}" class="card`);
   }).join('');
   grid.querySelectorAll('.card').forEach(b=>{
    b.addEventListener('click',()=>openDetail(Number(b.dataset.id)));
   });
  }
 
- // efeito de virar página
  grid.classList.remove('turning');
- // forçar reflow para reiniciar a animação
  void grid.offsetWidth;
  grid.classList.add('turning');
  setTimeout(()=>grid.classList.remove('turning'), 800);
@@ -1125,10 +1172,10 @@ function openPack(){
 
  pending=pickPack();
  state.packs = packsSafe + 1;
- 
+
  const now = new Date();
  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
- 
+
  supabaseClient.from('daily_packs').upsert(
    { user_id: currentUser.id, date: today, count: state.packs },
    { onConflict: 'user_id,date' }
@@ -1158,11 +1205,9 @@ function openPack(){
   const timestamp = new Date().getTime();
   const finalImage = w.image + '?t=' + timestamp;
   const isDup = dupMap[i];
-
   const inner = w.image
    ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();this.parentElement.querySelector('.mini-initials').style.opacity=1;">`
    : '';
-
   return `<div class="mini ${isDup?'duplicate':''}" style="--rarity-color:${rarityColors[w.rarity]}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)" title="${isDup?'Já tens este cromo':'Cromo novo'}">
    ${inner}
    <span class="mini-initials" style="z-index:1;${w.image?'position:absolute;opacity:0':''}">${w.initials}</span>
@@ -1220,7 +1265,7 @@ function openDetail(id){
 
  const photoWrap=$('detailPhotoWrap');
  photoWrap.style.setProperty('--rarity-color',rarityColors[w.rarity]);
- 
+
  const timestamp = new Date().getTime();
  const finalImage = w.image + '?t=' + timestamp;
 
@@ -1301,7 +1346,7 @@ async function loadTrades() {
     .from('trades_with_usernames').select('*')
     .eq('receiver_id', currentUser.id).eq('status', 'pending');
   if (errRec) console.error(errRec);
-  
+
   if (received && received.length > 0) {
     receivedList.innerHTML = received.map(t => {
       const give = WRESTLER_MAP.get(t.receiver_card_id) || {name:'Desconhecido'};
