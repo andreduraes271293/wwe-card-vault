@@ -216,6 +216,87 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
   50%{opacity:.85;transform:scale(1.18)}
 }
 
+/* ===== DUPLICADO NA SAQUETA ===== */
+.mini.duplicate{
+  border-color:#6b7280 !important;
+  animation:cardBurstDup .78s cubic-bezier(.2,.9,.25,1.25) forwards;
+  animation-delay:var(--burst-delay,0ms);
+}
+@keyframes cardBurstDup{
+  0%{
+    opacity:0;
+    transform:translateY(60px) scale(.25) rotate(-8deg);
+    filter:brightness(.25) blur(4px);
+    box-shadow:0 4px 12px #0008;
+  }
+  40%{
+    opacity:1;
+    transform:translateY(-14px) scale(1.18) rotate(-6deg);
+    filter:brightness(1.2) blur(0);
+    box-shadow:0 4px 12px #0008,0 0 22px #6b7280,0 0 50px #6b7280;
+  }
+  55%{
+    transform:translateY(-6px) scale(1.08) rotate(4deg);
+  }
+  70%{
+    transform:translateY(-10px) scale(1.12) rotate(-3deg);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1) rotate(0);
+    filter:brightness(.85) blur(0);
+    box-shadow:0 4px 12px #0008,0 0 10px #6b7280;
+  }
+}
+
+.mini.duplicate.revealed::before{
+  content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;
+  background:radial-gradient(circle,#6b7280,transparent 70%);
+  opacity:.4;
+  animation:cardGlowDup 2.2s ease-in-out infinite;
+  animation-delay:calc(var(--burst-delay,0ms) + 760ms);
+}
+@keyframes cardGlowDup{
+  0%,100%{opacity:.2;transform:scale(1)}
+  50%{opacity:.5;transform:scale(1.1)}
+}
+
+.mini .dup-stamp{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%) rotate(-14deg) scale(0);
+  font-family:var(--site-font-heading);
+  font-size:11px;letter-spacing:1.5px;
+  font-weight:900;color:#fff;
+  background:#374151;
+  border:2px solid #9ca3af;
+  padding:3px 7px;border-radius:5px;
+  z-index:4;
+  text-shadow:0 1px 2px #000;
+  box-shadow:0 2px 8px #000a;
+  opacity:0;
+  pointer-events:none;
+}
+.mini.duplicate.revealed .dup-stamp{
+  animation:stampDrop .45s cubic-bezier(.2,.9,.25,1.25) forwards;
+  animation-delay:calc(var(--burst-delay,0ms) + 700ms);
+}
+@keyframes stampDrop{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.6)}
+  60%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}
+  100%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(1)}
+}
+
+.mini.duplicate .dup-veil{
+  position:absolute;inset:0;border-radius:7px;
+  background:#000a;z-index:3;opacity:0;
+  transition:opacity .3s ease;
+  pointer-events:none;
+}
+.mini.duplicate.revealed .dup-veil{
+  opacity:1;
+  transition-delay:calc(var(--burst-delay,0ms) + 500ms);
+}
+
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
@@ -587,7 +668,6 @@ async function loadState() {
       .single();
 
     if (packError && packError.code !== 'PGRST116') throw packError;
-    // Sanitiza contra null/undefined/NaN
     state.packs = packData ? (Number(packData.count) || 0) : 0;
     
     render();
@@ -625,9 +705,8 @@ function weightedPick(pool){
  return byRarity[available[available.length-1]][0];
 }
 
-/* ====== CORRIGIDO: usa sempre a lista completa → permite duplicados ====== */
+/* ====== Usa sempre a lista completa → permite duplicados ====== */
 function pickPack(){
- // Usa sempre a lista completa — duplicados entre saquetas são possíveis e desejáveis
  const pool = wrestlers;
  const picked = [];
  let guard = 0;
@@ -635,7 +714,6 @@ function pickPack(){
  while (picked.length < PACK_SIZE && guard < 500) {
    const w = weightedPick(pool);
    if (!w) break;
-   // Evita o MESMO cromo duas vezes na MESMA saqueta (mas permite entre saquetas)
    if (!picked.some(p => p.id === w.id)) picked.push(w);
    guard++;
  }
@@ -653,7 +731,6 @@ function toast(msg){
 
 function updateStats(){
  const total=wrestlers.length;
- // CORRIGIDO: conta apenas cromos distintos com qty > 0 e válidos no WRESTLER_MAP
  const n = Object.keys(state.ownedCounts)
    .filter(id => state.ownedCounts[id] > 0 && WRESTLER_MAP.has(Number(id)))
    .length;
@@ -663,7 +740,6 @@ function updateStats(){
  $('percent').textContent=pct+'%';
  $('progress').style.width=pct+'%';
  
- // CORRIGIDO: sanitiza state.packs para evitar NaN
  const packsSafe = Number(state.packs) || 0;
  $('packsOpened').innerHTML = `${packsSafe} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
 
@@ -818,10 +894,21 @@ function openPack(){
    { onConflict: 'user_id,date' }
  ).then(({error}) => { if(error) console.error(error); });
 
- const missing=wrestlers.filter(w=>!state.ownedCounts[w.id]);
- $('modalText').textContent=missing.length
-  ? `A tua saqueta contém ${pending.length} cromos. Guarda os que ainda não tens.`
-  : 'Já tens a coleção completa! Esta saqueta contém duplicados para reveres.';
+ // Descobrir duplicados (contando também repetições dentro da própria saqueta)
+ const seenInPack = new Set();
+ const dupMap = pending.map(w => {
+   const isDup = (state.ownedCounts[w.id] > 0) || seenInPack.has(w.id);
+   seenInPack.add(w.id);
+   return isDup;
+ });
+
+ const totalDup = dupMap.filter(Boolean).length;
+ const totalNew = pending.length - totalDup;
+ $('modalText').textContent = totalDup === pending.length
+  ? `Todos os ${pending.length} cromos são duplicados.`
+  : totalDup === 0
+    ? `A tua saqueta contém ${pending.length} cromos novos!`
+    : `${totalNew} novo${totalNew===1?'':'s'} + ${totalDup} duplicado${totalDup===1?'':'s'}.`;
 
  const bestRarity = pending.reduce((best,w)=>{
    return (rarityOrder[w.rarity] || 99) < (rarityOrder[best] || 99) ? w.rarity : best;
@@ -831,14 +918,17 @@ function openPack(){
  $('packCards').innerHTML=pending.map((w,i)=>{
   const timestamp = new Date().getTime();
   const finalImage = w.image + '?t=' + timestamp;
+  const isDup = dupMap[i];
 
   const inner = w.image
    ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();this.parentElement.querySelector('.mini-initials').style.opacity=1;">`
    : '';
-  return `<div class="mini" style="--rarity-color:${rarityColors[w.rarity]}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)">
+
+  return `<div class="mini ${isDup?'duplicate':''}" style="--rarity-color:${rarityColors[w.rarity]}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)" title="${isDup?'Já tens este cromo':'Cromo novo'}">
    ${inner}
    <span class="mini-initials" style="z-index:1;${w.image?'position:absolute;opacity:0':''}">${w.initials}</span>
    <span class="mini-rarity" style="color:${rarityColors[w.rarity]}">${w.rarity}</span>
+   ${isDup?'<div class="dup-veil"></div><div class="dup-stamp">DUPLICADO</div>':''}
   </div>`;
  }).join('');
 
