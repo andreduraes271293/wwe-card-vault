@@ -510,7 +510,7 @@ main.shell::after{
     0 0 34px #e8a80099;
 }
 
-/* O FEITIÇO DO LENDÁRIO: Brilho diagonal branco/dourado */
+/* O FEITIÇO DO LENDÁRIO: faixa fina de brilho que entra e sai fora da carta */
 .card[data-rarity="Lendário"]::after{
   content:'' !important;
   display:block !important;
@@ -525,8 +525,8 @@ main.shell::after{
     transparent 58%) !important;
   background-size:300% 100% !important;
   background-repeat:no-repeat !important;
-  background-position:100% 0 !important;   /* faixa fora, à esquerda */
-  mix-blend-mode:overlay !important;       /* realça em vez de lavar */
+  background-position:100% 0 !important;
+  mix-blend-mode:overlay !important;
   pointer-events:none !important;
   z-index:5 !important;
   animation:shineGold 5s ease-in-out infinite !important;
@@ -534,9 +534,8 @@ main.shell::after{
 }
 @keyframes shineGold{
   0%,65% { background-position:100% 0; }
-  100%   { background-position:0% 0; }   /* faixa fora, à direita */
+  100%   { background-position:0% 0; }
 }
-
 /* o painel do nome fica por cima do brilho */
 .card[data-rarity="Lendário"] .card-bottom{ z-index:11; }
 
@@ -925,17 +924,27 @@ const PACK_SIZE=3;
 const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
 const genderLabels={Male:'Masculino',Female:'Feminino'};
 const MAX_PACKS_PER_DAY = 3;
+const IMG_V = 1;  // sobe este número só quando trocares imagens
 
 let state = { ownedCounts: {}, packs: 0, recent: new Set() };
 let currentUser=null;
 let pending=[];
 let detailId=null;
 
+let lastUserId;  // undefined = ainda não inicializado
+
+function onUser(user){
+  const id = user?.id ?? null;
+  if (id === lastUserId) return;   // mesmo utilizador → ignora
+  lastUserId = id;
+  handleUser(user);
+}
+
 async function initAuth() {
   const { data: { session } } = await supabaseClient.auth.getSession();
-  handleUser(session?.user);
+  onUser(session?.user);
   supabaseClient.auth.onAuthStateChange((_event, session) => {
-    handleUser(session?.user);
+    setTimeout(() => onUser(session?.user), 0);  // evita deadlock com chamadas ao supabase
   });
 }
 
@@ -994,6 +1003,9 @@ async function loadState() {
       .eq('user_id', currentUser.id).eq('date', today).single();
     if (packError && packError.code !== 'PGRST116') throw packError;
     state.packs = packData ? (Number(packData.count) || 0) : 0;
+    const sig = JSON.stringify([state.ownedCounts, state.packs]);
+    if (sig === state.lastSig) return;
+    state.lastSig = sig;
     render();
   } catch (e) {
     console.error('Erro detalhado:', e);
@@ -1102,8 +1114,7 @@ function renderCard(w){
  if(isNew&&has)classes.push('new-badge');
  if(has&&w.image)classes.push('has-photo');
 
- const timestamp = new Date().getTime();
- const finalImage = w.image + '?t=' + timestamp;
+ const finalImage = w.image + '?v=' + IMG_V;
 
  let art;
  if(has && w.image){
@@ -1140,7 +1151,7 @@ function renderCard(w){
  </button>`;
 }
 
-function render(){
+function render(animate=false){
  const q=norm($('search').value);
  const cat=norm($('category').value);
  const gen=$('genderFilter').value;
@@ -1192,10 +1203,12 @@ function render(){
   });
  }
 
- grid.classList.remove('turning');
- void grid.offsetWidth;
- grid.classList.add('turning');
- setTimeout(()=>grid.classList.remove('turning'), 800);
+ if(animate){
+  grid.classList.remove('turning');
+  void grid.offsetWidth;
+  grid.classList.add('turning');
+  setTimeout(()=>grid.classList.remove('turning'), 800);
+ }
 
  updateStats();
 }
@@ -1206,7 +1219,7 @@ function clearFilters(){
  $('genderFilter').value='all';
  $('rarityFilter').value='all';
  $('ownership').value='all';
- render();
+ render(true);
 }
 
 function openPack(){
@@ -1248,8 +1261,7 @@ function openPack(){
  $('modalBox').style.setProperty('--pack-glow', (rarityColors[bestRarity] || '#e8a800') + '66');
 
  $('packCards').innerHTML=pending.map((w,i)=>{
-  const timestamp = new Date().getTime();
-  const finalImage = w.image + '?t=' + timestamp;
+  const finalImage = w.image + '?v=' + IMG_V;
   const isDup = dupMap[i];
   const inner = w.image
    ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();this.parentElement.querySelector('.mini-initials').style.opacity=1;">`
@@ -1312,8 +1324,7 @@ function openDetail(id){
  const photoWrap=$('detailPhotoWrap');
  photoWrap.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
 
- const timestamp = new Date().getTime();
- const finalImage = w.image + '?t=' + timestamp;
+ const finalImage = w.image + '?v=' + IMG_V;
 
  const art = (has&&w.image)
   ? `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();this.parentElement.querySelector('.initials').style.opacity=1;">`
@@ -1567,11 +1578,11 @@ function setupKeyboard(){
 }
 
 function init(){
- $('search').addEventListener('input',render);
- $('category').addEventListener('change',render);
- $('genderFilter').addEventListener('change',render);
- $('rarityFilter').addEventListener('change',render);
- $('ownership').addEventListener('change',render);
+ $('search').addEventListener('input',()=>render(true));
+ $('category').addEventListener('change',()=>render(true));
+ $('genderFilter').addEventListener('change',()=>render(true));
+ $('rarityFilter').addEventListener('change',()=>render(true));
+ $('ownership').addEventListener('change',()=>render(true));
  $('openPack').addEventListener('click',openPack);
  $('claimPack').addEventListener('click',claim);
  $('closeModal').addEventListener('click',closeModal);
