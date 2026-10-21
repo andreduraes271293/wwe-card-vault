@@ -96,13 +96,6 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .modal p{color:#b8bbc4;font-size:13px;line-height:1.5}
 .modal-actions{display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap}
 .toast-hint{font-size:11px;color:#828691;margin-top:14px}
-.pack-cards{display:flex;justify-content:center;gap:8px;margin:20px 0;perspective:800px}
-.mini{width:82px;aspect-ratio:3/4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--site-font-heading);font-size:24px;font-style:italic;border:2px solid var(--rarity-color);box-shadow:0 4px 12px #0008;transform:rotateY(180deg);opacity:0;transition:transform .55s,opacity .3s;position:relative;overflow:hidden}
-.mini .mini-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1}
-.mini .mini-initials{position:relative;z-index:1}
-.mini::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2}
-.mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
-.mini.revealed{transform:rotateY(0);opacity:1}
 .detail-backdrop{position:fixed;inset:0;background:#000d;display:none;place-items:center;padding:18px;z-index:45;backdrop-filter:blur(4px)}
 .detail-backdrop.show{display:grid;animation:fadeIn .2s ease}
 .detail{max-width:720px;width:100%;background:#181a20;border:2px solid var(--rarity-color);border-radius:18px;padding:22px;display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative}
@@ -142,8 +135,81 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .trade-arrow{color:#f59e0b;font-size:18px;font-weight:900}
 .trade-actions-sm{display:flex;gap:6px}
 .trade-actions-sm .btn{padding:6px 10px;font-size:11px}
+
+/* --- ABERTURA DE SAQUETA: BACKDROP RADIAL --- */
+.modal{overflow:hidden;position:relative}
+.modal::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 42%,var(--pack-glow,#ffd15b66) 0%,transparent 62%);
+  opacity:0;transition:opacity .6s ease;
+}
+.modal-backdrop.show .modal::before{opacity:1;animation:backdropPulse 2.6s ease-in-out infinite}
+@keyframes backdropPulse{
+  0%,100%{opacity:.55;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.06)}
+}
+.modal > *{position:relative;z-index:1}
+
+/* --- ABERTURA DE SAQUETA: PACK / MINI CARDS --- */
+.pack-cards{display:flex;justify-content:center;gap:10px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
+
+.mini{
+  width:82px;aspect-ratio:3/4;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--site-font-heading);font-size:24px;font-style:italic;
+  border:2px solid var(--rarity-color);
+  box-shadow:0 4px 12px #0008;
+  position:relative;overflow:visible;
+  /* estado inicial: no centro, pequeno, escuro e desfocado */
+  opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);
+  filter:brightness(.25) blur(4px);
+}
+.mini .mini-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;border-radius:7px;overflow:hidden}
+.mini .mini-initials{position:relative;z-index:1}
+.mini::after{content:'';position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2;pointer-events:none}
+.mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
+
+/* burst: carta "explode" de baixo do centro para o lugar */
+.mini.revealed{
+  animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;
+  animation-delay:var(--burst-delay,0ms);
+}
+@keyframes cardBurst{
+  0%{
+    opacity:0;
+    transform:translateY(60px) scale(.25) rotate(-8deg);
+    filter:brightness(.25) blur(4px);
+    box-shadow:0 4px 12px #0008;
+  }
+  55%{
+    opacity:1;
+    transform:translateY(-10px) scale(1.14) rotate(3deg);
+    filter:brightness(1.4) blur(0);
+    box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1) rotate(0);
+    filter:brightness(1) blur(0);
+    box-shadow:0 4px 12px #0008,0 0 14px var(--rarity-color),0 0 34px color-mix(in srgb,var(--rarity-color) 55%,transparent);
+  }
+}
+
+/* glow contínuo na cor da raridade depois de revelada */
+.mini.revealed::before{
+  content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;
+  background:radial-gradient(circle,var(--rarity-color),transparent 70%);
+  opacity:.5;
+  animation:cardGlow 2.2s ease-in-out infinite;
+  animation-delay:calc(var(--burst-delay,0ms) + 760ms);
+}
+@keyframes cardGlow{
+  0%,100%{opacity:.3;transform:scale(1)}
+  50%{opacity:.85;transform:scale(1.18)}
+}
+
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
 @media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{width:70px;font-size:20px}}
 </style>
@@ -184,7 +250,6 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
    <option value="all">Todas as categorias</option>
    <option value="RAW">RAW</option>
    <option value="SmackDown">SmackDown</option>
-   <option value="RAW">RAW</option>
    <option value="Legends">Legends</option>
    <option value="Free Agent">Free Agent</option>
   </select>
@@ -304,7 +369,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= DADOS (Lista Completa) ================= */
 const wrestlers = [
- // LENDÁRIOS (IDs 1 a 12)
+ // LENDÁRIOS (IDs 1 a 11)
  {id:1,   name:'John Cena',        initials:'CENA',  brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
  {id:2,   name:'Rey Mysterio',     initials:'REY',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/rey-mysterio.png'},
  {id:3,   name:'Becky Lynch',      initials:'BECKY', brand:'RAW',       rarity:'Lendário', gender:'Female', belt:'★', image:'img/becky-lynch.png'},
@@ -316,9 +381,9 @@ const wrestlers = [
  {id:9,   name:'Liv Morgan',       initials:'LIV',   brand:'RAW',       rarity:'Lendário', gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
  {id:10,  name:'Rhea Ripley',      initials:'MAMI',  brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
  {id:11,  name:'Randy Orton',     initials:'RKO',   brand:'SmackDown', rarity:'Lendário', gender:'Male', belt:'★', image:'img/randy-orton.png'},
- {id:12,  name:'Sami Zayn',       initials:'SAMI',  brand:'SmackDown', rarity:'Lendário', gender:'Male', belt:'♛', image:'img/sami-zayn.png'},
-
- // ÉPICOS (IDs 13 a 42)
+ 
+ // ÉPICOS (IDs 12 a 42)
+ {id:12,  name:'Sami Zayn',       initials:'SAMI',  brand:'SmackDown', rarity:'Épico', gender:'Male', belt:'♛', image:'img/sami-zayn.png'},
  {id:13,  name:'Jacob Fatu',       initials:'FATU',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/jacob-fatu.png'},
  {id:14,  name:'Bayley',           initials:'BAY',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/bayley.png'},
  {id:15,  name:'Stephanie Vaquer', initials:'STEPH', brand:'SmackDown', rarity:'Épico',    gender:'Female', belt:'♛', image:'img/stephanie-vaquer.png'},
@@ -503,7 +568,6 @@ async function loadState() {
         state.ownedCounts[id] = (state.ownedCounts[id] || 0) + 1;
     });
 
-    // CORREÇÃO DO FUSO HORÁRIO
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     
@@ -593,7 +657,6 @@ function updateStats(){
  const totalByRarity={};
  wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
  
- // AQUI ESTÁ A ALTERAÇÃO PARA LINHA A LINHA
  $('rarityBreakdown').innerHTML = RARITIES.map(r => {
     const got = counts[r], tot = totalByRarity[r] || 0;
     if(!tot) return '';
@@ -680,7 +743,6 @@ function render(){
   return true;
  });
 
- // ORDENAÇÃO: Raridade (Lendário -> Comum) e depois ID
  list.sort((a, b) => {
    const rarA = rarityOrder[norm(a.rarity)] || 99;
    const rarB = rarityOrder[norm(b.rarity)] || 99;
@@ -740,14 +802,20 @@ function openPack(){
   ? `A tua saqueta contém ${pending.length} cromos. Guarda os que ainda não tens.`
   : 'Já tens a coleção completa! Esta saqueta contém duplicados para reveres.';
 
- $('packCards').innerHTML=pending.map(w=>{
+ // Define a cor do backdrop com base na melhor raridade da saqueta
+ const bestRarity = pending.reduce((best,w)=>{
+   return (rarityOrder[w.rarity] || 99) < (rarityOrder[best] || 99) ? w.rarity : best;
+ }, 'Comum');
+ $('modalBox').style.setProperty('--pack-glow', (rarityColors[bestRarity] || '#ffd15b') + '66');
+
+ $('packCards').innerHTML=pending.map((w,i)=>{
   const timestamp = new Date().getTime();
   const finalImage = w.image + '?t=' + timestamp;
 
   const inner = w.image
    ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();this.parentElement.querySelector('.mini-initials').style.opacity=1;">`
    : '';
-  return `<div class="mini" style="--rarity-color:${rarityColors[w.rarity]}; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)">
+  return `<div class="mini" style="--rarity-color:${rarityColors[w.rarity]}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)">
    ${inner}
    <span class="mini-initials" style="z-index:1;${w.image?'position:absolute;opacity:0':''}">${w.initials}</span>
    <span class="mini-rarity" style="color:${rarityColors[w.rarity]}">${w.rarity}</span>
@@ -759,7 +827,7 @@ function openPack(){
 
  requestAnimationFrame(()=>{
   $('packCards').querySelectorAll('.mini').forEach((el,i)=>{
-   setTimeout(()=>el.classList.add('revealed'),120+i*160);
+   setTimeout(()=>el.classList.add('revealed'), 220 + i*260);
   });
  });
  updateStats();
@@ -790,6 +858,8 @@ function claim(){
 
 function closeModal(){
  $('modalBackdrop').classList.remove('show');
+ $('packCards').querySelectorAll('.mini').forEach(el=>el.classList.remove('revealed'));
+ $('modalBox').style.removeProperty('--pack-glow');
  pending=[];
 }
 
