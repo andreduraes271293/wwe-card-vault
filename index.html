@@ -35,7 +35,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0}
 .search{flex:1;min-width:180px;background:#17191f;border:1px solid #343740;color:#fff;padding:12px 14px;border-radius:9px;font:inherit}
 .search:focus,.filter:focus{outline:2px solid #ffd15b;outline-offset:2px}
-.filter{background:#17191f;color:#f7f7f8;border:1px solid #343740;padding:12px;border-radius:9px;font:inherit}
+.filter{background:#17191f;color:#f7f7f8;border:1px solid #343740;padding:12px;border-radius:9px;font:inherit;min-width:150px}
 .btn{border:0;border-radius:9px;padding:12px 16px;background:var(--site-primary);color:white;cursor:pointer;font:inherit;font-weight:800;transition:transform .15s,filter .15s;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
 .btn:focus-visible{outline:2px solid #ffd15b;outline-offset:2px}
@@ -49,6 +49,17 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .btn.disabled:hover{filter:none;transform:none}
 .btn.trade-btn{background:#f59e0b;color:#18130b;}
 .btn.trade-btn:hover{background:#fbbf24;}
+
+/* Botão abrir saqueta: largura fixa para não saltar */
+#openPack{
+  min-width: 210px;
+  white-space: nowrap;
+  justify-content: center;
+}
+#openPack.disabled{
+  min-width: 210px;
+}
+
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 #c8102e66}50%{box-shadow:0 0 0 8px #c8102e00}}
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
 .section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;letter-spacing:.7px}
@@ -160,7 +171,6 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
   border:2px solid var(--rarity-color);
   box-shadow:0 4px 12px #0008;
   position:relative;overflow:visible;
-  /* estado inicial: no centro, pequeno, escuro e desfocado */
   opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);
   filter:brightness(.25) blur(4px);
 }
@@ -169,7 +179,6 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .mini::after{content:'';position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2;pointer-events:none}
 .mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
 
-/* burst: carta "explode" de baixo do centro para o lugar */
 .mini.revealed{
   animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;
   animation-delay:var(--burst-delay,0ms);
@@ -195,7 +204,6 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
   }
 }
 
-/* glow contínuo na cor da raridade depois de revelada */
 .mini.revealed::before{
   content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;
   background:radial-gradient(circle,var(--rarity-color),transparent 70%);
@@ -211,7 +219,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
-@media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{width:70px;font-size:20px}}
+@media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{width:70px;font-size:20px}#openPack{min-width:0;width:100%}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -270,7 +278,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
    <option value="owned">Na coleção</option>
    <option value="missing">Em falta</option>
   </select>
-  <button class="btn pulse" id="openPack">✦ Abrir saqueta</button>
+  <button class="btn pulse" id="openPack">✦ Abrir saqueta (3)</button>
   <button class="btn trade-btn" id="openTradeBtn" style="display:none">🔄 Trocas</button>
  </div>
  <div class="section-head">
@@ -369,7 +377,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= DADOS (Lista Completa) ================= */
 const wrestlers = [
- // LENDÁRIOS (IDs 1 a 11)
+ // LENDÁRIOS (IDs 1 a 9)
  {id:1,   name:'John Cena',        initials:'CENA',  brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
  {id:2,   name:'Rey Mysterio',     initials:'REY',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/rey-mysterio.png'},
  {id:3,   name:'Becky Lynch',      initials:'BECKY', brand:'RAW',       rarity:'Lendário', gender:'Female', belt:'★', image:'img/becky-lynch.png'},
@@ -378,11 +386,11 @@ const wrestlers = [
  {id:6,   name:'Roman Reigns',     initials:'OTC',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'♛', image:'img/roman-reigns.png'},
  {id:7,   name:'Seth Rollins',     initials:'SETH',  brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
  {id:8,   name:'Cody Rhodes',      initials:'CODY',  brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
- {id:9,   name:'Liv Morgan',       initials:'LIV',   brand:'RAW',       rarity:'Lendário', gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
- {id:10,  name:'Rhea Ripley',      initials:'MAMI',  brand:'SmackDown', rarity:'Lendário', gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
- {id:11,  name:'Randy Orton',     initials:'RKO',   brand:'SmackDown', rarity:'Lendário', gender:'Male', belt:'★', image:'img/randy-orton.png'},
+ {id:9,  name:'Randy Orton',     initials:'RKO',   brand:'SmackDown', rarity:'Lendário', gender:'Male', belt:'★', image:'img/randy-orton.png'},
  
- // ÉPICOS (IDs 12 a 42)
+ // ÉPICOS (IDs 10 a 42)
+ {id:10,  name:'Rhea Ripley',      initials:'MAMI',  brand:'SmackDown', rarity:'Épico', gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
+ {id:11,  name:'Liv Morgan',       initials:'LIV',   brand:'RAW',       rarity:'Épico', gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
  {id:12,  name:'Sami Zayn',       initials:'SAMI',  brand:'SmackDown', rarity:'Épico', gender:'Male', belt:'♛', image:'img/sami-zayn.png'},
  {id:13,  name:'Jacob Fatu',       initials:'FATU',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   belt:'✦', image:'img/jacob-fatu.png'},
  {id:14,  name:'Bayley',           initials:'BAY',   brand:'RAW',       rarity:'Épico',    gender:'Female', belt:'✦', image:'img/bayley.png'},
@@ -579,7 +587,8 @@ async function loadState() {
       .single();
 
     if (packError && packError.code !== 'PGRST116') throw packError;
-    state.packs = packData ? Number(packData.count) : 0;
+    // Sanitiza contra null/undefined/NaN
+    state.packs = packData ? (Number(packData.count) || 0) : 0;
     
     render();
   } catch (e) {
@@ -616,17 +625,21 @@ function weightedPick(pool){
  return byRarity[available[available.length-1]][0];
 }
 
+/* ====== CORRIGIDO: usa sempre a lista completa → permite duplicados ====== */
 function pickPack(){
- const missing=wrestlers.filter(w=>!state.ownedCounts[w.id]);
- const pool=missing.length>=PACK_SIZE?missing:wrestlers;
- const picked=new Set();
- let guard=0;
- while(picked.size<PACK_SIZE&&guard<pool.length*10){
-  const w=weightedPick(pool.filter(x=>!picked.has(x.id)));
-  if(w)picked.add(w);
-  guard++;
+ // Usa sempre a lista completa — duplicados entre saquetas são possíveis e desejáveis
+ const pool = wrestlers;
+ const picked = [];
+ let guard = 0;
+
+ while (picked.length < PACK_SIZE && guard < 500) {
+   const w = weightedPick(pool);
+   if (!w) break;
+   // Evita o MESMO cromo duas vezes na MESMA saqueta (mas permite entre saquetas)
+   if (!picked.some(p => p.id === w.id)) picked.push(w);
+   guard++;
  }
- return [...picked];
+ return picked;
 }
 
 let toastTimer;
@@ -640,19 +653,25 @@ function toast(msg){
 
 function updateStats(){
  const total=wrestlers.length;
- const n = Object.keys(state.ownedCounts).length;
+ // CORRIGIDO: conta apenas cromos distintos com qty > 0 e válidos no WRESTLER_MAP
+ const n = Object.keys(state.ownedCounts)
+   .filter(id => state.ownedCounts[id] > 0 && WRESTLER_MAP.has(Number(id)))
+   .length;
  
  $('ownedCount').innerHTML=`${n} <small>/ ${total}</small>`;
  const pct=total?Math.round(n/total*100):0;
  $('percent').textContent=pct+'%';
  $('progress').style.width=pct+'%';
- $('packsOpened').innerHTML = `${state.packs} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
+ 
+ // CORRIGIDO: sanitiza state.packs para evitar NaN
+ const packsSafe = Number(state.packs) || 0;
+ $('packsOpened').innerHTML = `${packsSafe} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
 
  const counts={};
  RARITIES.forEach(r=>counts[r]=0);
  Object.keys(state.ownedCounts).forEach(id=>{
      const w=WRESTLER_MAP.get(Number(id));
-     if(w) counts[w.rarity]++;
+     if(w && state.ownedCounts[id] > 0) counts[w.rarity]++;
  });
  const totalByRarity={};
  wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
@@ -668,7 +687,8 @@ function updateStats(){
 
 function updatePackButton() {
   const btn = $('openPack');
-  const remaining = MAX_PACKS_PER_DAY - state.packs;
+  const packsSafe = Number(state.packs) || 0;
+  const remaining = MAX_PACKS_PER_DAY - packsSafe;
   
   if (remaining > 0) {
     btn.innerHTML = `✦ Abrir saqueta (${remaining})`;
@@ -781,13 +801,14 @@ function clearFilters(){
 }
 
 function openPack(){
- if(state.packs >= MAX_PACKS_PER_DAY) {
+ const packsSafe = Number(state.packs) || 0;
+ if(packsSafe >= MAX_PACKS_PER_DAY) {
    toast('Já abriste as 3 saquetas de hoje. Volta amanhã!');
    return;
  }
 
  pending=pickPack();
- state.packs++;
+ state.packs = packsSafe + 1;
  
  const now = new Date();
  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -802,7 +823,6 @@ function openPack(){
   ? `A tua saqueta contém ${pending.length} cromos. Guarda os que ainda não tens.`
   : 'Já tens a coleção completa! Esta saqueta contém duplicados para reveres.';
 
- // Define a cor do backdrop com base na melhor raridade da saqueta
  const bestRarity = pending.reduce((best,w)=>{
    return (rarityOrder[w.rarity] || 99) < (rarityOrder[best] || 99) ? w.rarity : best;
  }, 'Comum');
