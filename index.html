@@ -50,23 +50,16 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .btn.trade-btn{background:#f59e0b;color:#18130b;}
 .btn.trade-btn:hover{background:#fbbf24;}
 
-/* Botão abrir saqueta: largura fixa para não saltar */
-#openPack{
-  min-width: 210px;
-  white-space: nowrap;
-  justify-content: center;
-}
-#openPack.disabled{
-  min-width: 210px;
-}
+#openPack{min-width:210px;white-space:nowrap;justify-content:center;}
+#openPack.disabled{min-width:210px;}
 
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 #c8102e66}50%{box-shadow:0 0 0 8px #c8102e00}}
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
 .section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;letter-spacing:.7px}
 .section-head p{color:#9da1ab;font-size:12px;margin:5px 0 0}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;perspective:1600px;}
 
-/* --- CARTAS --- */
+/* --- CARTAS (base) --- */
 .card{position:relative;aspect-ratio:3/4.15;border-radius:calc(12px * var(--site-radius-scale));overflow:hidden;border:2px solid var(--rarity-color, #ffffff26);background:#1c1e25;cursor:pointer;text-align:left;color:white;padding:0;min-width:0;box-shadow:0 8px 20px #0004;transition:transform .18s,border-color .18s,box-shadow .18s;font:inherit}
 .card:hover{transform:translateY(-4px);border-color:var(--rarity-color, #ffffff);box-shadow:0 14px 30px #0006, 0 0 15px var(--rarity-color)}
 .card:focus-visible{outline:2px solid var(--rarity-color);outline-offset:3px}
@@ -161,9 +154,8 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 }
 .modal > *{position:relative;z-index:1}
 
-/* --- ABERTURA DE SAQUETA: PACK / MINI CARDS --- */
+/* --- MINI CARDS --- */
 .pack-cards{display:flex;justify-content:center;gap:10px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
-
 .mini{
   width:82px;aspect-ratio:3/4;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
@@ -178,127 +170,368 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .mini .mini-initials{position:relative;z-index:1}
 .mini::after{content:'';position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2;pointer-events:none}
 .mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
-
-.mini.revealed{
-  animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;
-  animation-delay:var(--burst-delay,0ms);
-}
+.mini.revealed{animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
 @keyframes cardBurst{
-  0%{
-    opacity:0;
-    transform:translateY(60px) scale(.25) rotate(-8deg);
-    filter:brightness(.25) blur(4px);
-    box-shadow:0 4px 12px #0008;
-  }
-  55%{
-    opacity:1;
-    transform:translateY(-10px) scale(1.14) rotate(3deg);
-    filter:brightness(1.4) blur(0);
-    box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);
-  }
-  100%{
-    opacity:1;
-    transform:translateY(0) scale(1) rotate(0);
-    filter:brightness(1) blur(0);
-    box-shadow:0 4px 12px #0008,0 0 14px var(--rarity-color),0 0 34px color-mix(in srgb,var(--rarity-color) 55%,transparent);
-  }
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  55%{opacity:1;transform:translateY(-10px) scale(1.14) rotate(3deg);filter:brightness(1.4) blur(0);box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(1) blur(0);box-shadow:0 4px 12px #0008,0 0 14px var(--rarity-color),0 0 34px color-mix(in srgb,var(--rarity-color) 55%,transparent);}
 }
+.mini.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,var(--rarity-color),transparent 70%);opacity:.5;animation:cardGlow 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
+@keyframes cardGlow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.85;transform:scale(1.18)}}
 
-.mini.revealed::before{
-  content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;
-  background:radial-gradient(circle,var(--rarity-color),transparent 70%);
-  opacity:.5;
-  animation:cardGlow 2.2s ease-in-out infinite;
-  animation-delay:calc(var(--burst-delay,0ms) + 760ms);
-}
-@keyframes cardGlow{
-  0%,100%{opacity:.3;transform:scale(1)}
-  50%{opacity:.85;transform:scale(1.18)}
-}
-
-/* ===== DUPLICADO NA SAQUETA ===== */
-.mini.duplicate{
-  border-color:#6b7280 !important;
-  animation:cardBurstDup .78s cubic-bezier(.2,.9,.25,1.25) forwards;
-  animation-delay:var(--burst-delay,0ms);
-}
+/* Duplicados na saqueta */
+.mini.duplicate{border-color:#6b7280 !important;animation:cardBurstDup .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
 @keyframes cardBurstDup{
-  0%{
-    opacity:0;
-    transform:translateY(60px) scale(.25) rotate(-8deg);
-    filter:brightness(.25) blur(4px);
-    box-shadow:0 4px 12px #0008;
-  }
-  40%{
-    opacity:1;
-    transform:translateY(-14px) scale(1.18) rotate(-6deg);
-    filter:brightness(1.2) blur(0);
-    box-shadow:0 4px 12px #0008,0 0 22px #6b7280,0 0 50px #6b7280;
-  }
-  55%{
-    transform:translateY(-6px) scale(1.08) rotate(4deg);
-  }
-  70%{
-    transform:translateY(-10px) scale(1.12) rotate(-3deg);
-  }
-  100%{
-    opacity:1;
-    transform:translateY(0) scale(1) rotate(0);
-    filter:brightness(.85) blur(0);
-    box-shadow:0 4px 12px #0008,0 0 10px #6b7280;
-  }
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  40%{opacity:1;transform:translateY(-14px) scale(1.18) rotate(-6deg);filter:brightness(1.2) blur(0);box-shadow:0 4px 12px #0008,0 0 22px #6b7280,0 0 50px #6b7280;}
+  55%{transform:translateY(-6px) scale(1.08) rotate(4deg);}
+  70%{transform:translateY(-10px) scale(1.12) rotate(-3deg);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(.85) blur(0);box-shadow:0 4px 12px #0008,0 0 10px #6b7280;}
 }
+.mini.duplicate.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,#6b7280,transparent 70%);opacity:.4;animation:cardGlowDup 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
+@keyframes cardGlowDup{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
+.mini .dup-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-14deg) scale(0);font-family:var(--site-font-heading);font-size:11px;letter-spacing:1.5px;font-weight:900;color:#fff;background:#374151;border:2px solid #9ca3af;padding:3px 7px;border-radius:5px;z-index:4;text-shadow:0 1px 2px #000;box-shadow:0 2px 8px #000a;opacity:0;pointer-events:none;}
+.mini.duplicate.revealed .dup-stamp{animation:stampDrop .45s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:calc(var(--burst-delay,0ms) + 700ms);}
+@keyframes stampDrop{0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.6)}60%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}100%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(1)}}
+.mini.duplicate .dup-veil{position:absolute;inset:0;border-radius:7px;background:#000a;z-index:3;opacity:0;transition:opacity .3s ease;pointer-events:none;}
+.mini.duplicate.revealed .dup-veil{opacity:1;transition-delay:calc(var(--burst-delay,0ms) + 500ms);}
 
-.mini.duplicate.revealed::before{
-  content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;
-  background:radial-gradient(circle,#6b7280,transparent 70%);
-  opacity:.4;
-  animation:cardGlowDup 2.2s ease-in-out infinite;
-  animation-delay:calc(var(--burst-delay,0ms) + 760ms);
+/* ============================================================
+   TEMA CADERNETA / ÁLBUM DE CROMOS FÍSICO
+   ============================================================ */
+body{
+  background:
+    radial-gradient(ellipse at 50% 0%, #2b1c10 0%, #150d07 60%, #0a0604 100%),
+    repeating-linear-gradient(90deg, #0000 0 40px, #ffffff05 40px 41px);
 }
-@keyframes cardGlowDup{
-  0%,100%{opacity:.2;transform:scale(1)}
-  50%{opacity:.5;transform:scale(1.1)}
+main.shell{
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),
+    radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);
+  border: 1px solid #b8a070;
+  border-left: 14px solid #6b4a2b;
+  border-radius: 8px 14px 14px 8px;
+  box-shadow:
+    0 20px 60px #000c,
+    inset 0 0 80px #a07c4a40,
+    inset 6px 0 12px #00000060;
+  position: relative;
+  color: #2b1d0e;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  padding: 32px clamp(18px, 4vw, 48px) 48px;
+  max-width: 1180px;
 }
-
-.mini .dup-stamp{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(-14deg) scale(0);
+main.shell::before{
+  content:'';
+  position:absolute;
+  left:-11px; top:30px; bottom:30px;
+  width:8px;
+  background-image: radial-gradient(circle, #2b1d0e 0 3px, transparent 3.5px);
+  background-size: 8px 38px;
+  background-repeat: repeat-y;
+  background-position: center top;
+  opacity:.8;
+  pointer-events:none;
+}
+main.shell::after{
+  content:'★ ÁLBUM OFICIAL ★';
+  position:absolute;
+  top:-14px; right:22px;
+  background:#c8102e;
+  color:#fff;
   font-family:var(--site-font-heading);
-  font-size:11px;letter-spacing:1.5px;
-  font-weight:900;color:#fff;
-  background:#374151;
-  border:2px solid #9ca3af;
-  padding:3px 7px;border-radius:5px;
-  z-index:4;
-  text-shadow:0 1px 2px #000;
-  box-shadow:0 2px 8px #000a;
-  opacity:0;
-  pointer-events:none;
-}
-.mini.duplicate.revealed .dup-stamp{
-  animation:stampDrop .45s cubic-bezier(.2,.9,.25,1.25) forwards;
-  animation-delay:calc(var(--burst-delay,0ms) + 700ms);
-}
-@keyframes stampDrop{
-  0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.6)}
-  60%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}
-  100%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(1)}
+  font-size:12px;
+  letter-spacing:2px;
+  padding:6px 14px;
+  border-radius:6px;
+  box-shadow:0 4px 10px #0008;
+  transform:rotate(2deg);
 }
 
-.mini.duplicate .dup-veil{
-  position:absolute;inset:0;border-radius:7px;
-  background:#000a;z-index:3;opacity:0;
-  transition:opacity .3s ease;
-  pointer-events:none;
+/* Stats em etiquetas */
+.stat{
+  background:#fffaf0;
+  border:1px solid #c9b78a;
+  border-radius:6px;
+  box-shadow: 2px 2px 0 #c9b78a80;
+  color:#2b1d0e;
+  position:relative;
 }
-.mini.duplicate.revealed .dup-veil{
-  opacity:1;
-  transition-delay:calc(var(--burst-delay,0ms) + 500ms);
+.stat::before{
+  content:'';
+  position:absolute;
+  top:-8px; left:50%;
+  transform:translateX(-50%) rotate(-2deg);
+  width:60px; height:16px;
+  background:#f4d77a80;
+  border-left:1px dashed #b89a4a;
+  border-right:1px dashed #b89a4a;
+  opacity:.9;
+}
+.stat label{ color:#7a5a2b; }
+.stat strong{ color:#2b1d0e; }
+.stat small{ color:#7a5a2b; }
+.progress-track{ background:#e2d3b1; }
+.progress-fill{ background: linear-gradient(90deg,#8a0f20,#c8102e,#e0a010); }
+
+/* Toolbar em papel */
+.search, .filter{
+  background:#fffaf0;
+  border:1px solid #b8a070;
+  color:#2b1d0e;
+  box-shadow: inset 1px 1px 2px #00000010;
+}
+.search::placeholder{ color:#9b8a6a; }
+.search:focus,.filter:focus{
+  outline:2px solid #c8102e;
+  outline-offset:1px;
 }
 
+.section-head h2{
+  color:#5a1a12;
+  text-shadow: 1px 1px 0 #e8d9b8;
+  letter-spacing:1.5px;
+}
+.section-head p{ color:#7a5a2b; }
+
+/* ============ CROMOS COMO "COLADOS" NA PÁGINA ============ */
+.grid{ gap: 22px 18px; padding-top: 8px; }
+
+.card{
+  background:#fffaf0;
+  border: 3px solid #fffaf0;
+  border-radius: 3px;
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 1px #c9b78a;
+  padding: 6px 6px 46px;
+  overflow: visible;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover{
+  transform: translateY(-3px) rotate(-.6deg);
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 1px #c9b78a;
+}
+
+/* moldura interna do cromo */
+.card-art{
+  position: relative;
+  inset: auto;
+  height: 100%;
+  border-radius: 2px;
+  border: 1px solid #d8c8a0;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px var(--rarity-color);
+}
+
+/* fita adesiva */
+.card::before{
+  content:'';
+  position:absolute;
+  top:-9px; left:50%;
+  transform:translateX(-50%) rotate(-3deg);
+  width:62px; height:18px;
+  background: linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;
+  border-right:1px dashed #b89a4a;
+  box-shadow:0 1px 3px #0004;
+  z-index:10;
+  pointer-events:none;
+  transition: transform .18s ease;
+}
+.card:hover::before{ transform:translateX(-50%) rotate(1deg); }
+
+/* rodapé impresso do cromo */
+.card-bottom{
+  position:absolute;
+  left:6px; right:6px; bottom:6px;
+  padding: 8px 8px 6px;
+  background: #fffaf0;
+  border-top: 1px dashed #b8a070;
+  color: #2b1d0e;
+}
+.card-number{ color:#8a6a2b; }
+.card-name{
+  color:#2b1d0e;
+  font-family: var(--site-font-heading);
+  text-shadow: none;
+}
+.card-meta{ color:#7a5a2b; }
+.card-meta .rarity{ color:#8a0f20; font-weight: 900; }
+.gender-badge{ color:#7a5a2b; }
+
+/* Badge "NA COLEÇÃO" como carimbo */
+.card.owned:after{
+  content:'✓ COLADO';
+  background:#fffaf0;
+  color:#8a0f20;
+  border:2px solid #8a0f20;
+  font-family: var(--site-font-heading);
+  transform: rotate(-6deg);
+  box-shadow:0 2px 6px #0003;
+  padding:4px 7px;
+  letter-spacing:.5px;
+}
+.card.new-badge:before{
+  content:'NOVO!';
+  background:#e0a010;
+  color:#2b1d0e;
+  border-radius: 50% 40% 55% 45%;
+  transform: rotate(-12deg);
+  font-family: var(--site-font-heading);
+  padding:6px 8px;
+  z-index:11;
+}
+/* a fita adesiva passa a ter z-index inferior ao novo badge para não tapar */
+.card::before{ z-index:9; }
+
+.dup-badge{
+  background:#8a0f20;
+  color:#fff;
+  border:2px solid #fffaf0;
+  border-radius:50%;
+  width:32px; height:32px;
+  display:grid;
+  place-items:center;
+  bottom: 52px; right: 8px;
+  font-size:11px;
+  box-shadow: 0 2px 6px #0006;
+}
+
+.initials{ color:#fff; text-shadow: 0 3px 0 #0009, 0 0 18px #fff6; }
+
+/* ============ CROMOS EM FALTA (B) ============ */
+/* Silhueta cinzenta tracejada com "?" em vez de imagem */
+.card.missing{
+  background:#f0e6cf;
+}
+.card.missing .card-art{
+  background:
+    repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px);
+  box-shadow: inset 0 0 0 2px #b8a070;
+  filter: grayscale(1);
+}
+.card.missing .card-art:before{
+  background: repeating-linear-gradient(135deg, #0000 0 14px, #00000010 14px 16px);
+}
+.card.missing .card-art:after{
+  background: linear-gradient(180deg,#0000 40%,#c9b78a99 100%);
+}
+.card.missing .initials,
+.card.missing .belt{
+  opacity: 0 !important;
+  pointer-events: none;
+}
+/* "?" gigante no centro */
+.card.missing .card-art::after{
+  content: none; /* anula o gradiente original */
+}
+.card.missing .card-art > .missing-q{
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-family: var(--site-font-heading);
+  font-size: clamp(48px, 8vw, 92px);
+  color: #b8a070;
+  text-shadow: 0 3px 0 #ffffff80;
+  z-index: 3;
+  pointer-events: none;
+}
+/* "silhueta" de um lutador por baixo do "?" */
+.card.missing .card-art > .missing-silhouette{
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 30% 22% at 50% 30%, #b8a070 0 100%, transparent 101%),
+    radial-gradient(ellipse 46% 26% at 50% 62%, #b8a070 0 100%, transparent 101%),
+    radial-gradient(ellipse 40% 20% at 50% 92%, #b8a070 0 100%, transparent 101%);
+  filter: blur(.4px);
+  opacity: .55;
+  z-index: 2;
+  pointer-events: none;
+}
+/* nome fica escondido nos em falta (mostra "???") */
+.card.missing .card-name{
+  color:#a89070;
+  font-style: italic;
+  letter-spacing: 1px;
+}
+.card.missing .card-number{ color:#a89070; }
+
+/* ============ EFEITO VIRAR DE PÁGINA (C) ============ */
+@keyframes turnPage{
+  0%   { opacity: 0; transform: rotateY(-14deg) translateX(-24px); filter: blur(2px); }
+  60%  { opacity: 1; transform: rotateY(4deg)  translateX(6px);  filter: blur(0);  }
+  100% { opacity: 1; transform: rotateY(0)    translateX(0);     filter: blur(0);  }
+}
+.grid.turning .card{
+  animation: turnPage .5s cubic-bezier(.2,.8,.2,1) both;
+  transform-origin: left center;
+  /* stagger via --i */
+  animation-delay: calc(var(--i, 0) * 12ms);
+}
+/* véu de "página a virar" sobre a grelha */
+.grid{ position: relative; }
+.grid.turning::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg, #fdf6e3cc 0%, #fdf6e300 60%);
+  transform-origin: left center;
+  animation: pageVeil .55s ease-out both;
+  pointer-events:none;
+  z-index: 5;
+  border-radius: 6px;
+}
+@keyframes pageVeil{
+  0%   { opacity:0; transform: scaleX(0); }
+  40%  { opacity:.9; transform: scaleX(1); }
+  100% { opacity:0; transform: scaleX(1); }
+}
+
+/* Modais também em papel */
+.modal, .detail, .trade-modal{
+  background: #fffaf0 !important;
+  border: 2px solid #b8a070 !important;
+  color: #2b1d0e;
+  box-shadow:
+    0 20px 60px #000b,
+    inset 0 0 40px #c9b78a40,
+    0 0 0 6px #fffaf0,
+    0 0 0 7px #b8a070;
+}
+.modal h3, .detail h3, .trade-header h3{
+  color:#8a0f20;
+  font-family: var(--site-font-heading);
+}
+.modal p, .detail-status, .trade-modal p{ color:#5a4020; }
+.detail-info .detail-brand{ color:#7a5a2b; }
+.detail-info .detail-gender{
+  background:#e8d9b8;
+  color:#5a4020;
+  border-color:#b8a070;
+}
+.detail-info .detail-rarity{ background:#fffaf0; }
+.detail-info .detail-status strong{ color:#8a0f20; }
+
+.trade-tab{ background:#e8d9b8; color:#5a4020; border-color:#c9b78a; }
+.trade-tab.active{ background:#8a0f20; color:#fff; border-color:#8a0f20; }
+.trade-select, .trade-input{ background:#fffaf0; color:#2b1d0e; border-color:#b8a070; }
+.trade-item{ background:#f5ebd2; border-color:#c9b78a; color:#2b1d0e; }
+.trade-item-sub{ color:#7a5a2b; }
+.trade-item-cards{ color:#5a4020; }
+
+@media (max-width:470px){
+  main.shell{ border-left-width: 8px; padding: 24px 12px 36px; }
+  main.shell::after{ font-size:10px; padding:4px 10px; right:10px; }
+}
+
+/* Responsivos originais (mantidos) */
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
 @media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{width:70px;font-size:20px}#openPack{min-width:0;width:100%}}
 </style>
@@ -321,7 +554,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
   </div>
  </div>
  <div class="hero">
-  <div class="eyebrow">A tua coleção começa aqui</div>
+  <div class="eyebrow">Álbum de cromos · Edição 2026</div>
   <h1>COLECIONA.<br>COMPLETA. DOMINA.</h1>
   <p>Constrói o teu álbum de Superstars. Descobre cromos, acompanha o progresso e abre saquetas para encontrar raridades.</p>
  </div>
@@ -364,7 +597,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
  </div>
  <div class="section-head">
   <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
-  <span id="visibleCount" style="color:#9da1ab;font-size:12px">113 cromos</span>
+  <span id="visibleCount" style="color:#7a5a2b;font-size:12px;font-style:italic">113 cromos</span>
  </div>
  <div class="grid" id="cards" aria-live="polite"></div>
  <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
@@ -420,7 +653,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
   </div>
 
   <div class="trade-content active" id="tab-send">
-    <p style="font-size:12px;color:#9da1ab;margin-top:0">Só podes trocar cromos que tenhas em duplicado. Só podes pedir cromos que te faltam.</p>
+    <p style="font-size:12px;color:#7a5a2b;margin-top:0">Só podes trocar cromos que tenhas em duplicado. Só podes pedir cromos que te faltam.</p>
     <select class="trade-select" id="tradeMyCard">
       <option value="">O cromo que eu dou...</option>
     </select>
@@ -456,9 +689,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ================= DADOS (Lista Completa) ================= */
+/* ================= DADOS ================= */
 const wrestlers = [
- // LENDÁRIOS (IDs 1 a 9)
  {id:1,   name:'John Cena',        initials:'CENA',  brand:'Legends',   rarity:'Lendário', gender:'Male',   belt:'★', image:'img/john-cena.png'},
  {id:2,   name:'Rey Mysterio',     initials:'REY',   brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/rey-mysterio.png'},
  {id:3,   name:'Becky Lynch',      initials:'BECKY', brand:'RAW',       rarity:'Lendário', gender:'Female', belt:'★', image:'img/becky-lynch.png'},
@@ -468,8 +700,6 @@ const wrestlers = [
  {id:7,   name:'Seth Rollins',     initials:'SETH',  brand:'RAW',       rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/seth-rollins.png'},
  {id:8,   name:'Cody Rhodes',      initials:'CODY',  brand:'SmackDown', rarity:'Lendário', gender:'Male',   belt:'✦', image:'img/cody-rhodes.png'},
  {id:9,  name:'Randy Orton',     initials:'RKO',   brand:'SmackDown', rarity:'Lendário', gender:'Male', belt:'★', image:'img/randy-orton.png'},
- 
- // ÉPICOS (IDs 10 a 42)
  {id:10,  name:'Rhea Ripley',      initials:'MAMI',  brand:'SmackDown', rarity:'Épico', gender:'Female', belt:'♛', image:'img/rhea-ripley.png'},
  {id:11,  name:'Liv Morgan',       initials:'LIV',   brand:'RAW',       rarity:'Épico', gender:'Female', belt:'♛', image:'img/liv-morgan.png'},
  {id:12,  name:'Sami Zayn',       initials:'SAMI',  brand:'SmackDown', rarity:'Épico', gender:'Male', belt:'♛', image:'img/sami-zayn.png'},
@@ -503,8 +733,6 @@ const wrestlers = [
  {id:40,  name:'AJ Lee',          initials:'AJ',    brand:'Free Agent', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/aj-lee.png'},
  {id:41,  name:'Brie Bella',      initials:'BRIE',  brand:'Free Agent', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/brie-bella.png'},
  {id:42,  name:'Nikki Bella',     initials:'NIKKI', brand:'Free Agent', rarity:'Épico',    gender:'Female', belt:'✦', image:'img/nikki-bella.png'},
-
- // RAROS (IDs 43 a 79)
  {id:43,  name:'Jimmy Uso',        initials:'JIMMY', brand:'RAW',       rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/jimmy-uso.png'},
  {id:44,  name:'Carmelo Hayes',    initials:'HAYES', brand:'SmackDown', rarity:'Raro',     gender:'Male',   belt:'✦', image:'img/carmelo-hayes.png'},
  {id:45,  name:'Naomi',            initials:'GLOW',  brand:'SmackDown', rarity:'Raro',     gender:'Female', belt:'✦', image:'img/naomi.png'},
@@ -542,8 +770,6 @@ const wrestlers = [
  {id:77,  name:'Tama Tonga',      initials:'TAMA',  brand:'SmackDown', rarity:'Raro',     gender:'Male', belt:'✦', image:'img/tama-tonga.png'},
  {id:78,  name:'The Miz',         initials:'MIZ',   brand:'SmackDown', rarity:'Raro',     gender:'Male', belt:'✦', image:'img/the-miz.png'},
  {id:79,  name:'Omos',            initials:'OMOS',  brand:'Free Agent', rarity:'Raro',     gender:'Male', belt:'✦', image:'img/omos.png'},
-
- // COMUNS (IDs 80 a 113)
  {id:80,  name:'Maxxine Dupri',    initials:'DUPRI', brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/maxxine-duprie.png'},
  {id:81,  name:'Jaida Parker',     initials:'JAIDA', brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/jaida-parker.png'},
  {id:82,  name:'Ivy Nile',         initials:'IVY',   brand:'RAW',       rarity:'Comum',    gender:'Female', belt:'✦', image:'img/ivy-nile.png'},
@@ -589,13 +815,11 @@ const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
 const genderLabels={Male:'Masculino',Female:'Feminino'};
 const MAX_PACKS_PER_DAY = 3;
 
-/* ================= ESTADO GLOBAL ================= */
 let state = { ownedCounts: {}, packs: 0, recent: new Set() };
 let currentUser=null;
 let pending=[];
 let detailId=null;
 
-/* ================= LÓGICA SUPABASE ================= */
 async function initAuth() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   handleUser(session?.user);
@@ -646,9 +870,7 @@ async function loadState() {
   if (!currentUser) return;
   try {
     const { data: cardsData, error: cardsError } = await supabaseClient
-      .from('collections')
-      .select('card_id')
-      .eq('user_id', currentUser.id);
+      .from('collections').select('card_id').eq('user_id', currentUser.id);
     if (cardsError) throw cardsError;
     
     state.ownedCounts = {};
@@ -661,11 +883,8 @@ async function loadState() {
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     
     const { data: packData, error: packError } = await supabaseClient
-      .from('daily_packs')
-      .select('count')
-      .eq('user_id', currentUser.id)
-      .eq('date', today)
-      .single();
+      .from('daily_packs').select('count')
+      .eq('user_id', currentUser.id).eq('date', today).single();
 
     if (packError && packError.code !== 'PGRST116') throw packError;
     state.packs = packData ? (Number(packData.count) || 0) : 0;
@@ -686,7 +905,6 @@ async function saveCardToCloud(cardId) {
   }
 }
 
-/* ================= LÓGICA DO JOGO ================= */
 const $=id=>document.getElementById(id);
 const rand=n=>Math.floor(Math.random()*n);
 const norm=s=>String(s||'').trim().toLowerCase();
@@ -705,12 +923,10 @@ function weightedPick(pool){
  return byRarity[available[available.length-1]][0];
 }
 
-/* ====== Usa sempre a lista completa → permite duplicados ====== */
 function pickPack(){
  const pool = wrestlers;
  const picked = [];
  let guard = 0;
-
  while (picked.length < PACK_SIZE && guard < 500) {
    const w = weightedPick(pool);
    if (!w) break;
@@ -755,7 +971,7 @@ function updateStats(){
  $('rarityBreakdown').innerHTML = RARITIES.map(r => {
     const got = counts[r], tot = totalByRarity[r] || 0;
     if(!tot) return '';
-    return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#a7aab3">${got}/${tot}</span></div>`;
+    return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#7a5a2b">${got}/${tot}</span></div>`;
  }).join('');
 
  updatePackButton();
@@ -777,48 +993,57 @@ function updatePackButton() {
   }
 }
 
+/* === RENDER CARD (agora com silhueta para os em falta) === */
 function renderCard(w){
  const qty = state.ownedCounts[w.id] || 0;
  const has = qty > 0;
  const isNew=state.recent.has(w.id);
  const classes=['card'];
  if(has)classes.push('owned');
+ else classes.push('missing');
  if(isNew&&has)classes.push('new-badge');
  if(has&&w.image)classes.push('has-photo');
 
  const timestamp = new Date().getTime();
  const finalImage = w.image + '?t=' + timestamp;
 
- const art = (has&&w.image)
-  ? `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
-        onerror="this.remove();this.closest('.card').classList.remove('has-photo');">`
-  : '';
+ let art;
+ if(has && w.image){
+   art = `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
+        onerror="this.remove();this.closest('.card').classList.remove('has-photo');">`;
+ } else if(!has){
+   // silhueta cinzenta tracejada com "?" e sem nome
+   art = `<div class="missing-silhouette"></div><div class="missing-q">?</div>`;
+ } else {
+   art = '';
+ }
   
  const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
-
  const brandImage = `img/${w.brand.toLowerCase()}.png`;
- 
- return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" aria-label="${w.name}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
+ const displayName = has ? w.name : '???';
+ const displayNumber = has ? String(w.id).padStart(3,'0') : '—';
+
+ return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" aria-label="${has?w.name:'Cromo em falta'}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
   <div class="card-art">
    ${art}
-   <span class="belt">${w.belt}</span>
-   <span class="initials">${w.initials}</span>
+   ${has ? `<span class="belt">${w.belt}</span><span class="initials">${w.initials}</span>` : ''}
   </div>
   ${dupBadge}
   <div class="card-bottom">
-   <div class="card-number">WWE · ${String(w.id).padStart(3,'0')}</div>
-   <div class="card-name">${w.name}</div>
+   <div class="card-number">WWE · ${displayNumber}</div>
+   <div class="card-name">${displayName}</div>
    <div class="card-meta">
     <span>
-      <img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'"> 
-      <span class="gender-badge">${w.gender==='Female'?'♀':'♂'}</span>
+      ${has ? `<img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'">` : ''}
+      <span class="gender-badge">${has ? (w.gender==='Female'?'♀':'♂') : '·'}</span>
     </span>
-    <span class="rarity">${w.rarity}</span>
+    <span class="rarity">${has ? w.rarity : '—'}</span>
    </div>
   </div>
  </button>`;
 }
 
+/* === RENDER com efeito de virar página (C) === */
 function render(){
  const q=norm($('search').value);
  const cat=norm($('category').value);
@@ -848,9 +1073,13 @@ function render(){
  });
 
  $('visibleCount').textContent=`${list.length} ${list.length===1?'cromo':'cromos'}`;
+ $('visibleCount').style.color='#7a5a2b';
+ $('visibleCount').style.fontStyle='italic';
+
+ const grid = $('cards');
 
  if(list.length===0){
-  $('cards').innerHTML=`<div class="empty">
+  grid.innerHTML=`<div class="empty">
    <span class="empty-icon">🃏</span>
    <strong>Nenhum cromo encontrado</strong>
    Tenta ajustar os filtros ou limpar a pesquisa.
@@ -859,11 +1088,22 @@ function render(){
   const cf=$('clearFilters');
   if(cf)cf.addEventListener('click',clearFilters);
  }else{
-  $('cards').innerHTML=list.map(renderCard).join('');
-  $('cards').querySelectorAll('.card').forEach(b=>{
+  grid.innerHTML=list.map((w, i) => {
+    // injecta --i para o stagger da animação de virar página
+    return renderCard(w).replace('class="card', `style="--i:${i}" class="card`);
+  }).join('');
+  grid.querySelectorAll('.card').forEach(b=>{
    b.addEventListener('click',()=>openDetail(Number(b.dataset.id)));
   });
  }
+
+ // efeito de virar página
+ grid.classList.remove('turning');
+ // forçar reflow para reiniciar a animação
+ void grid.offsetWidth;
+ grid.classList.add('turning');
+ setTimeout(()=>grid.classList.remove('turning'), 800);
+
  updateStats();
 }
 
@@ -894,7 +1134,6 @@ function openPack(){
    { onConflict: 'user_id,date' }
  ).then(({error}) => { if(error) console.error(error); });
 
- // Descobrir duplicados (contando também repetições dentro da própria saqueta)
  const seenInPack = new Set();
  const dupMap = pending.map(w => {
    const isDup = (state.ownedCounts[w.id] > 0) || seenInPack.has(w.id);
@@ -947,7 +1186,6 @@ function claim(){
  let added=0;
  pending.forEach(w=>{
   saveCardToCloud(w.id);
-  
   if(!state.ownedCounts[w.id]){
     state.ownedCounts[w.id] = 1;
     state.recent.add(w.id);
@@ -989,15 +1227,15 @@ function openDetail(id){
  const art = (has&&w.image)
   ? `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();this.parentElement.querySelector('.initials').style.opacity=1;">`
   : '';
- photoWrap.innerHTML=`${art}<span class="initials" style="${(has&&w.image)?'opacity:0':''}">${w.initials}</span>`;
+ photoWrap.innerHTML=`${art}<span class="initials" style="${(has&&w.image)?'opacity:0':''}">${has ? w.initials : '?'}</span>`;
 
- $('detailName').textContent=w.name;
+ $('detailName').textContent = has ? w.name : '???';
  $('detailBrand').textContent=w.brand;
  const rar=$('detailRarity');
- rar.textContent=w.rarity;
- rar.style.setProperty('--rarity-color',rarityColors[w.rarity]);
+ rar.textContent = has ? w.rarity : 'Em falta';
+ rar.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
  $('detailGender').textContent=(w.gender==='Female'?'♀ ':'♂ ')+genderLabels[w.gender];
- $('detailBox').style.setProperty('--rarity-color',rarityColors[w.rarity]);
+ $('detailBox').style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
 
  $('detailStatus').innerHTML=has
   ? `Tens <strong>${qty} unidade(s)</strong> deste cromo na tua coleção.`
@@ -1038,7 +1276,6 @@ document.querySelectorAll('.trade-tab').forEach(tab => {
 async function populateTradeSelects() {
   const myCardSelect = document.getElementById('tradeMyCard');
   myCardSelect.innerHTML = '<option value="">O cromo que eu dou...</option>';
-  
   Object.keys(state.ownedCounts).forEach(id => {
     const qty = state.ownedCounts[id];
     if (qty > 1) {
@@ -1061,11 +1298,8 @@ async function loadTrades() {
   const historyList = document.getElementById('historyList');
 
   const { data: received, error: errRec } = await supabaseClient
-    .from('trades_with_usernames')
-    .select('*')
-    .eq('receiver_id', currentUser.id)
-    .eq('status', 'pending');
-
+    .from('trades_with_usernames').select('*')
+    .eq('receiver_id', currentUser.id).eq('status', 'pending');
   if (errRec) console.error(errRec);
   
   if (received && received.length > 0) {
@@ -1089,29 +1323,24 @@ async function loadTrades() {
       `;
     }).join('');
   } else {
-    receivedList.innerHTML = '<p style="text-align:center;color:#9da1ab;font-size:12px;">Não tens propostas pendentes.</p>';
+    receivedList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Não tens propostas pendentes.</p>';
   }
 
   const { data: history, error: errHist } = await supabaseClient
-    .from('trades_with_usernames')
-    .select('*')
+    .from('trades_with_usernames').select('*')
     .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
     .neq('status', 'pending')
     .order('created_at', { ascending: false });
-
   if (errHist) console.error(errHist);
 
   if (history && history.length > 0) {
     historyList.innerHTML = history.map(t => {
       const isSender = t.sender_id === currentUser.id;
       const otherName = isSender ? (t.receiver_username || '?') : (t.sender_username || '?');
-      
       const give = WRESTLER_MAP.get(isSender ? t.sender_card_id : t.receiver_card_id) || {name:'?'};
       const get = WRESTLER_MAP.get(isSender ? t.receiver_card_id : t.sender_card_id) || {name:'?'};
-      const statusColor = t.status === 'accepted' ? '#22c55e' : '#ef4444';
-      
+      const statusColor = t.status === 'accepted' ? '#16a34a' : '#b91c1c';
       const title = isSender ? `Para: <strong>${otherName}</strong>` : `De: <strong>${otherName}</strong>`;
-
       return `
         <div class="trade-item">
           <div class="trade-item-info">
@@ -1123,7 +1352,7 @@ async function loadTrades() {
       `;
     }).join('');
   } else {
-    historyList.innerHTML = '<p style="text-align:center;color:#9da1ab;font-size:12px;">Ainda não fizeste nenhuma troca.</p>';
+    historyList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Ainda não fizeste nenhuma troca.</p>';
   }
 }
 
@@ -1141,37 +1370,28 @@ document.getElementById('submitTrade').addEventListener('click', async () => {
   }
 
   const { data: friendData, error: friendErr } = await supabaseClient
-    .from('profiles')
-    .select('user_id')
-    .eq('username', friendName)
-    .single();
+    .from('profiles').select('user_id').eq('username', friendName).single();
 
   if (friendErr || !friendData) {
     return toast('Amigo não encontrado. O nome de Twitch está correto?');
   }
 
   const { data: friendCards } = await supabaseClient
-    .from('collections')
-    .select('card_id')
-    .eq('user_id', friendData.user_id)
-    .eq('card_id', theirCardId);
+    .from('collections').select('card_id').eq('user_id', friendData.user_id).eq('card_id', theirCardId);
 
   if (!friendCards || friendCards.length < 2) {
     return toast(`O teu amigo não tem o cromo "${WRESTLER_MAP.get(theirCardId).name}" em duplicado.`);
   }
 
   const { error: sendErr } = await supabaseClient
-    .from('trades')
-    .insert({
+    .from('trades').insert({
       sender_id: currentUser.id,
       receiver_id: friendData.user_id,
       sender_card_id: myCardId,
       receiver_card_id: theirCardId
     });
 
-  if (sendErr) {
-    return toast('Erro ao enviar a troca.');
-  }
+  if (sendErr) return toast('Erro ao enviar a troca.');
 
   toast('Proposta enviada com sucesso!');
   document.getElementById('tradeMyCard').value = '';
@@ -1183,30 +1403,22 @@ document.getElementById('submitTrade').addEventListener('click', async () => {
 window.acceptTrade = async function(tradeId, btnElement) {
   btnElement.disabled = true;
   btnElement.innerHTML = 'A processar...';
-
   try {
     const { data: trade, error } = await supabaseClient.from('trades').select('*').eq('id', tradeId).single();
-    
     if (error || !trade || trade.status !== 'pending') {
       return toast('Esta troca já foi processada ou cancelada.');
     }
-
     const { data: recCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.receiver_id).eq('card_id', trade.receiver_card_id).limit(1);
     if (recCard && recCard.length) await supabaseClient.from('collections').delete().eq('id', recCard[0].id);
-
     const { data: senCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.sender_id).eq('card_id', trade.sender_card_id).limit(1);
     if (senCard && senCard.length) await supabaseClient.from('collections').delete().eq('id', senCard[0].id);
-
     await supabaseClient.from('collections').insert([{ user_id: trade.receiver_id, card_id: trade.sender_card_id }]);
     await supabaseClient.from('collections').insert([{ user_id: trade.sender_id, card_id: trade.receiver_card_id }]);
-
     await supabaseClient.from('trades').update({ status: 'accepted' }).eq('id', tradeId);
-
     toast('Troca realizada com sucesso!');
     await loadState();
     await loadTrades();
     populateTradeSelects();
-    
   } catch (e) {
     console.error(e);
     toast('Erro ao processar a troca.');
@@ -1218,11 +1430,9 @@ window.acceptTrade = async function(tradeId, btnElement) {
 window.rejectTrade = async function(tradeId, btnElement) {
   btnElement.disabled = true;
   btnElement.innerHTML = '...';
-
   try {
     const { data: trade } = await supabaseClient.from('trades').select('status').eq('id', tradeId).single();
     if (!trade || trade.status !== 'pending') return;
-
     await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
     toast('Proposta recusada.');
     await loadTrades();
@@ -1268,7 +1478,6 @@ function init(){
  $('detailClose').addEventListener('click',closeDetail);
  $('detailClose2').addEventListener('click',closeDetail);
  setupKeyboard();
- 
  initAuth();
 }
 init();
