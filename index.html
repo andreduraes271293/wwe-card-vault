@@ -515,7 +515,7 @@ main.shell::after{
   position:absolute !important;
   inset:6px !important;
   border-radius:2px !important;
-  background:linear-gradient(110deg,
+  background-image:linear-gradient(110deg,
     transparent 42%,
     #fff0b000 44%,
     #fff8d8b3 50%,
@@ -523,7 +523,7 @@ main.shell::after{
     transparent 58%) !important;
   background-size:300% 100% !important;
   background-repeat:no-repeat !important;
-  background-position:100% 0 !important;
+  background-position:100% 0;   /* sem !important: senão bloqueia as keyframes */
   mix-blend-mode:overlay !important;
   pointer-events:none !important;
   z-index:5 !important;
