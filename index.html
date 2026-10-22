@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WWE Card Vault</title>
+<style>
+:root {
+ --site-primary:#c8102e; --site-on-primary:#ffffff;
+ --site-secondary:#15171c; --site-on-secondary:#ffffff;
+ --site-background:#0c0d10; --site-on-background:#f5f5f6;
+ --site-font-body:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --site-font-heading:Impact,"Arial Narrow",ui-sans-serif,sans-serif;
+ --site-heading-scale:1; --site-spacing-scale:1; --site-radius-scale:1; --site-decoration-opacity:1;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:light-dark(#f2f2f4,var(--site-background));color:light-dark(#18191d,var(--site-on-background));font-family:var(--site-font-body);-webkit-font-smoothing:antialiased}
+#app{min-height:100vh;background-color:var(--site-background);color:var(--site-on-background);border-radius:0}
+header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);padding:22px clamp(18px,5vw,64px) 25px;border-bottom:1px solid #ffffff22}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--site-font-heading);font-size:calc(25px * var(--site-heading-scale));letter-spacing:1.8px}
+.brand span{color:#ffd15b}
+.top-pill{border:1px solid #ffffff66;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;letter-spacing:1px}
+.hero{max-width:1200px;margin:35px auto 4px}
+.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#ffcf62;font-weight:900}
+.hero h1{font-family:var(--site-font-heading);font-size:clamp(40px,7vw,76px);line-height:.96;margin:12px 0;letter-spacing:1px}
+.hero p{max-width:600px;color:#e7dfe2;line-height:1.6;margin:0}
+.shell{max-width:1200px;margin:auto;padding:26px clamp(16px,4vw,40px) 60px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.stat{background:#17191f;border:1px solid #ffffff14;border-radius:calc(14px * var(--site-radius-scale));padding:17px}
+.stat label{display:block;color:#a7aab3;font-size:11px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800}
+.stat strong{display:block;font-size:26px;margin-top:7px}
+.stat small{font-size:13px;color:#a7aab3}
+.progress-track{height:5px;background:#34363e;border-radius:99px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#c8102e,#ffd15b);transition:width .35s ease}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0}
+.search{flex:1;min-width:180px;background:#17191f;border:1px solid #343740;color:#fff;padding:12px 14px;border-radius:9px;font:inherit}
+.search:focus,.filter:focus{outline:2px solid #ffd15b;outline-offset:2px}
+.filter{background:#17191f;color:#f7f7f8;border:1px solid #343740;padding:12px;border-radius:9px;font:inherit;min-width:150px}
+.btn{border:0;border-radius:9px;padding:12px 16px;background:var(--site-primary);color:white;cursor:pointer;font:inherit;font-weight:800;transition:transform .15s,filter .15s;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid #ffd15b;outline-offset:2px}
+.btn:active{transform:translateY(0)}
+.btn.secondary{background:#282b33;border:1px solid #444751}
+.btn.ghost{background:transparent;border:1px solid #444751;color:#c3c5cc}
+.btn.pulse{animation:pulse 2.4s infinite}
+.btn.twitch{background:#9146FF;color:white;}
+.btn.twitch:hover{background:#772ce8;}
+.btn.disabled{background:#343740;color:#828691;cursor:not-allowed;transform:none}
+.btn.disabled:hover{filter:none;transform:none}
+.btn.trade-btn{background:#f59e0b;color:#18130b;}
+.btn.trade-btn:hover{background:#fbbf24;}
+
+#openPack{min-width:210px;white-space:nowrap;justify-content:center;}
+#openPack.disabled{min-width:210px;}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #c8102e66}50%{box-shadow:0 0 0 8px #c8102e00}}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
+.section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;letter-spacing:.7px}
+.section-head p{color:#9da1ab;font-size:12px;margin:5px 0 0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;perspective:1600px;}
+
+/* --- CARTAS (base) --- */
+.card{position:relative;aspect-ratio:3/4.15;border-radius:calc(12px * var(--site-radius-scale));overflow:hidden;border:2px solid var(--rarity-color, #ffffff26);background:#1c1e25;cursor:pointer;text-align:left;color:white;padding:0;min-width:0;box-shadow:0 8px 20px #0004;transition:transform .18s,border-color .18s,box-shadow .18s;font:inherit}
+.card:hover{transform:translateY(-4px);border-color:var(--rarity-color, #ffffff);box-shadow:0 14px 30px #0006, 0 0 15px var(--rarity-color)}
+.card:focus-visible{outline:2px solid var(--rarity-color);outline-offset:3px}
+.card.owned{box-shadow:0 0 15px #0008, inset 0 0 0 1px var(--rarity-color)}
+.card.owned:after{content:none !important;display:none !important}
+
+.card.new-badge:before{
+  content:'NOVO!';
+  position:absolute;
+  top:9px;left:8px;
+  background:#e0a010;color:#2b1d0e;
+  border-radius:4px;
+  font-family:var(--site-font-heading);
+  font-size:9px;font-weight:1000;
+  padding:5px 7px;letter-spacing:.5px;
+  z-index:11;
+  animation:pop .5s ease;
+  transform:none;
+}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+.card-art{height:100%;display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,#3a3e47 0%,#1c1e25 42%,#0c0d10 76%);overflow:hidden}
+.card-art:before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#ffffff24,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff05 18px 20px);z-index:1}
+.card:hover .card-art:before{background:linear-gradient(160deg,#ffffff40,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px)}
+.card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:2;filter:contrast(1.05) saturate(1.05);transition:transform .35s ease;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);mask-image: linear-gradient(to bottom, black 70%, transparent 100%)}
+.card:hover .card-photo{transform:scale(1.04)}
+.card-art:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 40%,#07080bf2 100%);z-index:3;pointer-events:none}
+.card-bottom{position:absolute;bottom:0;left:0;right:0;padding:42px 11px 12px;background:linear-gradient(transparent,#07080bf2 35%);z-index:4}
+.card-number{font-size:9px;color:var(--rarity-color);letter-spacing:1.7px;font-weight:900}
+.card-name{font-family:var(--site-font-heading);font-size:clamp(16px,2vw,22px);line-height:1.05;margin-top:5px}
+.card-meta{display:flex;justify-content:space-between;align-items:center;gap:4px;margin-top:8px;font-size:9px;text-transform:uppercase;color:#c3c5cc}
+.rarity{font-weight:900;color:var(--rarity-color,#dedede)}
+.gender-badge{font-size:9px;font-weight:900;color:#9da1ab;letter-spacing:.5px}
+.dup-badge{position:absolute;bottom:10px;right:10px;background:#c8102e;color:#fff;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;z-index:5;box-shadow:0 2px 5px #0008}
+.brand-img {height: 18px; width: auto; object-fit: contain; vertical-align: middle; margin-right: 6px; margin-bottom: 2px;}
+
+.empty{padding:45px 25px;text-align:center;color:#9da1ab;border:1px dashed #3b3e47;border-radius:12px;grid-column:1/-1}
+.empty strong{display:block;color:#f5f5f6;font-size:16px;margin:10px 0 6px;font-family:var(--site-font-heading);letter-spacing:.5px}
+.empty .empty-icon{font-size:38px;display:block;margin-bottom:6px;opacity:.7}
+.footer-note{margin-top:36px;color:#828691;font-size:11px;line-height:1.6;border-top:1px solid #ffffff15;padding-top:18px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#ffd15b;color:#18130b;padding:12px 18px;border-radius:9px;font-size:13px;font-weight:900;box-shadow:0 8px 30px #0008;z-index:50;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-backdrop{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:18px;z-index:40;backdrop-filter:blur(3px)}
+.modal-backdrop.show{display:grid;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{max-width:500px;width:100%;background:#181a20;border:1px solid #ffffff25;border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes slideUp{from{transform:translateY(20px) scale(.95);opacity:0}to{transform:none;opacity:1}}
+.modal h3{font-family:var(--site-font-heading);font-size:30px;margin:0 0 8px}
+.modal p{color:#b8bbc4;font-size:13px;line-height:1.5}
+.modal-actions{display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.toast-hint{font-size:11px;color:#828691;margin-top:14px}
+.detail-backdrop{position:fixed;inset:0;background:#000d;display:none;place-items:center;padding:18px;z-index:45;backdrop-filter:blur(4px)}
+.detail-backdrop.show{display:grid;animation:fadeIn .2s ease}
+.detail{max-width:720px;width:100%;background:#181a20;border:2px solid var(--rarity-color);border-radius:18px;padding:22px;display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative;transition:box-shadow .3s ease, border-color .3s ease;}
+.detail-photo-wrap{position:relative;border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 30%,var(--rarity-color,#bd1936),#15161c 75%);aspect-ratio:3/4.15;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff22}
+.detail-photo-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);}
+.detail-info h3{font-family:var(--site-font-body);font-size:32px;margin:0 0 4px;letter-spacing:-.2px;line-height:1;font-weight:900}
+.detail-info .detail-brand img{display:block;height:38px;width:auto;max-width:100%;object-fit:contain;object-position:left center}
+.detail-info .detail-brand{color:#9da1ab;font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:14px;display:block}
+.detail-info .detail-rarity{display:inline-block;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#00000055;color:var(--rarity-color,#dedede);border:1px solid var(--rarity-color,#dedede);margin-bottom:16px}
+.detail-info .detail-gender{display:inline-block;margin-left:6px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#2a2d36;color:#c3c5cc;border:1px solid #444751;margin-bottom:16px}
+.detail-info .detail-status{font-size:14px;color:#c3c5cc;line-height:1.6;margin-bottom:18px}
+.detail-info .detail-status strong{color:#ffd15b;font-weight:900}
+.detail-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end;margin-top:20px}
+.detail-close{position:absolute;top:10px;right:12px;background:transparent;border:0;color:#9da1ab;font-size:22px;cursor:pointer;padding:6px 10px;border-radius:8px;line-height:1;z-index:10}
+.detail-close:hover{background:#ffffff12;color:#fff}
+.user-info{display:flex;align-items:center;gap:12px;background:#00000055;padding:6px 14px;border-radius:999px;border:1px solid #ffffff22}
+.user-info img{width:28px;height:28px;border-radius:50%;border:1px solid #fff}
+.user-info span{font-size:13px;font-weight:800;color:#fff}
+
+/* --- MODAL TROCAS --- */
+.trade-modal{max-width:600px;width:100%;background:#181a20;border:2px solid #f59e0b;border-radius:18px;padding:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative}
+.trade-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #ffffff22;padding-bottom:15px}
+.trade-header h3{font-family:var(--site-font-heading);font-size:30px;margin:0;color:#f59e0b}
+.trade-tabs{display:flex;gap:10px;margin-bottom:20px}
+.trade-tab{flex:1;padding:10px;text-align:center;background:#282b33;border-radius:8px;cursor:pointer;font-weight:800;color:#c3c5cc;border:1px solid transparent}
+.trade-tab.active{background:#f59e0b;color:#18130b;border-color:#f59e0b}
+.trade-content{display:none}
+.trade-content.active{display:block}
+.trade-select{width:100%;padding:12px;background:#17191f;border:1px solid #343740;color:#fff;border-radius:9px;font:inherit;margin-bottom:15px}
+.trade-input{width:100%;padding:12px;background:#17191f;border:1px solid #343740;color:#fff;border-radius:9px;font:inherit;margin-bottom:15px}
+.trade-list{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;padding-right:5px}
+.trade-item{background:#22252e;border:1px solid #ffffff14;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.trade-item-info{display:flex;flex-direction:column;gap:4px}
+.trade-item-title{font-weight:900;font-size:14px}
+.trade-item-sub{font-size:11px;color:#9da1ab;text-transform:uppercase}
+.trade-item-cards{display:flex;align-items:center;gap:10px;font-size:12px;color:#c3c5cc}
+.trade-arrow{color:#f59e0b;font-size:18px;font-weight:900}
+.trade-actions-sm{display:flex;gap:6px}
+.trade-actions-sm .btn{padding:6px 10px;font-size:11px}
+
+/* --- ABERTURA DE SAQUETA --- */
+.modal{overflow:hidden;position:relative}
+.modal::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 42%,var(--pack-glow,#ffd15b66) 0%,transparent 62%);
+  opacity:0;transition:opacity .6s ease;
+}
+.modal-backdrop.show .modal::before{opacity:1;animation:backdropPulse 2.6s ease-in-out infinite}
+@keyframes backdropPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+.modal > *{position:relative;z-index:1}
+
+.pack-cards{display:flex;justify-content:center;align-items:center;gap:8px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
+.mini{
+  flex:1 1 0;min-width:0;max-width:82px;aspect-ratio:3/4;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--site-font-heading);font-size:24px;font-style:italic;
+  border:2px solid var(--rarity-color);
+  box-shadow:0 4px 12px #0008;
+  position:relative;overflow:visible;
+  opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);
+  filter:brightness(.25) blur(4px);
+}
+.mini .mini-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;border-radius:7px;overflow:hidden}
+.mini .mini-initials{position:relative;z-index:1}
+.mini::after{content:'';position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2;pointer-events:none}
+.mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
+.mini.revealed{animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
+@keyframes cardBurst{
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  55%{opacity:1;transform:translateY(-10px) scale(1.14) rotate(3deg);filter:brightness(1.4) blur(0);box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(1) blur(0);box-shadow:0 4px 12px #0008,0 0 14px var(--rarity-color),0 0 34px color-mix(in srgb,var(--rarity-color) 55%,transparent);}
+}
+.mini.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,var(--rarity-color),transparent 70%);opacity:.5;animation:cardGlow 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
+@keyframes cardGlow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.85;transform:scale(1.18)}}
+
+.mini.duplicate{border-color:#6b7280 !important;animation:cardBurstDup .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
+@keyframes cardBurstDup{
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  40%{opacity:1;transform:translateY(-14px) scale(1.18) rotate(-6deg);filter:brightness(1.2) blur(0);box-shadow:0 4px 12px #0008,0 0 22px #6b7280,0 0 50px #6b7280;}
+  55%{transform:translateY(-6px) scale(1.08) rotate(4deg);}
+  70%{transform:translateY(-10px) scale(1.12) rotate(-3deg);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(.85) blur(0);box-shadow:0 4px 12px #0008,0 0 10px #6b7280;}
+}
+.mini.duplicate.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,#6b7280,transparent 70%);opacity:.4;animation:cardGlowDup 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
+@keyframes cardGlowDup{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
+.mini .dup-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-14deg) scale(0);font-family:var(--site-font-heading);font-size:11px;letter-spacing:1.5px;font-weight:900;color:#fff;background:#374151;border:2px solid #9ca3af;padding:3px 7px;border-radius:5px;z-index:4;text-shadow:0 1px 2px #000;box-shadow:0 2px 8px #000a;opacity:0;pointer-events:none;}
+.mini.duplicate.revealed .dup-stamp{animation:stampDrop .45s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:calc(var(--burst-delay,0ms) + 700ms);}
+@keyframes stampDrop{0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.6)}60%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}100%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(1)}}
+.mini.duplicate .dup-veil{position:absolute;inset:0;border-radius:7px;background:#000a;z-index:3;opacity:0;transition:opacity .3s ease;pointer-events:none;}
+.mini.duplicate.revealed .dup-veil{opacity:1;transition-delay:calc(var(--burst-delay,0ms) + 500ms);}
+
+/* ============================================================
+   TEMA CADERNETA
+   ============================================================ */
+body{
+  background:
+    radial-gradient(ellipse at 50% 0%, #2b1c10 0%, #150d07 60%, #0a0604 100%),
+    repeating-linear-gradient(90deg, #0000 0 40px, #ffffff05 40px 41px);
+}
+main.shell{
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),
+    radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);
+  border: 1px solid #b8a070;
+  border-left: 14px solid #6b4a2b;
+  border-radius: 8px 14px 14px 8px;
+  box-shadow:
+    0 20px 60px #000c,
+    inset 0 0 80px #a07c4a40,
+    inset 6px 0 12px #00000060;
+  position: relative;
+  color: #2b1d0e;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  padding: 32px clamp(18px, 4vw, 48px) 48px;
+  max-width: 1180px;
+}
+main.shell::before{
+  content:'';position:absolute;left:-11px;top:30px;bottom:30px;width:8px;
+  background-image: radial-gradient(circle, #2b1d0e 0 3px, transparent 3.5px);
+  background-size: 8px 38px;background-repeat: repeat-y;background-position: center top;
+  opacity:.8;pointer-events:none;
+}
+main.shell::after{
+  content:'★ ÁLBUM OFICIAL ★';
+  position:absolute;top:-14px;right:22px;
+  background:#c8102e;color:#fff;
+  font-family:var(--site-font-heading);
+  font-size:12px;letter-spacing:2px;
+  padding:6px 14px;border-radius:6px;
+  box-shadow:0 4px 10px #0008;
+  transform:rotate(2deg);
+}
+.stat{background:#fffaf0;border:1px solid #c9b78a;border-radius:6px;box-shadow:2px 2px 0 #c9b78a80;color:#2b1d0e;position:relative;}
+.stat::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-2deg);width:60px;height:16px;background:#f4d77a80;border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;opacity:.9;}
+.stat label{ color:#7a5a2b; }
+.stat strong{ color:#2b1d0e; }
+.stat small{ color:#7a5a2b; }
+.stat-sub{ display:block; margin-top:5px; font-size:12px; font-weight:800; letter-spacing:.3px; color:#7a5a2b; }
+.stat-sub b{ color:#8a0f20; font-size:14px; font-weight:900; }
+.progress-track{ background:#e2d3b1; }
+.progress-fill{ background: linear-gradient(90deg,#8a0f20,#c8102e,#e0a010); }
+.search, .filter{background:#fffaf0;border:1px solid #b8a070;color:#2b1d0e;box-shadow:inset 1px 1px 2px #00000010;}
+.search::placeholder{ color:#9b8a6a; }
+.search:focus,.filter:focus{outline:2px solid #c8102e;outline-offset:1px;}
+.section-head h2{color:#5a1a12;text-shadow:1px 1px 0 #e8d9b8;letter-spacing:1.5px;}
+.section-head p{ color:#7a5a2b; }
+
+/* ============ CROMOS COMO "COLADOS" ============ */
+.grid{ gap: 22px 18px; padding-top: 8px; }
+.card{
+  background:#fffaf0;
+  border: 3px solid #fffaf0;
+  border-radius: 3px;
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 1px #c9b78a;
+  padding: 6px 6px 46px;
+  overflow: visible;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover{
+  transform: translateY(-3px) rotate(-.6deg);
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 1px #c9b78a;
+}
+.card-art{
+  position: relative;
+  inset: auto;
+  height: 100%;
+  border-radius: 2px;
+  border: 1px solid #d8c8a0;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px var(--rarity-color);
+}
+.card::before{
+  content:'';
+  position:absolute;top:-9px;left:50%;
+  transform:translateX(-50%) rotate(-3deg);
+  width:62px;height:18px;
+  background: linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;
+  border-right:1px dashed #b89a4a;
+  box-shadow:0 1px 3px #0004;
+  z-index:10;pointer-events:none;
+  transition: transform .18s ease;
+}
+.card:hover::before{ transform:translateX(-50%) rotate(1deg); }
+.card-bottom{
+  position:absolute;left:6px;right:6px;bottom:6px;
+  padding: 8px 8px 6px;
+  background: #fffaf0;
+  border-top: 1px dashed #b8a070;
+  color: #2b1d0e;
+}
+.card-number{ color:#8a6a2b; }
+.card-name{ color:#2b1d0e; font-family: var(--site-font-heading); text-shadow: none; }
+.card-meta{ color:#7a5a2b; }
+.card-meta .rarity{ color:#8a0f20; font-weight: 900; }
+.gender-badge{ color:#7a5a2b; }
+.dup-badge{
+  background:#8a0f20;color:#fff;border:2px solid #2b2f36;border-radius:50%;
+  width:32px;height:32px;display:grid;place-items:center;
+  bottom: 52px; right: 8px;font-size:11px;box-shadow: 0 2px 6px #0006;
+  z-index:12;
+}
+
+/* ============ CROMOS EM FALTA ============ */
+.card.missing{ background:#f0e6cf; }
+.card.missing .card-art{
+  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px);
+  box-shadow: inset 0 0 0 2px #b8a070;
+  filter: grayscale(1);
+}
+.card.missing .card-art:before{
+  background: repeating-linear-gradient(135deg, #0000 0 14px, #00000010 14px 16px);
+}
+.card.missing .card-art:after{
+  background: linear-gradient(180deg,#0000 40%,#c9b78a99 100%);
+}
+.card.missing .card-art > .missing-q{
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-family: var(--site-font-heading);
+  font-size: clamp(48px, 8vw, 92px);
+  color: #b8a070;
+  text-shadow: 0 3px 0 #ffffff80;
+  z-index: 3; pointer-events: none;
+}
+.card.missing .card-art > .missing-silhouette{
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 30% 22% at 50% 30%, #b8a070 0 100%, transparent 101%),
+    radial-gradient(ellipse 46% 26% at 50% 62%, #b8a070 0 100%, transparent 101%),
+    radial-gradient(ellipse 40% 20% at 50% 92%, #b8a070 0 100%, transparent 101%);
+  filter: blur(.4px);
+  opacity: .55;
+  z-index: 2; pointer-events: none;
+}
+.card.missing .card-name{ color:#a89070;font-style: italic;letter-spacing: 1px; }
+.card.missing .card-number{ color:#a89070; }
+
+/* ============ VIRAR DE PÁGINA (legado, mantido) ============ */
+@keyframes turnPage{
+  0%   { opacity: 0; transform: rotateY(-14deg) translateX(-24px); filter: blur(2px); }
+  60%  { opacity: 1; transform: rotateY(4deg)  translateX(6px);  filter: blur(0);  }
+  100% { opacity: 1; transform: rotateY(0)    translateX(0);     filter: blur(0);  }
+}
+
+/* Modais em papel */
+.modal, .detail, .trade-modal{
+  background: #fffaf0 !important;
+  border: 2px solid #b8a070 !important;
+  color: #2b1d0e;
+  box-shadow:
+    0 20px 60px #000b,
+    inset 0 0 40px #c9b78a40,
+    0 0 0 6px #fffaf0,
+    0 0 0 7px #b8a070;
+}
+.modal h3, .detail h3, .trade-header h3{ color:#8a0f20;font-family: var(--site-font-heading); }
+.modal p, .detail-status, .trade-modal p{ color:#5a4020; }
+.detail-info .detail-brand{ color:#7a5a2b; }
+.detail-info .detail-gender{ background:#e8d9b8;color:#5a4020;border-color:#b8a070; }
+.detail-info .detail-rarity{ background:#fffaf0; }
+.detail-info .detail-status strong{ color:#8a0f20; }
+.trade-tab{ background:#e8d9b8;color:#5a4020;border-color:#c9b78a; }
+.trade-tab.active{ background:#8a0f20;color:#fff;border-color:#8a0f20; }
+.trade-select, .trade-input{ background:#fffaf0;color:#2b1d0e;border-color:#b8a070; }
+.trade-item{ background:#f5ebd2;border-color:#c9b78a;color:#2b1d0e; }
+.trade-item-sub{ color:#7a5a2b; }
+.trade-item-cards{ color:#5a4020; }
+
+@media (max-width:470px){
+  main.shell{ border-left-width: 8px; padding: 24px 12px 36px; }
+  main.shell::after{ font-size:10px; padding:4px 10px; right:10px; }
+}
+
+/* ============================================================
+   DIFERENCIAÇÃO POR RARIDADE
+   ============================================================ */
+.card{
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a;
+}
+.card .card-art{
+  box-shadow:
+    inset 0 0 0 2px var(--rarity-color),
+    inset 0 0 22px color-mix(in srgb, var(--rarity-color) 35%, transparent);
+}
+.card .card-meta .rarity{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
+.card .card-number{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
+
+/* COMUM */
+.card[data-rarity="Comum"]{
+  background:#2b2f36 !important;
+  border-color:#2b2f36 !important;
+  box-shadow:
+    0 2px 4px #00000060,0 8px 16px #00000050,
+    inset 0 0 0 3px #3a3f47,inset 0 0 0 5px #2b2f36,inset 0 0 0 1px #4a5058 !important;
+}
+.card[data-rarity="Comum"]::before{background:linear-gradient(180deg,#3a3f47ee,#23262ccc);border-left:1px dashed #5a6068;border-right:1px dashed #5a6068;}
+.card[data-rarity="Comum"] .card-art{background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;border-color:#3a3f47 !important;box-shadow:inset 0 0 0 2px #3a3f47,inset 0 0 22px #00000080 !important;}
+.card[data-rarity="Comum"] .card-bottom{background:#23262c !important;border-top:1px dashed #3a3f47 !important;color:#ffffff !important;}
+.card[data-rarity="Comum"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;}
+.card[data-rarity="Comum"] .card-meta{color:#c8ccd2 !important}
+.card[data-rarity="Comum"] .card-meta .rarity{color:#ffffff !important;}
+.card[data-rarity="Comum"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Comum"] .gender-badge{color:#c8ccd2 !important}
+
+/* RARO */
+.card[data-rarity="Raro"]{
+  background:#0a1a26 !important;border-color:#65c9ff !important;
+  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,
+    inset 0 0 0 3px #65c9ff,inset 0 0 0 5px #0a1a26,inset 0 0 0 1px #65c9ff88,0 0 18px #65c9ff55 !important;
+}
+.card[data-rarity="Raro"]::before{background:linear-gradient(180deg,#65c9ffee,#2f8fbfcc);border-left:1px dashed #a8e3ff;border-right:1px dashed #a8e3ff;}
+.card[data-rarity="Raro"] .card-art{background:radial-gradient(ellipse at 50% 30%,#65c9ff55,transparent 60%),radial-gradient(ellipse at 50% 34%,#123047 0%,#0a1a26 42%,#050c12 100%) !important;border-color:#65c9ff !important;box-shadow:inset 0 0 0 2px #65c9ff,inset 0 0 26px #65c9ff66 !important;}
+.card[data-rarity="Raro"] .card-bottom{background:linear-gradient(180deg,#0a1a26 0%,#050c12 100%) !important;border-top:1px dashed #65c9ff !important;color:#ffffff !important;}
+.card[data-rarity="Raro"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Raro"] .card-meta{color:#b7e6ff !important}
+.card[data-rarity="Raro"] .card-meta .rarity{color:#ffffff !important;}
+.card[data-rarity="Raro"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Raro"] .gender-badge{color:#b7e6ff !important}
+
+/* ÉPICO */
+.card[data-rarity="Épico"]{
+  background:#1a0f26 !important;border-color:#d99aff !important;
+  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,
+    inset 0 0 0 3px #d99aff,inset 0 0 0 5px #1a0f26,inset 0 0 0 1px #d99aff88,0 0 18px #d99aff55 !important;
+}
+.card[data-rarity="Épico"]::before{background:linear-gradient(180deg,#d99affee,#8a4fbfcc);border-left:1px dashed #eccaff;border-right:1px dashed #eccaff;}
+.card[data-rarity="Épico"] .card-art{background:radial-gradient(ellipse at 50% 30%,#d99aff55,transparent 60%),radial-gradient(ellipse at 50% 34%,#2a1640 0%,#1a0f26 42%,#0a0510 100%) !important;border-color:#d99aff !important;box-shadow:inset 0 0 0 2px #d99aff,inset 0 0 26px #d99aff66 !important;}
+.card[data-rarity="Épico"] .card-bottom{background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important;border-top:1px dashed #d99aff !important;color:#ffffff !important;}
+.card[data-rarity="Épico"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Épico"] .card-meta{color:#e8ccff !important}
+.card[data-rarity="Épico"] .card-meta .rarity{color:#ffffff !important;}
+.card[data-rarity="Épico"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Épico"] .gender-badge{color:#e8ccff !important}
+
+/* LENDÁRIO */
+.card[data-rarity="Lendário"]{
+  background:#1f1603 !important;border-color:#e8a800 !important;
+  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,
+    inset 0 0 0 3px #e8a800,inset 0 0 0 5px #1f1603,inset 0 0 0 1px #e8a80088,0 0 20px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"]::before{background:linear-gradient(180deg,#e8a800ee,#a06f00cc);border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a;}
+.card[data-rarity="Lendário"] .card-art{background:radial-gradient(ellipse at 50% 30%,#e8a80066,transparent 60%),radial-gradient(ellipse at 50% 34%,#3a2a05 0%,#1f1603 42%,#0c0801 100%) !important;border-color:#e8a800 !important;box-shadow:inset 0 0 0 2px #e8a800,inset 0 0 28px #e8a80077 !important;}
+.card[data-rarity="Lendário"] .card-bottom{background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important;border-top:1px dashed #e8a800 !important;color:#ffffff !important;}
+.card[data-rarity="Lendário"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Lendário"] .card-meta{color:#ffe2a0 !important}
+.card[data-rarity="Lendário"] .card-meta .rarity{color:#ffffff !important;}
+.card[data-rarity="Lendário"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Lendário"] .gender-badge{color:#ffe2a0 !important}
+
+.card[data-rarity="Lendário"]::after{
+  content:'' !important;display:block !important;position:absolute !important;inset:6px !important;
+  border-radius:2px !important;
+  background-image:linear-gradient(110deg,transparent 42%,#fff0b000 44%,#fff8d8b3 50%,#fff0b000 56%,transparent 58%) !important;
+  background-size:300% 100% !important;background-repeat:no-repeat !important;background-position:100% 0;
+  mix-blend-mode:overlay !important;pointer-events:none !important;z-index:5 !important;
+  animation:shineGold 5s ease-in-out infinite !important;animation-delay:1s !important;
+}
+@keyframes shineGold{0%,65%{background-position:100% 0;}100%{background-position:0% 0;}}
+.card[data-rarity="Lendário"] .card-bottom{ z-index:11; }
+
+.card.missing{
+  box-shadow:0 2px 4px #00000030,0 8px 16px #00000025,
+    inset 0 0 0 3px #b8a070,inset 0 0 0 5px #fffaf0,inset 0 0 0 1px #c9b78a !important;
+}
+.card.missing .card-art{
+  box-shadow: inset 0 0 0 2px #b8a070 !important;
+  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px) !important;
+  filter: grayscale(1);
+}
+.card.missing .card-meta .rarity,
+.card.missing .card-number{color:#a89070 !important;text-shadow: none !important;}
+.card.missing::after{ display: none !important; }
+
+.mini .mini-shine{display:none}
+.mini[data-rarity="Lendário"] .mini-shine{
+  display:block;position:absolute;inset:0;border-radius:7px;z-index:4;pointer-events:none;
+  background-image:linear-gradient(110deg,transparent 40%,#fff0b000 43%,#fff8d8cc 50%,#fff0b000 57%,transparent 60%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  mix-blend-mode:screen;opacity:0;
+}
+.mini.revealed[data-rarity="Lendário"] .mini-shine{opacity:1;animation:shineGoldMini 2.6s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 850ms);}
+@keyframes shineGoldMini{0%,35%{background-position:100% 0;}100%{background-position:0% 0;}}
+.mini.revealed[data-rarity="Lendário"]::before{opacity:.8;animation-duration:1.6s;}
+.mini{box-shadow:0 4px 12px #0008,0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);}
+
+.rarity-legend{display:flex;flex-wrap:wrap;gap:14px;margin: 6px 0 18px;font-size: 11px;font-style: italic;color:#7a5a2b;}
+.rarity-legend span{display:inline-flex;align-items:center;gap:6px;}
+.rarity-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid #fffaf0;box-shadow: inset 0 0 0 2px #c9b78a;}
+.rarity-legend i.r-comum{ background:#2b2f36; box-shadow: inset 0 0 0 2px #2b2f36, 0 0 0 1px #5a6068; }
+.rarity-legend i.r-raro{ background:#65c9ff; box-shadow: inset 0 0 0 2px #65c9ff; }
+.rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
+.rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
+
+.detail-info h3#detailName{color: var(--rarity-color) !important;font-family: var(--site-font-body) !important;font-weight: 900 !important;letter-spacing: -.2px !important;text-shadow: 0 1px 0 #ffffff80 !important;}
+.detail-info .detail-brand{color: #2e2216 !important;}
+.detail-info .detail-brand .brand-fallback{color: #2e2216 !important;display: none !important;}
+.detail-info .detail-rarity{color: var(--rarity-color, #2e2216) !important;background: #fffaf0 !important;border-color: var(--rarity-color, #2e2216) !important;font-weight: 900;}
+.detail-info .detail-gender{background: #e8d9b8 !important;color: #2e2216 !important;border-color: #b8a070 !important;font-weight: 900;}
+.detail-info .detail-status{color: #2e2216 !important;}
+.detail-info .detail-status strong{color: var(--rarity-color) !important;font-weight: 900 !important;}
+
+.detail-photo-wrap{position: relative;overflow: hidden;}
+.detail-photo-wrap::after{
+  content:'';position:absolute;inset:0;border-radius:12px;
+  background-image:linear-gradient(110deg,transparent 42%,#fff0b000 44%,#fff8d8b3 50%,#fff0b000 56%,transparent 58%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  mix-blend-mode:overlay;pointer-events:none;z-index:6;
+  animation:shineGold 5s ease-in-out infinite;animation-delay:1s;opacity:0;
+}
+.detail[data-rarity="Lendário"] .detail-photo-wrap::after{opacity:1;}
+.detail[data-rarity="Lendário"]{
+  box-shadow:0 20px 80px #000b,inset 0 0 40px #c9b78a40,0 0 0 6px #fffaf0,0 0 0 7px #e8a800,0 0 32px #e8a80066 !important;
+  border-color: #e8a800 !important;
+}
+
+@media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
+@media(max-width:470px){.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
+
+/* ============================================================
+   MODO REVISTA FOLHEÁVEL
+   ============================================================ */
+.book{position:relative;max-width:1180px;margin:0 auto;padding:0;perspective:2600px;perspective-origin:50% 40%;}
+.book-stage{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:600px;transform-style:preserve-3d;}
+.book-stage::before{
+  content:'';position:absolute;top:0;bottom:0;left:50%;width:34px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,#0000 0%,#00000040 35%,#00000070 50%,#00000040 65%,#0000 100%);
+  z-index:20;pointer-events:none;border-radius:2px;
+}
+.page{
+  position:relative;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),
+    radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);
+  padding:22px 18px 20px;
+  box-shadow:
+    inset 0 0 40px #a07c4a30,
+    inset 14px 0 20px -14px #00000055,
+    inset -14px 0 20px -14px #00000055;
+  border-radius:8px;
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.2,.8,.2,1), box-shadow .55s;
+  backface-visibility:hidden;
+  border:1px solid #b8a070;
+}
+.page.page-left  { border-radius:10px 4px 4px 10px; }
+.page.page-right { border-radius:4px 10px 10px 4px; }
+.book-stage.flipping .page-right{
+  transform:rotateY(-10deg);
+  box-shadow:inset 0 0 40px #a07c4a30,inset -30px 0 40px -20px #00000088,30px 0 60px #00000050;
+}
+.book-stage.flipping .page-left{
+  transform:rotateY(6deg);
+}
+.page .grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px 12px;
+  padding:0;
+  perspective:none;
+}
+.book-nav{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;
+}
+.book-nav button{
+  border:1px solid #b8a070;background:#fffaf0;color:#5a1a12;
+  font-weight:900;font-family:var(--site-font-heading);letter-spacing:1px;
+  padding:10px 18px;border-radius:8px;cursor:pointer;
+  box-shadow:2px 2px 0 #c9b78a80;
+  transition:transform .15s, background .15s;
+  font-size:14px;
+}
+.book-nav button:hover:not(:disabled){background:#f5ebd2;transform:translateY(-1px);}
+.book-nav button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none;}
+.book-nav .page-indicator{font-size:13px;color:#7a5a2b;font-weight:800;font-style:italic;}
+.book-nav .page-indicator b{color:#8a0f20;}
+.book-hint{text-align:center;font-size:11px;color:#9b8a6a;font-style:italic;margin-top:6px;}
+
+@media (max-width:820px){
+  .book-stage{grid-template-columns:1fr;min-height:0;}
+  .book-stage::before{display:none;}
+  .page.page-left  {border-radius:10px 10px 4px 4px;}
+  .page.page-right {border-radius:4px 4px 10px 10px;}
+  .page + .page{margin-top:14px;}
+  .page .grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media (max-width:470px){
+  .page{padding:16px 12px;}
+  .page .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px;}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body><div id="app">
+<header>
+ <div class="topline">
+  <div class="brand">WWE <span>CARD VAULT</span></div>
+  <div id="auth-area">
+    <button class="btn twitch" id="loginBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 2L1 5.295v14.51h4.659V22h4.066l2.61-2.195h3.799L23 13.266V2H4.265zm16.32 10.263L16.95 16.01h-4.659l-2.42 2.195v-2.195H5.32V3.562h15.265v8.701zm-4.636-5.35v6.042h-1.515V6.913h1.515zm-4.154 0v6.042H10.28V6.913h1.515z"/></svg>
+      Entrar com Twitch
+    </button>
+    <div class="user-info" id="userProfile" style="display:none">
+      <img id="userAvatar" src="" alt="Avatar">
+      <span id="userName">A carregar...</span>
+      <button class="btn ghost" id="logoutBtn" style="padding:4px 8px;font-size:10px;margin-left:8px;">Sair</button>
+    </div>
+  </div>
+ </div>
+ <div class="hero">
+  <div class="eyebrow">Álbum de cromos · Edição 2026</div>
+  <h1>COLECIONA.<br>COMPLETA. DOMINA.</h1>
+  <p>Constrói o teu álbum de Superstars. Descobre cromos, acompanha o progresso e abre saquetas para encontrar raridades.</p>
+ </div>
+</header>
+<main class="shell" id="main-content" style="display:none">
+ <section class="stats" aria-label="Estatísticas da coleção">
+  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 113</small></strong><span class="stat-sub" id="dupCount">Repetidos: <b>0</b></span></div>
+  <div class="stat"><label>Álbum completo</label><strong id="percent">0%</strong><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
+  <div class="stat"><label>Saquetas abertas</label><strong id="packsOpened">0</strong></div>
+  <div class="stat"><label>Raridades</label><strong id="rarityBreakdown" style="font-size:14px;line-height:1.5">—</strong></div>
+ </section>
+ <div class="toolbar">
+  <input class="search" id="search" placeholder="🔎  Procurar Superstar..." aria-label="Procurar Superstar">
+  <select class="filter" id="category" aria-label="Filtrar por categoria">
+   <option value="all">Todas as categorias</option>
+   <option value="RAW">RAW</option>
+   <option value="SmackDown">SmackDown</option>
+   <option value="Legends">Legends</option>
+   <option value="Free Agent">Free Agent</option>
+  </select>
+  <select class="filter" id="genderFilter" aria-label="Filtrar por género">
+   <option value="all">Todos os géneros</option>
+   <option value="Male">Masculino</option>
+   <option value="Female">Feminino</option>
+  </select>
+  <select class="filter" id="rarityFilter" aria-label="Filtrar por raridade">
+   <option value="all">Todas as raridades</option>
+   <option value="Comum">Comum</option>
+   <option value="Raro">Raro</option>
+   <option value="Épico">Épico</option>
+   <option value="Lendário">Lendário</option>
+  </select>
+  <select class="filter" id="ownership" aria-label="Filtrar cromos">
+   <option value="all">Todos os cromos</option>
+   <option value="owned">Na coleção</option>
+   <option value="missing">Em falta</option>
+  </select>
+  <button class="btn pulse" id="openPack">✦ Abrir saqueta (3)</button>
+  <button class="btn trade-btn" id="openTradeBtn" style="display:none">🔄 Trocas</button>
+ </div>
+ <div class="section-head">
+  <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
+  <span id="visibleCount" style="color:#7a5a2b;font-size:12px;font-style:italic">113 cromos</span>
+ </div>
+ <div class="rarity-legend" aria-label="Legenda de raridades">
+  <span><i class="r-comum"></i> Comum</span>
+  <span><i class="r-raro"></i> Raro</span>
+  <span><i class="r-epico"></i> Épico</span>
+  <span><i class="r-lendario"></i> Lendário</span>
+ </div>
+
+ <div class="book" id="book">
+   <div class="book-stage" id="bookStage">
+     <div class="page page-left"  id="pageLeft"></div>
+     <div class="page page-right" id="pageRight"></div>
+   </div>
+   <div class="book-nav">
+     <button id="prevPage" aria-label="Página anterior">‹ Anterior</button>
+     <span class="page-indicator" id="pageIndicator">Página <b>1</b></span>
+     <button id="nextPage" aria-label="Página seguinte">Seguinte ›</button>
+   </div>
+   <div class="book-hint">Arrasta a página para virar · usa ← → no teclado</div>
+ </div>
+
+ <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
+</main>
+<div id="welcome-screen" class="shell" style="text-align:center;padding-top:60px;display:none">
+  <h2 style="font-family:var(--site-font-heading);font-size:36px;margin-bottom:10px">BEM-VINDO À ARENA</h2>
+  <p style="color:#9da1ab;margin-bottom:24px">Faz login com a tua conta Twitch para começares a colecionar e guardares o teu progresso na nuvem.</p>
+</div>
+
+<!-- Modal saqueta -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <div class="modal" id="modalBox">
+  <h3 id="modalTitle">SAQUETA ABERTA!</h3>
+  <p id="modalText">Encontraste novos cromos.</p>
+  <div class="pack-cards" id="packCards"></div>
+  <div class="modal-actions">
+   <button class="btn" id="claimPack">Guardar cromos</button>
+   <button class="btn secondary" id="closeModal">Fechar</button>
+  </div>
+  <div class="toast-hint">Dica: podes fechar com ESC</div>
+ </div>
+</div>
+
+<!-- Modal detalhe -->
+<div class="detail-backdrop" id="detailBackdrop" role="dialog" aria-modal="true" aria-labelledby="detailName">
+ <div class="detail" id="detailBox">
+  <button class="detail-close" id="detailClose" aria-label="Fechar detalhes">✕</button>
+  <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
+  <div class="detail-info">
+   <h3 id="detailName">—</h3>
+   <span class="detail-brand" id="detailBrand">—</span>
+   <span class="detail-rarity" id="detailRarity">—</span>
+   <span class="detail-gender" id="detailGender">—</span>
+   <p class="detail-status" id="detailStatus">—</p>
+  </div>
+ </div>
+</div>
+
+<!-- Modal Trocas -->
+<div class="detail-backdrop" id="tradeBackdrop" role="dialog" aria-modal="true">
+ <div class="trade-modal">
+  <button class="detail-close" id="tradeClose" aria-label="Fechar">✕</button>
+  <div class="trade-header">
+    <h3>🔄 MERCADO DE TROCAS</h3>
+  </div>
+  <div class="trade-tabs">
+    <div class="trade-tab active" data-target="send">Enviar Oferta</div>
+    <div class="trade-tab" data-target="receive">Recebidas</div>
+    <div class="trade-tab" data-target="history">Histórico</div>
+  </div>
+
+  <div class="trade-content active" id="tab-send">
+    <p style="font-size:12px;color:#7a5a2b;margin-top:0">Só podes trocar cromos que tenhas em duplicado. Só podes pedir cromos que te faltam.</p>
+    <select class="trade-select" id="tradeMyCard">
+      <option value="">O cromo que eu dou...</option>
+    </select>
+    <input type="text" class="trade-input" id="tradeFriendName" placeholder="Nome de Twitch do amigo">
+    <select class="trade-select" id="tradeTheirCard">
+      <option value="">O cromo que eu quero...</option>
+    </select>
+    <button class="btn" id="submitTrade" style="width:100%;margin-top:10px;background:#f59e0b;color:#18130b;">Enviar Proposta</button>
+  </div>
+
+  <div class="trade-content" id="tab-receive">
+    <div class="trade-list" id="receivedList">
+      <p style="text-align:center;color:#9da1ab;font-size:12px;">A procurar trocas...</p>
+    </div>
+  </div>
+
+  <div class="trade-content" id="tab-history">
+    <div class="trade-list" id="historyList">
+      <p style="text-align:center;color:#9da1ab;font-size:12px;">O teu histórico está vazio.</p>
+    </div>
+  </div>
+ </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ================= CONFIGURAÇÃO SUPABASE ================= */
+const SUPABASE_URL = 'https://zrrrpikpmfimmccmbqyo.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ================= DADOS ================= */
+const wrestlers = [
+ {id:1,   name:'John Cena',                  initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/john-cena.png'},
+ {id:2,   name:'The Undertaker',             initials:'TAKER',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/undertaker.png'},
+ {id:3,   name:'Stone Cold Steve Austin',    initials:'SCSA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/stone-cold.png'},
+ {id:4,   name:'The Rock',                   initials:'ROCK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/the-rock.png'},
+ {id:5,   name:'Hulk Hogan',                 initials:'HOGAN',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/hulk-hogan.png'},
+ {id:6,   name:'Triple H',                   initials:'HHH',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/triple-h.png'},
+ {id:7,   name:'Shawn Michaels',             initials:'HBK',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/shawn-michaels.png'},
+ {id:8,   name:'Bret Hart',                  initials:'BRET',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/bret-hart.png'},
+ {id:9,   name:'André the Giant',            initials:'ANDRÉ',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/andre-giant.png'},
+ {id:10,  name:'"Macho Man" Randy Savage',   initials:'SAVAGE',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/randy-savage.png'},
+ {id:11,  name:'Ric Flair',                  initials:'FLAIR',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/ric-flair.png'},
+ {id:12,  name:'Eddie Guerrero',             initials:'EDDIE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/eddie-guerrero.png'},
+ {id:13,  name:'Kurt Angle',                 initials:'ANGLE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kurt-angle.png'},
+ {id:14,  name:'Chris Jericho',              initials:'JERICHO', brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/chris-jericho.png'},
+ {id:15,  name:'Batista',                    initials:'ANIMAL',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/batista.png'},
+ {id:16,  name:'Trish Stratus',              initials:'TRISH',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/trish-stratus.png'},
+ {id:17,  name:'Lita',                       initials:'LITA',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/lita.png'},
+ {id:18,  name:'Chyna',                      initials:'CHYNA',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/chyna.png'},
+ {id:19,  name:'Rey Mysterio',               initials:'REY',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/rey-mysterio.png'},
+ {id:20,  name:'Becky Lynch',                initials:'BECKY',   brand:'RAW',       rarity:'Lendário', gender:'Female', image:'img/becky-lynch.png'},
+ {id:21,  name:'Charlotte Flair',            initials:'QUEEN',   brand:'SmackDown', rarity:'Lendário', gender:'Female', image:'img/charlotte-flair.png'},
+ {id:22,  name:'CM Punk',                    initials:'PUNK',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/cm-punk.png'},
+ {id:23,  name:'Roman Reigns',               initials:'OTC',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/roman-reigns.png'},
+ {id:24,  name:'Seth Rollins',               initials:'SETH',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/seth-rollins.png'},
+ {id:25,  name:'Randy Orton',                initials:'RKO',     brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/randy-orton.png'},
+ {id:26,  name:'Cody Rhodes',                initials:'CODY',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/cody-rhodes.png'},
+ {id:27,  name:'Mick Foley',                 initials:'FOLEY',   brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/mick-foley.png'},
+ {id:28,  name:'Kane',                       initials:'KANE',    brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/kane.png'},
+ {id:29,  name:'Big Show',                   initials:'SHOW',    brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/big-show.png'},
+ {id:30,  name:'Booker T',                   initials:'BOOK',    brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/booker-t.png'},
+ {id:31,  name:'Rob Van Dam',                initials:'RVD',     brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/rob-van-dam.png'},
+ {id:32,  name:'Beth Phoenix',               initials:'BETH',    brand:'Legends',   rarity:'Épico',    gender:'Female', image:'img/beth-phoenix.png'},
+ {id:33,  name:'Mickie James',               initials:'MICKIE',  brand:'Legends',   rarity:'Épico',    gender:'Female', image:'img/mickie-james.png'},
+ {id:34,  name:'Rhea Ripley',        initials:'MAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/rhea-ripley.png'},
+ {id:35,  name:'Liv Morgan',         initials:'LIV',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/liv-morgan.png'},
+ {id:36,  name:'Sami Zayn',          initials:'SAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/sami-zayn.png'},
+ {id:37,  name:'Jacob Fatu',         initials:'FATU',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/jacob-fatu.png'},
+ {id:38,  name:'Bayley',             initials:'BAY',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/bayley.png'},
+ {id:39,  name:'Stephanie Vaquer',   initials:'STEPH',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/stephanie-vaquer.png'},
+ {id:40,  name:'Paige',              initials:'PAIGE',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/paige.png'},
+ {id:41,  name:'Bron Breakker',      initials:'BRON',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/bron-breakker.png'},
+ {id:42,  name:'Dominik Mysterio',   initials:'DOM',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/dominik-mysterio.png'},
+ {id:43,  name:'Jey Uso',            initials:'YEET',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/jey-uso.png'},
+ {id:44,  name:'Logan Paul',         initials:'LOGAN',  brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/logan-paul.png'},
+ {id:45,  name:'Chad Gable',         initials:'GABLE',  brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/chad-gable.png'},
+ {id:46,  name:'Oba Femi',           initials:'OBA',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/oba-femi.png'},
+ {id:47,  name:'Solo Sikoa',         initials:'SOLO',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/solo-sikoa.png'},
+ {id:48,  name:'Alexa Bliss',        initials:'ALEXA',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/alexa-bliss.png'},
+ {id:49,  name:'Iyo Sky',            initials:'SKY',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/iyo-sky.png'},
+ {id:50,  name:'LA Knight',          initials:'YEAH',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/la-knight.png'},
+ {id:51,  name:'Tiffany Stratton',   initials:'TIFFY',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/tiffany-stratton.png'},
+ {id:52,  name:'Asuka',              initials:'ASUKA',  brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/asuka.png'},
+ {id:53,  name:'Raquel Rodriguez',   initials:'RAQ',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/raquel-rodriguez.png'},
+ {id:54,  name:'Jade Cargill',       initials:'JADE',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jade-cargill.png'},
+ {id:55,  name:'Bianca Belair',      initials:'EST',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/bianca-belair.png'},
+ {id:56,  name:'Chelsea Green',      initials:'GREEN',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/chelsea-green.png'},
+ {id:57,  name:'Damian Priest',      initials:'PRIEST', brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/damian-priest.png'},
+ {id:58,  name:'Drew McIntyre',      initials:'DREW',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/drew-mcintyre.png'},
+ {id:59,  name:'Finn Bálor',         initials:'BALOR',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/finn-balor.png'},
+ {id:60,  name:'Gunther',            initials:'GUNTR',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/gunther.png'},
+ {id:61,  name:'Jacy Jayne',         initials:'JACY',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jacy-jayne.png'},
+ {id:62,  name:'Kevin Owens',        initials:'KO',     brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/kevin-owens.png'},
+ {id:63,  name:'Trick Williams',     initials:'TRICK',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/trick-williams.png'},
+ {id:64,  name:'AJ Lee',             initials:'AJ',     brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/aj-lee.png'},
+ {id:65,  name:'Brie Bella',         initials:'BRIE',   brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/brie-bella.png'},
+ {id:66,  name:'Nikki Bella',        initials:'NIKKI',  brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/nikki-bella.png'},
+ {id:67,  name:'Jimmy Uso',          initials:'JIMMY',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jimmy-uso.png'},
+ {id:68,  name:'Carmelo Hayes',      initials:'HAYES',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/carmelo-hayes.png'},
+ {id:69,  name:'Naomi',              initials:'GLOW',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/naomi.png'},
+ {id:70,  name:'Montez Ford',        initials:'FORD',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/montez-ford.png'},
+ {id:71,  name:'Rusev',              initials:'RUSEV',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rusev.png'},
+ {id:72,  name:'Dragon Lee',         initials:'LEE',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/dragon-lee.png'},
+ {id:73,  name:'Shinsuke Nakamura',  initials:'SHIN',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/shinsuke-nakamura.png'},
+ {id:74,  name:'Austin Theory',      initials:'THEORY', brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/austin-theory.png'},
+ {id:75,  name:'Bronson Reed',       initials:'REED',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/bronson-reed.png'},
+ {id:76,  name:'Ethan Page',         initials:'EGO',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/ethan-page.png'},
+ {id:77,  name:'Je\'Von Evans',      initials:'JEVON',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jevon-evans.png'},
+ {id:78,  name:'JD McDonagh',        initials:'JD',     brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jd-mcdonagh.png'},
+ {id:79,  name:'Angelo Dawkins',     initials:'ANGELO', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/angelo-dawkins.png'},
+ {id:80,  name:'Otis',               initials:'OTIS',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/otis.png'},
+ {id:81,  name:'Blake Monroe',       initials:'BLAKE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/blake-monroe.png'},
+ {id:82,  name:'Giulia',             initials:'GIULIA', brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/giulia.png'},
+ {id:83,  name:'Penta',              initials:'PENTA',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/penta.png'},
+ {id:84,  name:'Roxanne Perez',      initials:'ROXY',   brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/roxanne-perez.png'},
+ {id:85,  name:'Lyra Valkyria',      initials:'LYRA',   brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/lyra-valkyria.png'},
+ {id:86,  name:'Tatum Paxley',       initials:'TATUM',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/tatum-paxley.png'},
+ {id:87,  name:'Joe Hendry',         initials:'HENDRY', brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/joe-hendry.png'},
+ {id:88,  name:'Pete Dunne',         initials:'DUNNE',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/pete-dunne.png'},
+ {id:89,  name:'Candice LeRae',      initials:'LERAE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/candice-lerae.png'},
+ {id:90,  name:'Johnny Gargano',     initials:'JOHNNY', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/johnny-gargano.png'},
+ {id:91,  name:'Jordynne Grace',     initials:'GRACE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/jordynne-grace.png'},
+ {id:92,  name:'Lash Legend',        initials:'LASH',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/lash-legend.png'},
+ {id:93,  name:'Michin',             initials:'MICHIN', brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/michin.png'},
+ {id:94,  name:'Nathan Frazer',      initials:'FRAZER', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/nathan-frazer.png'},
+ {id:95,  name:'Nia Jax',            initials:'NIA',    brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/nia-jax.png'},
+ {id:96,  name:'Piper Niven',        initials:'PIPER',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/piper-niven.png'},
+ {id:97,  name:'R-Truth',            initials:'TRUTH',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/r-truth.png'},
+ {id:98,  name:'Rey Fenix',          initials:'FENIX',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rey-fenix.png'},
+ {id:99,  name:'Ricky Saints',       initials:'SAINTS', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/ricky-saints.png'},
+ {id:100, name:'Talla Tonga',        initials:'TALLA',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/talla-tonga.png'},
+ {id:101, name:'Tama Tonga',         initials:'TAMA',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/tama-tonga.png'},
+ {id:102, name:'The Miz',            initials:'MIZ',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/the-miz.png'},
+ {id:103, name:'Omos',               initials:'OMOS',   brand:'Free Agent',rarity:'Raro',     gender:'Male',   image:'img/omos.png'},
+ {id:104, name:'Maxxine Dupri',      initials:'DUPRI',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/maxxine-duprie.png'},
+ {id:105, name:'Jaida Parker',       initials:'JAIDA',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/jaida-parker.png'},
+ {id:106, name:'Ivy Nile',           initials:'IVY',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/ivy-nile.png'},
+ {id:107, name:'Royce Keys',         initials:'KEYS',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/royce-keys.png'},
+ {id:108, name:'Joaquin Wilde',      initials:'WILDE',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/joaquin-wilde.png'},
+ {id:109, name:'Cruz Del Toro',      initials:'CRUZ',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/cruz-del-toro.png'},
+ {id:110, name:'Rayo Americano',     initials:'RAYO',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/rayo-americano.png'},
+ {id:111, name:'El Grande Americano',initials:'EGA',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/el-grande-americano.png'},
+ {id:112, name:'Akira Tozawa',       initials:'TOZAWA', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/akira-tozawa.png'},
+ {id:113, name:'Big Cass',           initials:'CASS',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/big-cass.png'},
+ {id:114, name:'Bronco Nima',        initials:'NIMA',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bronco-nima.png'},
+ {id:115, name:'Lucien Price',       initials:'PRICE',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/lucien-price.png'},
+ {id:116, name:'Lola Vice',          initials:'LOLA',   brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/lola-vice.png'},
+ {id:117, name:'Sol Ruca',           initials:'SOL',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/sol-ruca.png'},
+ {id:118, name:'Tyler Bate',         initials:'BATE',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/tyler-bate.png'},
+ {id:119, name:'Ludwig Kaiser',      initials:'KAISER', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/ludwig-kaiser.png'},
+ {id:120, name:'Brutus Creed',       initials:'BRUTUS', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/brutus-creed.png'},
+ {id:121, name:'Julius Creed',       initials:'JULIUS', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/julius-creed.png'},
+ {id:122, name:'Bravo Americano',    initials:'BRAVO',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bravo-americano.png'},
+ {id:123, name:'Nattie',             initials:'NATTIE', brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/nattie.png'},
+ {id:124, name:'Angel',              initials:'ANGEL',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/angel.png'},
+ {id:125, name:'Axiom',              initials:'AXIOM',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/axiom.png'},
+ {id:126, name:'B-Fab',              initials:'BFAB',   brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/b-fab.png'},
+ {id:127, name:'Baron Corbin',       initials:'CORBIN', brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/baron-corbin.png'},
+ {id:128, name:'Berto',              initials:'BERTO',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/berto.png'},
+ {id:129, name:'Elton Prince',       initials:'ELTON',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/elton-prince.png'},
+ {id:130, name:'Erik',               initials:'ERIK',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/erik.png'},
+ {id:131, name:'Fallon Henley',      initials:'FALLON', brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/fallon-henley.png'},
+ {id:132, name:'Ivar',               initials:'IVAR',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/ivar.png'},
+ {id:133, name:'Kiana James',        initials:'KIANA',  brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/kiana-james.png'},
+ {id:134, name:'Kit Wilson',         initials:'KIT',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/kit-wilson.png'},
+ {id:135, name:'Lainey Reid',        initials:'LAINEY', brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/lainey-reid.png'},
+ {id:136, name:'Matt Cardona',       initials:'MATT',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/matt-cardona.png'},
+ {id:137, name:'Danhausen',          initials:'DANH',   brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/danhausen.png'}
+];
+
+const rarityColors={'Comum':'#2b2f36','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#e8a800'};
+const packRarityColors={'Comum':'#9aa3b2'};
+const rarityWeights={'Comum':70,'Raro':21,'Épico':7,'Lendário':2};
+const RARITIES=Object.keys(rarityWeights);
+const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
+const PACK_SIZE=5;
+const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
+const genderLabels={Male:'Masculino',Female:'Feminino'};
+const MAX_PACKS_PER_DAY = 3;
+const IMG_V = 1;
+
+let state = { ownedCounts: {}, packs: 0, recent: new Set() };
+let currentUser=null;
+let pending=[];
+let detailId=null;
+
+let lastUserId;
+
+function onUser(user){
+  const id = user?.id ?? null;
+  if (id === lastUserId) return;
+  lastUserId = id;
+  handleUser(user);
+}
+
+async function initAuth() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  onUser(session?.user);
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    setTimeout(() => onUser(session?.user), 0);
+  });
+}
+
+async function handleUser(user) {
+  currentUser = user;
+  if (user) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    document.getElementById('openTradeBtn').style.display = 'inline-flex';
+    const profile = document.getElementById('userProfile');
+    profile.style.display = 'flex';
+    const twitchName = user.user_metadata.custom_claims?.global_name || user.user_metadata.name || 'Twitch User';
+    document.getElementById('userName').textContent = twitchName;
+    if (user.user_metadata.avatar_url) document.getElementById('userAvatar').src = user.user_metadata.avatar_url;
+    await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() });
+    await loadState();
+  } else {
+    document.getElementById('loginBtn').style.display = 'flex';
+    document.getElementById('userProfile').style.display = 'none';
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('welcome-screen').style.display = 'block';
+    document.getElementById('openTradeBtn').style.display = 'none';
+    state.ownedCounts = {};
+    state.packs = 0;
+    render();
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signInWithOAuth({
+    provider: 'twitch',
+    options: { redirectTo: window.location.origin + window.location.pathname }
+  });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signOut();
+});
+
+async function loadState() {
+  if (!currentUser) return;
+  try {
+    const { data: cardsData, error: cardsError } = await supabaseClient
+      .from('collections').select('card_id').eq('user_id', currentUser.id);
+    if (cardsError) throw cardsError;
+    state.ownedCounts = {};
+    cardsData.forEach(d => {
+        const id = Number(d.card_id);
+        state.ownedCounts[id] = (state.ownedCounts[id] || 0) + 1;
+    });
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const { data: packData, error: packError } = await supabaseClient
+      .from('daily_packs').select('count')
+      .eq('user_id', currentUser.id).eq('date', today).single();
+    if (packError && packError.code !== 'PGRST116') throw packError;
+    state.packs = packData ? (Number(packData.count) || 0) : 0;
+    render();
+  } catch (e) {
+    console.error('Erro detalhado:', e);
+    toast('Erro ao carregar. Verifica a consola (F12).');
+  }
+}
+
+async function saveCardToCloud(cardId) {
+  if (!currentUser) return;
+  try {
+    await supabaseClient.from('collections').insert([{ user_id: currentUser.id, card_id: cardId }]);
+  } catch (e) {
+    console.error('Erro ao guardar cromo:', e);
+  }
+}
+
+const $=id=>document.getElementById(id);
+const rand=n=>Math.floor(Math.random()*n);
+const norm=s=>String(s||'').trim().toLowerCase();
+
+function weightedPick(pool){
+ const byRarity={};
+ pool.forEach(w=>{(byRarity[w.rarity]=byRarity[w.rarity]||[]).push(w);});
+ const available=RARITIES.filter(r=>byRarity[r]&&byRarity[r].length);
+ if(!available.length)return null;
+ const total=available.reduce((s,r)=>s+rarityWeights[r],0);
+ let roll=Math.random()*total;
+ for(const r of available){
+  roll-=rarityWeights[r];
+  if(roll<=0){const arr=byRarity[r];return arr[rand(arr.length)];}
+ }
+ return byRarity[available[available.length-1]][0];
+}
+
+function pickPack(){
+ const pool = wrestlers;
+ const picked = [];
+ let guard = 0;
+ while (picked.length < PACK_SIZE && guard < 500) {
+   const w = weightedPick(pool);
+   if (!w) break;
+   if (!picked.some(p => p.id === w.id)) picked.push(w);
+   guard++;
+ }
+ const unowned = wrestlers.filter(w => !(state.ownedCounts[w.id] > 0));
+ if (unowned.length && !picked.some(p => !(state.ownedCounts[p.id] > 0))) {
+   const candidates = unowned.filter(w => !picked.some(p => p.id === w.id));
+   const fresh = weightedPick(candidates.length ? candidates : unowned);
+   if (fresh) {
+     if (picked.length >= PACK_SIZE) picked[rand(picked.length)] = fresh;
+     else picked.splice(rand(picked.length + 1), 0, fresh);
+   }
+ }
+ return picked;
+}
+
+let toastTimer;
+function toast(msg){
+ const t=$('toast');
+ t.textContent=msg;
+ t.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+function updateStats(){
+ const total=wrestlers.length;
+ const n = Object.keys(state.ownedCounts)
+   .filter(id => state.ownedCounts[id] > 0 && WRESTLER_MAP.has(Number(id)))
+   .length;
+ $('ownedCount').innerHTML=`${n} <small>/ ${total}</small>`;
+ const dupTotal = Object.keys(state.ownedCounts)
+   .filter(id => WRESTLER_MAP.has(Number(id)))
+   .reduce((sum, id) => sum + Math.max((state.ownedCounts[id] || 0) - 1, 0), 0);
+ $('dupCount').innerHTML = `Repetidos: <b>${dupTotal}</b>`;
+ const pct=total?Math.round(n/total*100):0;
+ $('percent').textContent=pct+'%';
+ $('progress').style.width=pct+'%';
+ const packsSafe = Number(state.packs) || 0;
+ $('packsOpened').innerHTML = `${packsSafe} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
+ const counts={};
+ RARITIES.forEach(r=>counts[r]=0);
+ Object.keys(state.ownedCounts).forEach(id=>{
+     const w=WRESTLER_MAP.get(Number(id));
+     if(w && state.ownedCounts[id] > 0) counts[w.rarity]++;
+ });
+ const totalByRarity={};
+ wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
+ $('rarityBreakdown').innerHTML = RARITIES.map(r => {
+    const got = counts[r], tot = totalByRarity[r] || 0;
+    if(!tot) return '';
+    return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#7a5a2b">${got}/${tot}</span></div>`;
+ }).join('');
+ updatePackButton();
+}
+
+function updatePackButton() {
+  const btn = $('openPack');
+  const packsSafe = Number(state.packs) || 0;
+  const remaining = MAX_PACKS_PER_DAY - packsSafe;
+  if (remaining > 0) {
+    btn.innerHTML = `✦ Abrir saqueta (${remaining})`;
+    btn.classList.remove('disabled');
+    btn.disabled = false;
+  } else {
+    btn.innerHTML = `Esgotadas por hoje`;
+    btn.classList.add('disabled');
+    btn.disabled = true;
+  }
+}
+
+function renderCard(w){
+ const qty = state.ownedCounts[w.id] || 0;
+ const has = qty > 0;
+ const isNew=state.recent.has(w.id);
+ const classes=['card'];
+ if(has)classes.push('owned');
+ else classes.push('missing');
+ if(isNew&&has)classes.push('new-badge');
+
+ const finalImage = w.image + '?v=' + IMG_V;
+
+ let art;
+ if(has && w.image){
+   art = `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
+        onerror="this.style.display='none';">`;
+ } else if(!has){
+   art = `<div class="missing-silhouette"></div><div class="missing-q">?</div>`;
+ } else {
+   art = '';
+ }
+
+ const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
+ const brandImage = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ const displayName = has ? w.name : '???';
+ const displayNumber = has ? String(w.id).padStart(3,'0') : '—';
+
+ return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" data-rarity="${has ? w.rarity : 'missing'}" aria-label="${has?w.name:'Cromo em falta'}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
+  <div class="card-art">
+   ${art}
+  </div>
+  ${dupBadge}
+  <div class="card-bottom">
+   <div class="card-number">WWE · ${displayNumber}</div>
+   <div class="card-name">${displayName}</div>
+   <div class="card-meta">
+    <span>
+      ${has ? `<img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'">` : ''}
+      <span class="gender-badge">${has ? (w.gender==='Female'?'♀':'♂') : '·'}</span>
+    </span>
+    <span class="rarity">${has ? w.rarity : '—'}</span>
+   </div>
+  </div>
+ </button>`;
+}
+
+/* ============================================================
+   MODO REVISTA — paginação (12 cromos por "página lógica" = 6+6)
+   ============================================================ */
+const CARDS_PER_PAGE = 12;
+const PER_SIDE = 6;
+let currentPage = 0;
+let pageList = [];
+let flipLock = false;
+
+function splitIntoPages(list) {
+  const pages = [];
+  for (let i = 0; i < list.length; i += CARDS_PER_PAGE) {
+    const chunk = list.slice(i, i + CARDS_PER_PAGE);
+    pages.push({ left: chunk.slice(0, PER_SIDE), right: chunk.slice(PER_SIDE) });
+  }
+  return pages.length ? pages : [{ left: [], right: [] }];
+}
+
+function renderBookPage(animateDir = 0) {
+  const stage = $('bookStage');
+  const pages = splitIntoPages(pageList);
+  const p = pages[Math.min(currentPage, pages.length - 1)];
+
+  const cardHTML = (w, i) => {
+    const html = renderCard(w);
+    return html.replace('class="card', `style="--i:${i}; --rarity-color:${rarityColors[w.rarity]}" class="card`);
+  };
+
+  $('pageLeft').innerHTML  = p.left.map(cardHTML).join('') || `<div class="empty"><span class="empty-icon">📖</span><strong>Página vazia</strong>Tenta ajustar os filtros.</div>`;
+  $('pageRight').innerHTML = p.right.map(cardHTML).join('') || '';
+
+  [$('pageLeft'), $('pageRight')].forEach(pg => {
+    pg.querySelectorAll('.card').forEach(b => {
+      b.addEventListener('click', () => openDetail(Number(b.dataset.id)));
+    });
+  });
+
+  $('pageIndicator').innerHTML = `Página <b>${currentPage + 1}</b> de ${pages.length}`;
+  $('prevPage').disabled = currentPage === 0;
+  $('nextPage').disabled = currentPage >= pages.length - 1;
+
+  if (animateDir !== 0) {
+    stage.classList.remove('flipping');
+    void stage.offsetWidth;
+    stage.classList.add('flipping');
+    setTimeout(() => stage.classList.remove('flipping'), 600);
+  }
+}
+
+function render(animate = false) {
+  const q = norm($('search').value);
+  const cat = norm($('category').value);
+  const gen = $('genderFilter').value;
+  const rar = $('rarityFilter').value;
+  const own = $('ownership').value;
+
+  pageList = wrestlers.filter(w => {
+    if (q) { const hay = norm(w.name) + ' ' + norm(w.brand); if (!hay.includes(q)) return false; }
+    if (cat !== 'all' && norm(w.brand) !== cat) return false;
+    if (gen !== 'all' && w.gender !== gen) return false;
+    if (rar !== 'all' && norm(w.rarity) !== norm(rar)) return false;
+    if (own === 'owned' && !state.ownedCounts[w.id]) return false;
+    if (own === 'missing' && state.ownedCounts[w.id]) return false;
+    return true;
+  });
+
+  pageList.sort((a, b) => {
+    const d = (rarityOrder[a.rarity] || 99) - (rarityOrder[b.rarity] || 99);
+    return d !== 0 ? d : a.id - b.id;
+  });
+
+  currentPage = 0;
+  renderBookPage(animate ? 1 : 0);
+
+  const totalVisible = pageList.length;
+  $('visibleCount').textContent = `${totalVisible} ${totalVisible === 1 ? 'cromo' : 'cromos'}`;
+  $('visibleCount').style.color = '#7a5a2b';
+  $('visibleCount').style.fontStyle = 'italic';
+
+  updateStats();
+}
+
+function clearFilters(){
+ $('search').value='';
+ $('category').value='all';
+ $('genderFilter').value='all';
+ $('rarityFilter').value='all';
+ $('ownership').value='all';
+ render(true);
+}
+
+/* Navegação de páginas */
+$('prevPage').addEventListener('click', () => {
+  if (flipLock || currentPage === 0) return;
+  flipLock = true;
+  currentPage--;
+  renderBookPage(-1);
+  setTimeout(() => flipLock = false, 550);
+});
+
+$('nextPage').addEventListener('click', () => {
+  const pages = splitIntoPages(pageList);
+  if (flipLock || currentPage >= pages.length - 1) return;
+  flipLock = true;
+  currentPage++;
+  renderBookPage(1);
+  setTimeout(() => flipLock = false, 550);
+});
+
+/* Arrastar para virar (rato + touch) */
+(function setupBookDrag() {
+  const stage = $('bookStage');
+  let startX = null, moved = false;
+  stage.addEventListener('pointerdown', e => {
+    if (e.target.closest('button.card')) return;
+    startX = e.clientX;
+    moved = false;
+    try { stage.setPointerCapture(e.pointerId); } catch(_) {}
+  });
+  stage.addEventListener('pointermove', e => {
+    if (startX === null) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 40) moved = true;
+  });
+  const end = e => {
+    if (startX === null) return;
+    const dx = (e.clientX ?? startX) - startX;
+    startX = null;
+    if (!moved) return;
+    if (dx > 60) $('prevPage').click();
+    if (dx < -60) $('nextPage').click();
+  };
+  stage.addEventListener('pointerup', end);
+  stage.addEventListener('pointercancel', () => { startX = null; });
+})();
+
+function openPack(){
+ const packsSafe = Number(state.packs) || 0;
+ if(packsSafe >= MAX_PACKS_PER_DAY) {
+   toast('Já abriste as 3 saquetas de hoje. Volta amanhã!');
+   return;
+ }
+
+ pending=pickPack();
+ state.packs = packsSafe + 1;
+
+ const now = new Date();
+ const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+ supabaseClient.from('daily_packs').upsert(
+   { user_id: currentUser.id, date: today, count: state.packs },
+   { onConflict: 'user_id,date' }
+ ).then(({error}) => { if(error) console.error(error); });
+
+ const seenInPack = new Set();
+ const dupMap = pending.map(w => {
+   const isDup = (state.ownedCounts[w.id] > 0) || seenInPack.has(w.id);
+   seenInPack.add(w.id);
+   return isDup;
+ });
+
+ const totalDup = dupMap.filter(Boolean).length;
+ const totalNew = pending.length - totalDup;
+ $('modalText').textContent = totalDup === pending.length
+  ? `Todos os ${pending.length} cromos são duplicados.`
+  : totalDup === 0
+    ? `A tua saqueta contém ${pending.length} cromos novos!`
+    : `${totalNew} novo${totalNew===1?'':'s'} + ${totalDup} duplicado${totalDup===1?'':'s'}.`;
+
+ const bestRarity = pending.reduce((best,w)=>{
+   return (rarityOrder[w.rarity] || 99) < (rarityOrder[best] || 99) ? w.rarity : best;
+ }, 'Comum');
+ $('modalBox').style.setProperty('--pack-glow', (rarityColors[bestRarity] || '#e8a800') + '66');
+
+ $('packCards').innerHTML=pending.map((w,i)=>{
+  const finalImage = w.image + '?v=' + IMG_V;
+  const isDup = dupMap[i];
+  const mc = packRarityColors[w.rarity] || rarityColors[w.rarity];
+  const inner = w.image
+   ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();">`
+   : '';
+  return `<div class="mini ${isDup?'duplicate':''}" data-rarity="${w.rarity}" style="--rarity-color:${mc}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${mc},#15161c 75%)" title="${isDup?'Já tens este cromo':'Cromo novo'}">
+   ${inner}
+   <span class="mini-shine"></span>
+   <span class="mini-rarity" style="color:${mc}">${w.rarity}</span>
+   ${isDup?'<div class="dup-veil"></div><div class="dup-stamp">DUPLICADO</div>':''}
+  </div>`;
+ }).join('');
+
+ $('modalBackdrop').classList.add('show');
+ $('claimPack').focus();
+
+ requestAnimationFrame(()=>{
+  $('packCards').querySelectorAll('.mini').forEach((el,i)=>{
+   setTimeout(()=>el.classList.add('revealed'), 220 + i*260);
+  });
+ });
+ updateStats();
+}
+
+function claim(){
+ let added=0;
+ pending.forEach(w=>{
+  saveCardToCloud(w.id);
+  if(!state.ownedCounts[w.id]){
+    state.ownedCounts[w.id] = 1;
+    state.recent.add(w.id);
+    added++;
+  } else {
+    state.ownedCounts[w.id]++;
+  }
+ });
+ closeModal();
+ render();
+ if(added){
+  toast(`${added} novo${added===1?' cromo':'s cromos'} guardado${added===1?'':'s'}!`);
+  setTimeout(()=>{state.recent.clear();render();},5000);
+ }else{
+  toast('Desta vez, só duplicados.');
+ }
+}
+
+function closeModal(){
+ $('modalBackdrop').classList.remove('show');
+ $('packCards').querySelectorAll('.mini').forEach(el=>el.classList.remove('revealed'));
+ $('modalBox').style.removeProperty('--pack-glow');
+ pending=[];
+}
+
+function openDetail(id){
+ const w=WRESTLER_MAP.get(id);
+ if(!w)return;
+ detailId=id;
+ const qty = state.ownedCounts[w.id] || 0;
+ const has = qty > 0;
+
+ const photoWrap=$('detailPhotoWrap');
+ photoWrap.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
+
+ const finalImage = w.image + '?v=' + IMG_V;
+
+ const art = (has&&w.image)
+  ? `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();">`
+  : '';
+ photoWrap.innerHTML = art;
+
+ $('detailName').textContent = has ? w.name : '???';
+
+ const brandImg = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ $('detailBrand').innerHTML =
+   `<img src="${brandImg}" alt="${w.brand}"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+    <span class="brand-fallback" style="display:none">${w.brand}</span>`;
+
+ const rar=$('detailRarity');
+ rar.textContent = has ? w.rarity : 'Em falta';
+ rar.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
+
+ $('detailGender').textContent=(w.gender==='Female'?'♀ ':'♂ ')+genderLabels[w.gender];
+
+ $('detailBox').style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
+ $('detailBox').classList.toggle('missing', !has);
+ $('detailBox').setAttribute('data-rarity', has ? w.rarity : 'missing');
+
+ $('detailStatus').innerHTML=has
+  ? `Tens <strong>${qty} unidade(s)</strong> deste cromo na tua coleção.`
+  : `Ainda <strong>não tens</strong> este cromo. Tenta a tua sorte numa saqueta!`;
+
+ $('detailBackdrop').classList.add('show');
+ $('detailClose').focus();
+}
+
+function closeDetail(){
+ $('detailBackdrop').classList.remove('show');
+ detailId=null;
+}
+
+/* ================= SISTEMA DE TROCAS ================= */
+const openTradeBtn = document.getElementById('openTradeBtn');
+const tradeBackdrop = document.getElementById('tradeBackdrop');
+
+openTradeBtn.addEventListener('click', async () => {
+  tradeBackdrop.classList.add('show');
+  await populateTradeSelects();
+  await loadTrades();
+});
+
+document.getElementById('tradeClose').addEventListener('click', () => {
+  tradeBackdrop.classList.remove('show');
+});
+
+document.querySelectorAll('.trade-tab').forEach(tab => {
+  tab.addEventListener('click', (e) => {
+    document.querySelectorAll('.trade-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.trade-content').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('tab-' + e.target.dataset.target).classList.add('active');
+  });
+});
+
+async function populateTradeSelects() {
+  const myCardSelect = document.getElementById('tradeMyCard');
+  myCardSelect.innerHTML = '<option value="">O cromo que eu dou...</option>';
+  Object.keys(state.ownedCounts).forEach(id => {
+    const qty = state.ownedCounts[id];
+    if (qty > 1) {
+      const w = WRESTLER_MAP.get(Number(id));
+      if (w) myCardSelect.innerHTML += `<option value="${w.id}">${w.name} (x${qty})</option>`;
+    }
+  });
+
+  const theirCardSelect = document.getElementById('tradeTheirCard');
+  theirCardSelect.innerHTML = '<option value="">O cromo que eu quero...</option>';
+  wrestlers.forEach(w => {
+    if (!state.ownedCounts[w.id]) {
+      theirCardSelect.innerHTML += `<option value="${w.id}">${w.name} (${w.rarity})</option>`;
+    }
+  });
+}
+
+async function loadTrades() {
+  const receivedList = document.getElementById('receivedList');
+  const historyList = document.getElementById('historyList');
+
+  const { data: received, error: errRec } = await supabaseClient
+    .from('trades_with_usernames').select('*')
+    .eq('receiver_id', currentUser.id).eq('status', 'pending');
+  if (errRec) console.error(errRec);
+
+  if (received && received.length > 0) {
+    receivedList.innerHTML = received.map(t => {
+      const give = WRESTLER_MAP.get(t.receiver_card_id) || {name:'Desconhecido'};
+      const get = WRESTLER_MAP.get(t.sender_card_id) || {name:'Desconhecido'};
+      const senderName = t.sender_username || 'Desconhecido';
+      return `
+        <div class="trade-item">
+          <div class="trade-item-info">
+            <div class="trade-item-sub">Proposta de: <strong>${senderName}</strong></div>
+            <div class="trade-item-cards">
+              Dás: <strong>${give.name}</strong> <span class="trade-arrow">⇄</span> Recebes: <strong>${get.name}</strong>
+            </div>
+          </div>
+          <div class="trade-actions-sm">
+            <button class="btn" style="background:#22c55e" onclick="acceptTrade(${t.id}, this)">Aceitar</button>
+            <button class="btn secondary" onclick="rejectTrade(${t.id}, this)">Recusar</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    receivedList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Não tens propostas pendentes.</p>';
+  }
+
+  const { data: history, error: errHist } = await supabaseClient
+    .from('trades_with_usernames').select('*')
+    .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+    .neq('status', 'pending')
+    .order('created_at', { ascending: false });
+  if (errHist) console.error(errHist);
+
+  if (history && history.length > 0) {
+    historyList.innerHTML = history.map(t => {
+      const isSender = t.sender_id === currentUser.id;
+      const otherName = isSender ? (t.receiver_username || '?') : (t.sender_username || '?');
+      const give = WRESTLER_MAP.get(isSender ? t.sender_card_id : t.receiver_card_id) || {name:'?'};
+      const get = WRESTLER_MAP.get(isSender ? t.receiver_card_id : t.sender_card_id) || {name:'?'};
+      const statusColor = t.status === 'accepted' ? '#16a34a' : '#b91c1c';
+      const title = isSender ? `Para: <strong>${otherName}</strong>` : `De: <strong>${otherName}</strong>`;
+      return `
+        <div class="trade-item">
+          <div class="trade-item-info">
+            <div class="trade-item-sub" style="color:${statusColor};font-weight:900">${t.status.toUpperCase()}</div>
+            <div class="trade-item-sub" style="font-size:10px;margin-bottom:2px">${title}</div>
+            <div class="trade-item-cards">Dei: ${give.name} | Recebi: ${get.name}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    historyList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Ainda não fizeste nenhuma troca.</p>';
+  }
+}
+
+document.getElementById('submitTrade').addEventListener('click', async () => {
+  const myCardId = Number(document.getElementById('tradeMyCard').value);
+  const friendName = document.getElementById('tradeFriendName').value.trim().toLowerCase();
+  const theirCardId = Number(document.getElementById('tradeTheirCard').value);
+
+  if (!myCardId || !friendName || !theirCardId) {
+    return toast('Preenche todos os campos!');
+  }
+
+  if (friendName === document.getElementById('userName').textContent.toLowerCase()) {
+    return toast('Não podes trocar contigo próprio!');
+  }
+
+  const { data: friendData, error: friendErr } = await supabaseClient
+    .from('profiles').select('user_id').eq('username', friendName).single();
+
+  if (friendErr || !friendData) {
+    return toast('Amigo não encontrado. O nome de Twitch está correto?');
+  }
+
+  const { data: friendCards } = await supabaseClient
+    .from('collections').select('card_id').eq('user_id', friendData.user_id).eq('card_id', theirCardId);
+
+  if (!friendCards || friendCards.length < 2) {
+    return toast(`O teu amigo não tem o cromo "${WRESTLER_MAP.get(theirCardId).name}" em duplicado.`);
+  }
+
+  const { error: sendErr } = await supabaseClient
+    .from('trades').insert({
+      sender_id: currentUser.id,
+      receiver_id: friendData.user_id,
+      sender_card_id: myCardId,
+      receiver_card_id: theirCardId
+    });
+
+  if (sendErr) return toast('Erro ao enviar a troca.');
+
+  toast('Proposta enviada com sucesso!');
+  document.getElementById('tradeMyCard').value = '';
+  document.getElementById('tradeFriendName').value = '';
+  document.getElementById('tradeTheirCard').value = '';
+  await loadTrades();
+});
+
+window.acceptTrade = async function(tradeId, btnElement) {
+  btnElement.disabled = true;
+  btnElement.innerHTML = 'A processar...';
+  try {
+    const { data: trade, error } = await supabaseClient.from('trades').select('*').eq('id', tradeId).single();
+    if (error || !trade || trade.status !== 'pending') {
+      return toast('Esta troca já foi processada ou cancelada.');
+    }
+    const { data: recCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.receiver_id).eq('card_id', trade.receiver_card_id).limit(1);
+    if (recCard && recCard.length) await supabaseClient.from('collections').delete().eq('id', recCard[0].id);
+    const { data: senCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.sender_id).eq('card_id', trade.sender_card_id).limit(1);
+    if (senCard && senCard.length) await supabaseClient.from('collections').delete().eq('id', senCard[0].id);
+    await supabaseClient.from('collections').insert([{ user_id: trade.receiver_id, card_id: trade.sender_card_id }]);
+    await supabaseClient.from('collections').insert([{ user_id: trade.sender_id, card_id: trade.receiver_card_id }]);
+    await supabaseClient.from('trades').update({ status: 'accepted' }).eq('id', tradeId);
+    toast('Troca realizada com sucesso!');
+    await loadState();
+    await loadTrades();
+    populateTradeSelects();
+  } catch (e) {
+    console.error(e);
+    toast('Erro ao processar a troca.');
+    btnElement.disabled = false;
+    btnElement.innerHTML = 'Aceitar';
+  }
+};
+
+window.rejectTrade = async function(tradeId, btnElement) {
+  btnElement.disabled = true;
+  btnElement.innerHTML = '...';
+  try {
+    const { data: trade } = await supabaseClient.from('trades').select('status').eq('id', tradeId).single();
+    if (!trade || trade.status !== 'pending') return;
+    await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
+    toast('Proposta recusada.');
+    await loadTrades();
+  } catch(e) {
+    btnElement.disabled = false;
+    btnElement.innerHTML = 'Recusar';
+  }
+};
+
+function setupKeyboard(){
+ document.addEventListener('keydown',e=>{
+  const packOpen=$('modalBackdrop').classList.contains('show');
+  const detailOpen=$('detailBackdrop').classList.contains('show');
+  const tradeOpen=$('tradeBackdrop').classList.contains('show');
+
+  if(e.key==='Escape'){
+   if(packOpen){e.preventDefault();closeModal();}
+   else if(detailOpen){e.preventDefault();closeDetail();}
+   else if(tradeOpen){e.preventDefault();$('tradeBackdrop').classList.remove('show');}
+   return;
+  }
+  if(!packOpen&&!detailOpen&&!tradeOpen){
+    if(e.key==='ArrowLeft')  { e.preventDefault(); $('prevPage').click(); }
+    if(e.key==='ArrowRight') { e.preventDefault(); $('nextPage').click(); }
+    return;
+  }
+
+  if(e.key==='Enter'&&packOpen){
+   e.preventDefault();
+   claim();
+  }
+ });
+ $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeModal();});
+ $('detailBackdrop').addEventListener('click',e=>{if(e.target===$('detailBackdrop'))closeDetail();});
+ $('tradeBackdrop').addEventListener('click',e=>{if(e.target===$('tradeBackdrop'))$('tradeBackdrop').classList.remove('show');});
+}
+
+function init(){
+ $('search').addEventListener('input',()=>render(true));
+ $('category').addEventListener('change',()=>render(true));
+ $('genderFilter').addEventListener('change',()=>render(true));
+ $('rarityFilter').addEventListener('change',()=>render(true));
+ $('ownership').addEventListener('change',()=>render(true));
+ $('openPack').addEventListener('click',openPack);
+ $('claimPack').addEventListener('click',claim);
+ $('closeModal').addEventListener('click',closeModal);
+ $('detailClose').addEventListener('click',closeDetail);
+ setupKeyboard();
+ initAuth();
+}
+init();
+</script>
+</body></html>
