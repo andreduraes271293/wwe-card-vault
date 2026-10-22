@@ -64,10 +64,8 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .card:hover{transform:translateY(-4px);border-color:var(--rarity-color, #ffffff);box-shadow:0 14px 30px #0006, 0 0 15px var(--rarity-color)}
 .card:focus-visible{outline:2px solid var(--rarity-color);outline-offset:3px}
 .card.owned{box-shadow:0 0 15px #0008, inset 0 0 0 1px var(--rarity-color)}
-/* carimbo "NA COLEÇÃO" removido */
 .card.owned:after{content:none !important;display:none !important}
 
-/* "NOVO!" já sem rotação */
 .card.new-badge:before{
   content:'NOVO!';
   position:absolute;
@@ -322,7 +320,7 @@ main.shell::after{
   background:#8a0f20;color:#fff;border:2px solid #fffaf0;border-radius:50%;
   width:32px;height:32px;display:grid;place-items:center;
   bottom: 52px; right: 8px;font-size:11px;box-shadow: 0 2px 6px #0006;
-  z-index:12;   /* acima do .card-bottom dos Lendários (z-index:11) */
+  z-index:12;
 }
 .initials{ color:#fff; text-shadow: 0 3px 0 #0009, 0 0 18px #fff6; }
 
@@ -421,7 +419,7 @@ main.shell::after{
 }
 
 /* ============================================================
-   DIFERENCIAÇÃO POR RARIDADE
+   DIFERENCIAÇÃO POR RARIDADE (agora todas com fundo escuro + texto branco)
    ============================================================ */
 .card{
   box-shadow:
@@ -445,74 +443,205 @@ main.shell::after{
   text-shadow: 0 1px 0 #0006;
 }
 
-/* RARO */
-.card[data-rarity="Raro"] .card-art{
+/* ============================================================
+   COMUM: FUNDO PRETO + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Comum"]{
+  background:#0a0a0a !important;
+  border-color:#0a0a0a !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #2b2b2b,
+    inset 0 0 0 5px #0a0a0a,
+    inset 0 0 0 1px #333 !important;
+}
+.card[data-rarity="Comum"]::before{
+  background:linear-gradient(180deg,#1a1a1aee,#0d0d0dcc);
+  border-left:1px dashed #444;border-right:1px dashed #444;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Comum"] .card-art{
+  background:radial-gradient(ellipse at 50% 30%,#1a1a1a 0%,#0d0d0d 55%,#000 100%) !important;
+  border-color:#333 !important;
+}
+.card[data-rarity="Comum"] .card-art::before{
   background:
-    radial-gradient(ellipse at 50% 30%, #65c9ff22, transparent 60%),
-    radial-gradient(ellipse at 50% 34%, #3a3e47 0%, #1c1e25 42%, #0c0d10 76%);
+    linear-gradient(160deg,#ffffff10,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff06 18px 20px) !important;
 }
-.card[data-rarity="Raro"] .card-photo{
-  filter: contrast(1.06) saturate(1.15) drop-shadow(0 0 6px #65c9ff88);
+.card[data-rarity="Comum"] .card-art::after{
+  background:linear-gradient(180deg,#0000 40%,#000000ee 100%) !important;
 }
-.card[data-rarity="Raro"]:hover{
-  box-shadow:
-    0 4px 8px #00000035,
-    0 14px 26px #00000040,
-    inset 0 0 0 3px var(--rarity-color),
-    inset 0 0 0 5px #fffaf0,
-    inset 0 0 0 1px #c9b78a,
-    0 0 22px #65c9ff66;
+.card[data-rarity="Comum"] .initials{
+  color:#ffffff !important;
+  text-shadow:0 3px 0 #00000080,0 0 18px #ffffff40 !important;
 }
-
-/* ÉPICO */
-.card[data-rarity="Épico"] .card-art{
-  background:
-    radial-gradient(ellipse at 50% 30%, #d99aff33, transparent 60%),
-    radial-gradient(ellipse at 50% 34%, #3a3e47 0%, #1c1e25 42%, #0c0d10 76%);
-  box-shadow:
-    inset 0 0 0 2px var(--rarity-color),
-    inset 0 0 0 4px #ffffff40,
-    inset 0 0 28px #d99aff55;
+.card[data-rarity="Comum"] .card-bottom{
+  background:#0a0a0a !important;
+  border-top:1px dashed #333 !important;
+  color:#ffffff !important;
 }
-.card[data-rarity="Épico"] .card-photo{
-  filter: contrast(1.08) saturate(1.2) drop-shadow(0 0 8px #d99aff88);
-}
-.card[data-rarity="Épico"]:hover{
-  box-shadow:
-    0 4px 8px #00000035,
-    0 14px 26px #00000040,
-    inset 0 0 0 3px var(--rarity-color),
-    inset 0 0 0 5px #fffaf0,
-    inset 0 0 0 1px #c9b78a,
-    0 0 26px #d99aff88;
-}
+.card[data-rarity="Comum"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Comum"] .card-meta{color:#e6e6e6 !important}
+.card[data-rarity="Comum"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Comum"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Comum"] .gender-badge{color:#e6e6e6 !important}
 
 /* ============================================================
-   LENDÁRIO — EFEITO RESTAURADO (sem vermelho)
+   RARO: AZUL (#65c9ff) EM VOLTA + TEXTO BRANCO
    ============================================================ */
+.card[data-rarity="Raro"]{
+  background:#0a1a26 !important;
+  border-color:#65c9ff !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #65c9ff,
+    inset 0 0 0 5px #0a1a26,
+    inset 0 0 0 1px #65c9ff88,
+    0 0 18px #65c9ff55 !important;
+}
+.card[data-rarity="Raro"]::before{
+  background:linear-gradient(180deg,#65c9ffee,#2f8fbfcc);
+  border-left:1px dashed #a8e3ff;border-right:1px dashed #a8e3ff;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Raro"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #65c9ff55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #123047 0%, #0a1a26 42%, #050c12 100%) !important;
+  border-color:#65c9ff !important;
+  box-shadow:
+    inset 0 0 0 2px #65c9ff,
+    inset 0 0 26px #65c9ff66 !important;
+}
+.card[data-rarity="Raro"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Raro"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#050c12ee 100%) !important;
+}
+.card[data-rarity="Raro"] .initials{
+  color:#ffffff !important;
+  text-shadow:0 3px 0 #00000080, 0 0 18px #65c9ffaa !important;
+}
+.card[data-rarity="Raro"] .card-bottom{
+  background:linear-gradient(180deg,#0a1a26 0%,#050c12 100%) !important;
+  border-top:1px dashed #65c9ff !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Raro"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Raro"] .card-meta{color:#b7e6ff !important}
+.card[data-rarity="Raro"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Raro"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Raro"] .gender-badge{color:#b7e6ff !important}
+
+/* ============================================================
+   ÉPICO: ROXO (#d99aff) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Épico"]{
+  background:#1a0f26 !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #d99aff,
+    inset 0 0 0 5px #1a0f26,
+    inset 0 0 0 1px #d99aff88,
+    0 0 18px #d99aff55 !important;
+}
+.card[data-rarity="Épico"]::before{
+  background:linear-gradient(180deg,#d99affee,#8a4fbfcc);
+  border-left:1px dashed #eccaff;border-right:1px dashed #eccaff;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Épico"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #d99aff55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #2a1640 0%, #1a0f26 42%, #0a0510 100%) !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    inset 0 0 0 2px #d99aff,
+    inset 0 0 26px #d99aff66 !important;
+}
+.card[data-rarity="Épico"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Épico"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0a0510ee 100%) !important;
+}
+.card[data-rarity="Épico"] .initials{
+  color:#ffffff !important;
+  text-shadow:0 3px 0 #00000080, 0 0 18px #d99affaa !important;
+}
+.card[data-rarity="Épico"] .card-bottom{
+  background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important;
+  border-top:1px dashed #d99aff !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Épico"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Épico"] .card-meta{color:#e8ccff !important}
+.card[data-rarity="Épico"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Épico"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Épico"] .gender-badge{color:#e8ccff !important}
+
+/* ============================================================
+   LENDÁRIO: DOURADO (#e8a800) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Lendário"]{
+  background:#1f1603 !important;
+  border-color:#e8a800 !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #e8a800,
+    inset 0 0 0 5px #1f1603,
+    inset 0 0 0 1px #e8a80088,
+    0 0 20px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"]::before{
+  background:linear-gradient(180deg,#e8a800ee,#a06f00cc);
+  border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a;
+  box-shadow:0 1px 3px #000a;
+}
 .card[data-rarity="Lendário"] .card-art{
   background:
-    radial-gradient(ellipse at 50% 30%, #e8a80033, transparent 60%),
-    radial-gradient(ellipse at 50% 34%, #3a3e47 0%, #1c1e25 42%, #0c0d10 76%);
+    radial-gradient(ellipse at 50% 30%, #e8a80066, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #3a2a05 0%, #1f1603 42%, #0c0801 100%) !important;
+  border-color:#e8a800 !important;
   box-shadow:
-    inset 0 0 0 2px var(--rarity-color),
-    inset 0 0 0 4px #fff8d040,
-    inset 0 0 32px #e8a80077;
+    inset 0 0 0 2px #e8a800,
+    inset 0 0 28px #e8a80077 !important;
 }
-.card[data-rarity="Lendário"] .card-photo{
-  filter: contrast(1.1) saturate(1.3) drop-shadow(0 0 10px #e8a800aa);
+.card[data-rarity="Lendário"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
 }
-.card[data-rarity="Lendário"]:hover{
-  box-shadow:
-    0 4px 8px #00000035,
-    0 14px 26px #00000040,
-    inset 0 0 0 3px var(--rarity-color),
-    inset 0 0 0 5px #fffaf0,
-    inset 0 0 0 1px #c9b78a,
-    0 0 34px #e8a80099;
+.card[data-rarity="Lendário"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0c0801ee 100%) !important;
 }
+.card[data-rarity="Lendário"] .initials{
+  color:#ffffff !important;
+  text-shadow:0 3px 0 #00000080, 0 0 22px #e8a800cc !important;
+}
+.card[data-rarity="Lendário"] .card-bottom{
+  background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important;
+  border-top:1px dashed #e8a800 !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Lendário"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Lendário"] .card-meta{color:#ffe2a0 !important}
+.card[data-rarity="Lendário"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Lendário"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Lendário"] .gender-badge{color:#ffe2a0 !important}
 
-/* O FEITIÇO DO LENDÁRIO: faixa fina de brilho que entra e sai fora da carta */
+/* brilho animado do Lendário (faixa dourada) */
 .card[data-rarity="Lendário"]::after{
   content:'' !important;
   display:block !important;
@@ -527,7 +656,7 @@ main.shell::after{
     transparent 58%) !important;
   background-size:300% 100% !important;
   background-repeat:no-repeat !important;
-  background-position:100% 0;   /* sem !important: senão bloqueia as keyframes */
+  background-position:100% 0;
   mix-blend-mode:overlay !important;
   pointer-events:none !important;
   z-index:5 !important;
@@ -538,10 +667,9 @@ main.shell::after{
   0%,65% { background-position:100% 0; }
   100%   { background-position:0% 0; }
 }
-/* o painel do nome fica por cima do brilho */
 .card[data-rarity="Lendário"] .card-bottom{ z-index:11; }
 
-/* EM FALTA — mantêm papel cinzento, sem cor de raridade */
+/* EM FALTA — mantém papel cinzento */
 .card.missing{
   box-shadow:
     0 2px 4px #00000030,
@@ -562,14 +690,14 @@ main.shell::after{
 }
 .card.missing::after{ display: none !important; }
 
-/* Mini-cards da saqueta: reforçar cor */
+/* Mini-cards da saqueta */
 .mini{
   box-shadow:
     0 4px 12px #0008,
     0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);
 }
 
-/* Legenda das raridades — com as novas cores */
+/* Legenda das raridades */
 .rarity-legend{
   display:flex;
   flex-wrap:wrap;
@@ -591,14 +719,12 @@ main.shell::after{
   border:2px solid #fffaf0;
   box-shadow: inset 0 0 0 2px #c9b78a;
 }
-.rarity-legend i.r-comum{ background:#2b2b2b; box-shadow: inset 0 0 0 2px #2b2b2b; }
+.rarity-legend i.r-comum{ background:#0a0a0a; box-shadow: inset 0 0 0 2px #0a0a0a, 0 0 0 1px #ffffff40; }
 .rarity-legend i.r-raro{ background:#65c9ff; box-shadow: inset 0 0 0 2px #65c9ff; }
 .rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
 .rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
 
-/* ============================================================
-   MODAL DETALHE: nome e unidades com cor da raridade + imagem do show
-   ============================================================ */
+/* Detalhe */
 .detail-info h3#detailName{
   color: var(--rarity-color);
   text-shadow: 0 2px 0 #00000025;
@@ -926,18 +1052,18 @@ const PACK_SIZE=3;
 const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
 const genderLabels={Male:'Masculino',Female:'Feminino'};
 const MAX_PACKS_PER_DAY = 3;
-const IMG_V = 1;  // sobe este número só quando trocares imagens
+const IMG_V = 1;
 
 let state = { ownedCounts: {}, packs: 0, recent: new Set() };
 let currentUser=null;
 let pending=[];
 let detailId=null;
 
-let lastUserId;  // undefined = ainda não inicializado
+let lastUserId;
 
 function onUser(user){
   const id = user?.id ?? null;
-  if (id === lastUserId) return;   // mesmo utilizador → ignora
+  if (id === lastUserId) return;
   lastUserId = id;
   handleUser(user);
 }
@@ -946,7 +1072,7 @@ async function initAuth() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   onUser(session?.user);
   supabaseClient.auth.onAuthStateChange((_event, session) => {
-    setTimeout(() => onUser(session?.user), 0);  // evita deadlock com chamadas ao supabase
+    setTimeout(() => onUser(session?.user), 0);
   });
 }
 
@@ -1070,7 +1196,6 @@ function updateStats(){
    .filter(id => state.ownedCounts[id] > 0 && WRESTLER_MAP.has(Number(id)))
    .length;
  $('ownedCount').innerHTML=`${n} <small>/ ${total}</small>`;
- // repetidos = cópias além da primeira, somadas em todos os cromos
  const dupTotal = Object.keys(state.ownedCounts)
    .filter(id => WRESTLER_MAP.has(Number(id)))
    .reduce((sum, id) => sum + Math.max((state.ownedCounts[id] || 0) - 1, 0), 0);
