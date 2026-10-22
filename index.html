@@ -253,6 +253,8 @@ main.shell::after{
 .stat label{ color:#7a5a2b; }
 .stat strong{ color:#2b1d0e; }
 .stat small{ color:#7a5a2b; }
+.stat-sub{ display:block; margin-top:5px; font-size:12px; font-weight:800; letter-spacing:.3px; color:#7a5a2b; }
+.stat-sub b{ color:#8a0f20; font-size:14px; font-weight:900; }
 .progress-track{ background:#e2d3b1; }
 .progress-fill{ background: linear-gradient(90deg,#8a0f20,#c8102e,#e0a010); }
 .search, .filter{background:#fffaf0;border:1px solid #b8a070;color:#2b1d0e;box-shadow:inset 1px 1px 2px #00000010;}
@@ -320,8 +322,10 @@ main.shell::after{
   background:#8a0f20;color:#fff;border:2px solid #fffaf0;border-radius:50%;
   width:32px;height:32px;display:grid;place-items:center;
   bottom: 52px; right: 8px;font-size:11px;box-shadow: 0 2px 6px #0006;
+  z-index:12;   /* acima do .card-bottom dos Lendários (z-index:11) */
 }
 .initials{ color:#fff; text-shadow: 0 3px 0 #0009, 0 0 18px #fff6; }
+
 
 /* ============ CROMOS EM FALTA ============ */
 .card.missing{ background:#f0e6cf; }
@@ -663,7 +667,7 @@ main.shell::after{
 </header>
 <main class="shell" id="main-content" style="display:none">
  <section class="stats" aria-label="Estatísticas da coleção">
-  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 113</small></strong></div>
+  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 113</small></strong><span class="stat-sub" id="dupCount">Repetidos: <b>0</b></span></div>
   <div class="stat"><label>Álbum completo</label><strong id="percent">0%</strong><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
   <div class="stat"><label>Saquetas abertas</label><strong id="packsOpened">0</strong></div>
   <div class="stat"><label>Raridades</label><strong id="rarityBreakdown" style="font-size:14px;line-height:1.5">—</strong></div>
@@ -1066,6 +1070,11 @@ function updateStats(){
    .filter(id => state.ownedCounts[id] > 0 && WRESTLER_MAP.has(Number(id)))
    .length;
  $('ownedCount').innerHTML=`${n} <small>/ ${total}</small>`;
+ // repetidos = cópias além da primeira, somadas em todos os cromos
+ const dupTotal = Object.keys(state.ownedCounts)
+   .filter(id => WRESTLER_MAP.has(Number(id)))
+   .reduce((sum, id) => sum + Math.max((state.ownedCounts[id] || 0) - 1, 0), 0);
+ $('dupCount').innerHTML = `Repetidos: <b>${dupTotal}</b>`;
  const pct=total?Math.round(n/total*100):0;
  $('percent').textContent=pct+'%';
  $('progress').style.width=pct+'%';
