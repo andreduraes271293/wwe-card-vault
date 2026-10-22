@@ -105,7 +105,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .modal-backdrop{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:18px;z-index:40;backdrop-filter:blur(3px)}
 .modal-backdrop.show{display:grid;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{max-width:460px;width:100%;background:#181a20;border:1px solid #ffffff25;border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2)}
+.modal{max-width:500px;width:100%;background:#181a20;border:1px solid #ffffff25;border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes slideUp{from{transform:translateY(20px) scale(.95);opacity:0}to{transform:none;opacity:1}}
 .modal h3{font-family:var(--site-font-heading);font-size:30px;margin:0 0 8px}
 .modal p{color:#b8bbc4;font-size:13px;line-height:1.5}
@@ -161,7 +161,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 @keyframes backdropPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 .modal > *{position:relative;z-index:1}
 
-.pack-cards{display:flex;justify-content:center;gap:8px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
+.pack-cards{display:flex;justify-content:center;align-items:center;gap:8px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
 .mini{
   flex:1 1 0;min-width:0;max-width:82px;aspect-ratio:3/4;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
@@ -681,6 +681,25 @@ main.shell::after{
 }
 .card.missing::after{ display: none !important; }
 
+/* Efeito Lendário nas cartas da saqueta */
+.mini .mini-shine{display:none}
+.mini[data-rarity="Lendário"] .mini-shine{
+  display:block;position:absolute;inset:0;border-radius:7px;z-index:4;pointer-events:none;
+  background-image:linear-gradient(110deg,transparent 40%,#fff0b000 43%,#fff8d8cc 50%,#fff0b000 57%,transparent 60%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  mix-blend-mode:screen;opacity:0;
+}
+.mini.revealed[data-rarity="Lendário"] .mini-shine{
+  opacity:1;
+  animation:shineGoldMini 2.6s ease-in-out infinite;
+  animation-delay:calc(var(--burst-delay,0ms) + 850ms);
+}
+@keyframes shineGoldMini{
+  0%,35% { background-position:100% 0; }
+  100%   { background-position:0% 0; }
+}
+.mini.revealed[data-rarity="Lendário"]::before{opacity:.8;animation-duration:1.6s;}
+
 /* Mini-cards da saqueta */
 .mini{
   box-shadow:
@@ -796,7 +815,7 @@ main.shell::after{
 
 /* Responsivos */
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:160px;margin:auto}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
 @media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
 </style>
@@ -1075,6 +1094,7 @@ const wrestlers = [
 ];
 
 const rarityColors={'Comum':'#2b2f36','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#e8a800'};
+const packRarityColors={'Comum':'#9aa3b2'};
 const rarityWeights={'Comum':80,'Raro':15,'Épico':4,'Lendário':1};
 const RARITIES=Object.keys(rarityWeights);
 const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
@@ -1433,12 +1453,14 @@ function openPack(){
  $('packCards').innerHTML=pending.map((w,i)=>{
   const finalImage = w.image + '?v=' + IMG_V;
   const isDup = dupMap[i];
+  const mc = packRarityColors[w.rarity] || rarityColors[w.rarity];
   const inner = w.image
    ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();">`
    : '';
-  return `<div class="mini ${isDup?'duplicate':''}" style="--rarity-color:${rarityColors[w.rarity]}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${rarityColors[w.rarity]},#15161c 75%)" title="${isDup?'Já tens este cromo':'Cromo novo'}">
+  return `<div class="mini ${isDup?'duplicate':''}" data-rarity="${w.rarity}" style="--rarity-color:${mc}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${mc},#15161c 75%)" title="${isDup?'Já tens este cromo':'Cromo novo'}">
    ${inner}
-   <span class="mini-rarity" style="color:${rarityColors[w.rarity]}">${w.rarity}</span>
+   <span class="mini-shine"></span>
+   <span class="mini-rarity" style="color:${mc}">${w.rarity}</span>
    ${isDup?'<div class="dup-veil"></div><div class="dup-stamp">DUPLICADO</div>':''}
   </div>`;
  }).join('');
