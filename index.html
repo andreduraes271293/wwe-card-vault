@@ -818,7 +818,29 @@ main.shell::after{
 }
 
 /* Responsivos */
-@media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
+@media(max-width:600px){
+  .detail,.trade-modal{
+    grid-template-columns:1fr;
+    padding:18px;
+    gap:16px;
+  }
+  /* Correção para o telemóvel: impede a imagem de colapsar */
+  .detail-photo-wrap{
+    max-width:220px;
+    width:100%;
+    margin: 0 auto;
+    min-height: 280px; /* Força uma altura mínima */
+    aspect-ratio: 3/4.15;
+  }
+  /* Garante que a imagem se adapta ao tamanho mínimo */
+  .detail-photo-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
 @media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
 @media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
