@@ -820,17 +820,20 @@ main.shell::after{
 /* Responsivos */
 @media(max-width:600px){
   .detail, .trade-modal {
-    grid-template-columns: 1fr;
-    padding: 18px;
+    grid-template-columns: 1fr; /* Uma coluna apenas */
+    padding: 20px;
     gap: 16px;
+    text-align: center; /* CENTRA TUDO AO MEIO */
   }
+  
   .detail-photo-wrap {
     max-width: 220px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0 auto; /* Centra a imagem */
     min-height: 280px;
     aspect-ratio: 3/4.15;
   }
+  
   .detail-photo-wrap img {
     position: absolute;
     inset: 0;
@@ -838,39 +841,44 @@ main.shell::after{
     height: 100%;
     object-fit: cover;
   }
-  
-  /* O SEGREDO PARA A LINHA "AO MEIO" */
+
+  /* Alinha os itens flexíveis (marca, etiquetas) ao centro */
   .detail-info {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+  }
+
+  /* O nome fica centrado */
+  .detail-info h3#detailName {
+    font-size: 28px;
+    margin: 0 0 8px 0;
+  }
+
+  /* O logo (RAW/SmackDown) centrado */
+  .detail-info .detail-brand {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  /* As etiquetas (Lendário / Masculino) ficam na mesma linha e centradas */
+  .detail-info .detail-rarity,
+  .detail-info .detail-gender {
+    margin-bottom: 8px;
   }
   
-  /* O nome ocupa o espaço que sobra */
-  .detail-info h3#detailName {
-    flex: 1;
-    font-size: 26px; /* Ligeiramente mais pequeno para caber bem */
-    margin: 0;
+  .detail-info .detail-rarity {
+    margin-left: auto;
+    margin-right: 4px;
+  }
+  .detail-info .detail-gender {
+    margin-left: 4px;
+    margin-right: auto;
   }
 
-  /* O logo alinha à direita, sem a margem gigante de baixo */
-  .detail-info .detail-brand {
-    flex-shrink: 0;
-    margin-bottom: 0;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .detail-info .detail-brand img {
-    height: 28px; /* Logo mais pequeno no telemóvel */
-  }
-
-  /* Força as badges (Lendário, Masculino) e o texto a ficarem na linha seguinte */
-  .detail-info .detail-rarity,
-  .detail-info .detail-gender,
   .detail-info .detail-status {
-    width: 100%;
+    margin-top: 12px;
   }
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
