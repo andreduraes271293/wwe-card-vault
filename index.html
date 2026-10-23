@@ -1745,14 +1745,40 @@ document.querySelectorAll('.trade-tab').forEach(tab => {
 async function populateTradeSelects() {
   const myCardSelect = document.getElementById('tradeMyCard');
   myCardSelect.innerHTML = '<option value="">O cromo que eu dou...</option>';
+
+  // 1. Procurar todas as propostas PENDENTES que eu já enviei
+  const { data: pendingTrades } = await supabaseClient
+    .from('trades')
+    .select('sender_card_id')
+    .eq('sender_id', currentUser.id)
+    .eq('status', 'pending');
+
+  // 2. Contar quantas vezes cada cromo está "preso"
+  const lockedCards = {};
+  if (pendingTrades) {
+    pendingTrades.forEach(t => {
+      lockedCards[t.sender_card_id] = (lockedCards[t.sender_card_id] || 0) + 1;
+    });
+  }
+
+  // 3. Calcular o stock real (Total - Presos)
   Object.keys(state.ownedCounts).forEach(id => {
-    const qty = state.ownedCounts[id];
-    if (qty > 1) {
+    const totalQty = state.ownedCounts[id];
+    const lockedQty = lockedCards[id] || 0;
+    const available = totalQty - lockedQty;
+
+    // Só aparece na lista se sobrarem cromos ALÉM do que preciso para a coleção
+    if (available > 1) {
       const w = WRESTLER_MAP.get(Number(id));
-      if (w) myCardSelect.innerHTML += `<option value="${w.id}">${w.name} (x${qty})</option>`;
+      if (w) {
+        myCardSelect.innerHTML += `<option value="${w.id}">${w.name} (Disponíveis: ${available - 1})</option>`;
+      }
     }
   });
 
+  // ==========================================
+  // Cromos que eu quero (Não mudou, só os que me faltam)
+  // ==========================================
   const theirCardSelect = document.getElementById('tradeTheirCard');
   theirCardSelect.innerHTML = '<option value="">O cromo que eu quero...</option>';
   wrestlers.forEach(w => {
@@ -1842,7 +1868,8 @@ async function loadTrades() {
   }
 }
 
-document.getElementById('submitTrade').addEventListener('click', async () => {
+document.getElementById('submitTrade').addEventListener('click', async (e) => {
+  const btn = e.target;
   const myCardId = Number(document.getElementById('tradeMyCard').value);
   const friendName = document.getElementById('tradeFriendName').value.trim().toLowerCase();
   const theirCardId = Number(document.getElementById('tradeTheirCard').value);
@@ -1855,47 +1882,62 @@ document.getElementById('submitTrade').addEventListener('click', async () => {
     return toast('Não podes trocar contigo próprio!');
   }
 
-  // PROTEÇÃO 1: Impedir propostas duplicadas do mesmo cromo
-  const { data: existingTrade } = await supabaseClient
-    .from('trades')
-    .select('id')
-    .eq('sender_id', currentUser.id)
-    .eq('sender_card_id', myCardId)
-    .eq('status', 'pending');
+  btn.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = 'A verificar...';
 
-  if (existingTrade && existingTrade.length > 0) {
-    return toast('Já tens uma proposta pendente com este cromo. Cancela-a primeiro.');
+  try {
+    // PROTEÇÃO 1: Verificar se já existe proposta pendente com ESTE cromo específico
+    const { data: existingTrade } = await supabaseClient
+      .from('trades')
+      .select('id')
+      .eq('sender_id', currentUser.id)
+      .eq('sender_card_id', myCardId)
+      .eq('status', 'pending');
+
+    if (existingTrade && existingTrade.length > 0) {
+      return toast('Já tens uma proposta pendente com este cromo. Cancela-a primeiro no Histórico.');
+    }
+
+    const { data: friendData, error: friendErr } = await supabaseClient
+      .from('profiles').select('user_id').eq('username', friendName).single();
+
+    if (friendErr || !friendData) {
+      return toast('Amigo não encontrado. O nome de Twitch está correto?');
+    }
+
+    const { data: friendCards } = await supabaseClient
+      .from('collections').select('card_id').eq('user_id', friendData.user_id).eq('card_id', theirCardId);
+
+    if (!friendCards || friendCards.length < 2) {
+      return toast(`O teu amigo não tem o cromo "${WRESTLER_MAP.get(theirCardId).name}" em duplicado.`);
+    }
+
+    const { error: sendErr } = await supabaseClient
+      .from('trades').insert({
+        sender_id: currentUser.id,
+        receiver_id: friendData.user_id,
+        sender_card_id: myCardId,
+        receiver_card_id: theirCardId
+      });
+
+    if (sendErr) throw sendErr;
+
+    toast('Proposta enviada com sucesso!');
+    document.getElementById('tradeMyCard').value = '';
+    document.getElementById('tradeFriendName').value = '';
+    document.getElementById('tradeTheirCard').value = '';
+    
+    await loadTrades();
+    await populateTradeSelects(); // <-- IMPORTANTE: Atualiza a lista para tirar o cromo
+
+  } catch (error) {
+    console.error(error);
+    toast('Erro ao enviar a proposta.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
   }
-
-  const { data: friendData, error: friendErr } = await supabaseClient
-    .from('profiles').select('user_id').eq('username', friendName).single();
-
-  if (friendErr || !friendData) {
-    return toast('Amigo não encontrado. O nome de Twitch está correto?');
-  }
-
-  const { data: friendCards } = await supabaseClient
-    .from('collections').select('card_id').eq('user_id', friendData.user_id).eq('card_id', theirCardId);
-
-  if (!friendCards || friendCards.length < 2) {
-    return toast(`O teu amigo não tem o cromo "${WRESTLER_MAP.get(theirCardId).name}" em duplicado.`);
-  }
-
-  const { error: sendErr } = await supabaseClient
-    .from('trades').insert({
-      sender_id: currentUser.id,
-      receiver_id: friendData.user_id,
-      sender_card_id: myCardId,
-      receiver_card_id: theirCardId
-    });
-
-  if (sendErr) return toast('Erro ao enviar a troca.');
-
-  toast('Proposta enviada com sucesso!');
-  document.getElementById('tradeMyCard').value = '';
-  document.getElementById('tradeFriendName').value = '';
-  document.getElementById('tradeTheirCard').value = '';
-  await loadTrades();
 });
 
 window.acceptTrade = async function(tradeId, btnElement) {
