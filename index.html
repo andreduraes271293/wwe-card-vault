@@ -873,24 +873,6 @@ main.shell::after{
     margin-bottom: 12px;
   }
 
-  /* AQUI ESTÁ O TRUQUE: Transformamos o container do texto em flex para alinhar as etiquetas */
-  .detail-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Agrupamos visualmente as etiquetas usando um "wrapper" flexível invisível */
-  .detail-info .detail-rarity,
-  .detail-info .detail-gender {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    vertical-align: middle;
-  }
-
-  /* Como as etiquetas estão soltas no HTML, usamos o flex-wrap para as pôr na mesma linha */
   .detail-info {
     flex-direction: row;
     flex-wrap: wrap;
@@ -902,21 +884,22 @@ main.shell::after{
     width: 100%;
   }
 
-  /* O truque para as alinhar ao meio perfeitamente */
   .detail-info .detail-rarity {
     margin-left: auto; 
-    margin-right: 5px; /* pequeno espaço entre as duas */
+    margin-right: 5px;
   }
   .detail-info .detail-gender {
     margin-left: 5px;
     margin-right: auto;
   }
 
-  /* Corrige a altura para não ficarem desencontradas */
   .detail-info .detail-rarity,
   .detail-info .detail-gender {
-    height: 28px; /* Força a mesma altura */
+    height: 28px;
     box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .detail-info .detail-status {
@@ -1809,6 +1792,18 @@ document.getElementById('submitTrade').addEventListener('click', async () => {
     return toast('Não podes trocar contigo próprio!');
   }
 
+  // ---- PROTEÇÃO 1: Impedir propostas duplicadas do mesmo cromo ----
+  const { data: existingTrade } = await supabaseClient
+    .from('trades')
+    .select('id')
+    .eq('sender_id', currentUser.id)
+    .eq('sender_card_id', myCardId)
+    .eq('status', 'pending');
+
+  if (existingTrade && existingTrade.length > 0) {
+    return toast('Já tens uma proposta pendente com este cromo. Cancela-a primeiro.');
+  }
+
   const { data: friendData, error: friendErr } = await supabaseClient
     .from('profiles').select('user_id').eq('username', friendName).single();
 
@@ -1848,12 +1843,31 @@ window.acceptTrade = async function(tradeId, btnElement) {
     if (error || !trade || trade.status !== 'pending') {
       return toast('Esta troca já foi processada ou cancelada.');
     }
-    const { data: recCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.receiver_id).eq('card_id', trade.receiver_card_id).limit(1);
-    if (recCard && recCard.length) await supabaseClient.from('collections').delete().eq('id', recCard[0].id);
-    const { data: senCard } = await supabaseClient.from('collections').select('id').eq('user_id', trade.sender_id).eq('card_id', trade.sender_card_id).limit(1);
-    if (senCard && senCard.length) await supabaseClient.from('collections').delete().eq('id', senCard[0].id);
+
+    // ---- PROTEÇÃO 2: Verificar stock de ambas as partes no momento do aceite ----
+    // Verifica se o sender (quem enviou) ainda tem o cromo para dar
+    const { data: senCardData } = await supabaseClient.from('collections').select('id').eq('user_id', trade.sender_id).eq('card_id', trade.sender_card_id);
+    if (!senCardData || senCardData.length < 2) {
+       await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
+       return toast('O autor da proposta já não tem este cromo em duplicado. Troca cancelada.');
+    }
+
+    // Verifica se o receiver (quem aceita) ainda tem o cromo para dar
+    const { data: recCardData } = await supabaseClient.from('collections').select('id').eq('user_id', trade.receiver_id).eq('card_id', trade.receiver_card_id);
+    if (!recCardData || recCardData.length < 2) {
+       await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
+       return toast('Já não tens este cromo em duplicado. Troca cancelada.');
+    }
+
+    // Apaga 1 unidade de cada lado
+    await supabaseClient.from('collections').delete().eq('id', senCardData[0].id);
+    await supabaseClient.from('collections').delete().eq('id', recCardData[0].id);
+    
+    // Insere a troca
     await supabaseClient.from('collections').insert([{ user_id: trade.receiver_id, card_id: trade.sender_card_id }]);
     await supabaseClient.from('collections').insert([{ user_id: trade.sender_id, card_id: trade.receiver_card_id }]);
+    
+    // Marca como concluída
     await supabaseClient.from('trades').update({ status: 'accepted' }).eq('id', tradeId);
     toast('Troca realizada com sucesso!');
     await loadState();
