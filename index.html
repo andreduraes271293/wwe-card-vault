@@ -151,6 +151,40 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .trade-actions-sm{display:flex;gap:6px}
 .trade-actions-sm .btn{padding:6px 10px;font-size:11px}
 
+/* Estilo da Tabela de Histórico */
+.trade-table-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #c9b78a;
+  border-radius: 8px;
+  background: #fffaf0;
+}
+.trade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+.trade-table th {
+  position: sticky;
+  top: 0;
+  background: #e8d9b8;
+  color: #5a1a12;
+  padding: 10px;
+  font-weight: 800;
+  border-bottom: 2px solid #c9b78a;
+  z-index: 10;
+}
+.trade-table td {
+  padding: 10px;
+  border-bottom: 1px dashed #c9b78a;
+  color: #2b1d0e;
+  vertical-align: middle;
+}
+.trade-table tr:last-child td {
+  border-bottom: none;
+}
+
 /* --- ABERTURA DE SAQUETA --- */
 .modal{overflow:hidden;position:relative}
 .modal::before{
@@ -1050,8 +1084,20 @@ main.shell::after{
   </div>
 
   <div class="trade-content" id="tab-history">
-    <div class="trade-list" id="historyList">
-      <p style="text-align:center;color:#9da1ab;font-size:12px;">O teu histórico está vazio.</p>
+    <div class="trade-table-container">
+      <table class="trade-table">
+        <thead>
+          <tr>
+            <th>Cromo Trocado</th>
+            <th>Amigo</th>
+            <th>Estado</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="historyList">
+          <tr><td colspan="4" style="text-align:center;color:#9da1ab;padding:20px;">O teu histórico está vazio.</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
  </div>
@@ -1749,10 +1795,10 @@ async function loadTrades() {
     receivedList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Não tens propostas pendentes.</p>';
   }
 
+  // Puxa TUDO (pendentes, aceites, recusadas) para o histórico
   const { data: history, error: errHist } = await supabaseClient
     .from('trades_with_usernames').select('*')
     .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
-    .neq('status', 'pending')
     .order('created_at', { ascending: false });
   if (errHist) console.error(errHist);
 
@@ -1760,22 +1806,39 @@ async function loadTrades() {
     historyList.innerHTML = history.map(t => {
       const isSender = t.sender_id === currentUser.id;
       const otherName = isSender ? (t.receiver_username || '?') : (t.sender_username || '?');
-      const give = WRESTLER_MAP.get(isSender ? t.sender_card_id : t.receiver_card_id) || {name:'?'};
-      const get = WRESTLER_MAP.get(isSender ? t.receiver_card_id : t.sender_card_id) || {name:'?'};
-      const statusColor = t.status === 'accepted' ? '#16a34a' : '#b91c1c';
-      const title = isSender ? `Para: <strong>${otherName}</strong>` : `De: <strong>${otherName}</strong>`;
+      
+      const cardGive = WRESTLER_MAP.get(isSender ? t.sender_card_id : t.receiver_card_id) || {name:'?'};
+      const cardGet = WRESTLER_MAP.get(isSender ? t.receiver_card_id : t.sender_card_id) || {name:'?'};
+      
+      let statusColor = '#b91c1c';
+      let statusBg = '#fee2e2';
+      if (t.status === 'accepted') { statusColor = '#16a34a'; statusBg = '#dcfce7'; }
+      if (t.status === 'cancelled') { statusColor = '#d97706'; statusBg = '#fef3c7'; }
+      if (t.status === 'pending') { statusColor = '#2563eb'; statusBg = '#dbeafe'; }
+
+      let actionBtn = '—';
+      if (isSender && t.status === 'pending') {
+        actionBtn = `<button class="btn secondary" style="padding:4px 8px;font-size:10px;width:100%;" onclick="cancelTrade(${t.id}, this)">Cancelar</button>`;
+      }
+
       return `
-        <div class="trade-item">
-          <div class="trade-item-info">
-            <div class="trade-item-sub" style="color:${statusColor};font-weight:900">${t.status.toUpperCase()}</div>
-            <div class="trade-item-sub" style="font-size:10px;margin-bottom:2px">${title}</div>
-            <div class="trade-item-cards">Dei: ${give.name} | Recebi: ${get.name}</div>
-          </div>
-        </div>
+        <tr id="trade-row-${t.id}">
+          <td>
+            <div style="font-weight:900;color:#8a0f20;line-height:1.2;">${cardGet.name}</div>
+            <div style="font-size:10px;color:#7a5a2b;">Deste: ${cardGive.name}</div>
+          </td>
+          <td><strong>${otherName}</strong></td>
+          <td>
+            <span style="background:${statusBg};color:${statusColor};padding:2px 6px;border-radius:4px;font-weight:900;font-size:10px;">
+              ${t.status.toUpperCase()}
+            </span>
+          </td>
+          <td>${actionBtn}</td>
+        </tr>
       `;
     }).join('');
   } else {
-    historyList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Ainda não fizeste nenhuma troca.</p>';
+    historyList.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#9da1ab;padding:20px;">Ainda não fizeste nenhuma troca.</td></tr>';
   }
 }
 
@@ -1792,7 +1855,7 @@ document.getElementById('submitTrade').addEventListener('click', async () => {
     return toast('Não podes trocar contigo próprio!');
   }
 
-  // ---- PROTEÇÃO 1: Impedir propostas duplicadas do mesmo cromo ----
+  // PROTEÇÃO 1: Impedir propostas duplicadas do mesmo cromo
   const { data: existingTrade } = await supabaseClient
     .from('trades')
     .select('id')
@@ -1844,30 +1907,25 @@ window.acceptTrade = async function(tradeId, btnElement) {
       return toast('Esta troca já foi processada ou cancelada.');
     }
 
-    // ---- PROTEÇÃO 2: Verificar stock de ambas as partes no momento do aceite ----
-    // Verifica se o sender (quem enviou) ainda tem o cromo para dar
+    // PROTEÇÃO 2: Verificar stock de ambas as partes no momento do aceite
     const { data: senCardData } = await supabaseClient.from('collections').select('id').eq('user_id', trade.sender_id).eq('card_id', trade.sender_card_id);
     if (!senCardData || senCardData.length < 2) {
-       await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
+       await supabaseClient.from('trades').update({ status: 'cancelled' }).eq('id', tradeId);
        return toast('O autor da proposta já não tem este cromo em duplicado. Troca cancelada.');
     }
 
-    // Verifica se o receiver (quem aceita) ainda tem o cromo para dar
     const { data: recCardData } = await supabaseClient.from('collections').select('id').eq('user_id', trade.receiver_id).eq('card_id', trade.receiver_card_id);
     if (!recCardData || recCardData.length < 2) {
-       await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
+       await supabaseClient.from('trades').update({ status: 'cancelled' }).eq('id', tradeId);
        return toast('Já não tens este cromo em duplicado. Troca cancelada.');
     }
 
-    // Apaga 1 unidade de cada lado
     await supabaseClient.from('collections').delete().eq('id', senCardData[0].id);
     await supabaseClient.from('collections').delete().eq('id', recCardData[0].id);
     
-    // Insere a troca
     await supabaseClient.from('collections').insert([{ user_id: trade.receiver_id, card_id: trade.sender_card_id }]);
     await supabaseClient.from('collections').insert([{ user_id: trade.sender_id, card_id: trade.receiver_card_id }]);
     
-    // Marca como concluída
     await supabaseClient.from('trades').update({ status: 'accepted' }).eq('id', tradeId);
     toast('Troca realizada com sucesso!');
     await loadState();
@@ -1893,6 +1951,36 @@ window.rejectTrade = async function(tradeId, btnElement) {
   } catch(e) {
     btnElement.disabled = false;
     btnElement.innerHTML = 'Recusar';
+  }
+};
+
+window.cancelTrade = async function(tradeId, btnElement) {
+  btnElement.disabled = true;
+  btnElement.innerHTML = '...';
+  
+  const row = document.getElementById(`trade-row-${tradeId}`);
+  if (row) {
+    row.style.opacity = '0.3';
+    row.style.transition = 'opacity 0.3s ease';
+  }
+
+  try {
+    // Apaga a proposta da base de dados
+    await supabaseClient.from('trades').delete().eq('id', tradeId);
+    
+    if (row) row.remove();
+
+    toast('Proposta cancelada com sucesso!');
+    
+    await loadTrades(); 
+  } catch(e) {
+    console.error(e);
+    toast('Erro ao cancelar.');
+    if (row) {
+      row.style.opacity = '1';
+      btnElement.disabled = false;
+      btnElement.innerHTML = 'Cancelar';
+    }
   }
 };
 
