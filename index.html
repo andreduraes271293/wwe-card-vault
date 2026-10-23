@@ -834,16 +834,16 @@ main.shell::after{
 /* Responsivos */
 @media(max-width:600px){
   .detail, .trade-modal {
-    grid-template-columns: 1fr; /* Uma coluna apenas */
+    grid-template-columns: 1fr;
     padding: 20px;
     gap: 16px;
-    text-align: center; /* CENTRA TUDO AO MEIO */
+    text-align: center;
   }
   
   .detail-photo-wrap {
     max-width: 220px;
     width: 100%;
-    margin: 0 auto; /* Centra a imagem */
+    margin: 0 auto;
     min-height: 280px;
     aspect-ratio: 3/4.15;
   }
@@ -856,43 +856,72 @@ main.shell::after{
     object-fit: cover;
   }
 
-  /* Alinha os itens flexíveis (marca, etiquetas) ao centro */
   .detail-info {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  /* O nome fica centrado */
   .detail-info h3#detailName {
     font-size: 28px;
     margin: 0 0 8px 0;
   }
 
-  /* O logo (RAW/SmackDown) centrado */
   .detail-info .detail-brand {
     display: flex;
     justify-content: center;
     margin-bottom: 12px;
   }
 
-  /* As etiquetas (Lendário / Masculino) ficam na mesma linha e centradas */
+  /* AQUI ESTÁ O TRUQUE: Transformamos o container do texto em flex para alinhar as etiquetas */
+  .detail-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Agrupamos visualmente as etiquetas usando um "wrapper" flexível invisível */
   .detail-info .detail-rarity,
   .detail-info .detail-gender {
-    margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    vertical-align: middle;
+  }
+
+  /* Como as etiquetas estão soltas no HTML, usamos o flex-wrap para as pôr na mesma linha */
+  .detail-info {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
   
+  .detail-info h3#detailName,
+  .detail-info .detail-brand,
+  .detail-info .detail-status {
+    width: 100%;
+  }
+
+  /* O truque para as alinhar ao meio perfeitamente */
   .detail-info .detail-rarity {
-    margin-left: auto;
-    margin-right: 4px;
+    margin-left: auto; 
+    margin-right: 5px; /* pequeno espaço entre as duas */
   }
   .detail-info .detail-gender {
-    margin-left: 4px;
+    margin-left: 5px;
     margin-right: auto;
+  }
+
+  /* Corrige a altura para não ficarem desencontradas */
+  .detail-info .detail-rarity,
+  .detail-info .detail-gender {
+    height: 28px; /* Força a mesma altura */
+    box-sizing: border-box;
   }
 
   .detail-info .detail-status {
     margin-top: 12px;
+    width: 100%;
   }
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
