@@ -57,6 +57,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
 .section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;letter-spacing:.7px}
 .section-head p{color:#9da1ab;font-size:12px;margin:5px 0 0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;perspective:1600px;}
 
 /* --- CARTAS (base) --- */
 .card{position:relative;aspect-ratio:3/4.15;border-radius:calc(12px * var(--site-radius-scale));overflow:hidden;border:2px solid var(--rarity-color, #ffffff26);background:#1c1e25;cursor:pointer;text-align:left;color:white;padding:0;min-width:0;box-shadow:0 8px 20px #0004;transition:transform .18s,border-color .18s,box-shadow .18s;font:inherit}
@@ -259,6 +260,7 @@ main.shell::after{
 .section-head p{ color:#7a5a2b; }
 
 /* ============ CROMOS COMO "COLADOS" ============ */
+.grid{ gap: 22px 18px; padding-top: 8px; }
 .card{
   background:#fffaf0;
   border: 3px solid #fffaf0;
@@ -354,6 +356,34 @@ main.shell::after{
 .card.missing .card-name{ color:#a89070;font-style: italic;letter-spacing: 1px; }
 .card.missing .card-number{ color:#a89070; }
 
+/* ============ VIRAR DE PÁGINA ============ */
+@keyframes turnPage{
+  0%   { opacity: 0; transform: rotateY(-14deg) translateX(-24px); filter: blur(2px); }
+  60%  { opacity: 1; transform: rotateY(4deg)  translateX(6px);  filter: blur(0);  }
+  100% { opacity: 1; transform: rotateY(0)    translateX(0);     filter: blur(0);  }
+}
+.grid.turning .card{
+  animation: turnPage .5s cubic-bezier(.2,.8,.2,1) both;
+  transform-origin: left center;
+  animation-delay: calc(var(--i, 0) * 12ms);
+}
+.grid{ position: relative; }
+.grid.turning::after{
+  content:'';
+  position:absolute;inset:0;
+  background: linear-gradient(90deg, #fdf6e3cc 0%, #fdf6e300 60%);
+  transform-origin: left center;
+  animation: pageVeil .55s ease-out both;
+  pointer-events:none;
+  z-index: 5;
+  border-radius: 6px;
+}
+@keyframes pageVeil{
+  0%   { opacity:0; transform: scaleX(0); }
+  40%  { opacity:.9; transform: scaleX(1); }
+  100% { opacity:0; transform: scaleX(1); }
+}
+
 /* Modais em papel */
 .modal, .detail, .trade-modal{
   background: #fffaf0 !important;
@@ -408,80 +438,237 @@ main.shell::after{
   text-shadow: 0 1px 0 #0006;
 }
 
-/* COMUM */
+/* ============================================================
+   COMUM: CINZA-ARDÓSIA (#2b2f36) + TEXTO BRANCO
+   ============================================================ */
 .card[data-rarity="Comum"]{
-  background:#2b2f36 !important;border-color:#2b2f36 !important;
-  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,
-    inset 0 0 0 3px #3a3f47,inset 0 0 0 5px #2b2f36,inset 0 0 0 1px #4a5058 !important;
+  background:#2b2f36 !important;
+  border-color:#2b2f36 !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #3a3f47,
+    inset 0 0 0 5px #2b2f36,
+    inset 0 0 0 1px #4a5058 !important;
 }
-.card[data-rarity="Comum"]::before{background:linear-gradient(180deg,#3a3f47ee,#23262ccc);border-left:1px dashed #5a6068;border-right:1px dashed #5a6068;}
-.card[data-rarity="Comum"] .card-art{background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;border-color:#3a3f47 !important;box-shadow:inset 0 0 0 2px #3a3f47,inset 0 0 22px #00000080 !important;}
-.card[data-rarity="Comum"] .card-bottom{background:#23262c !important;border-top:1px dashed #3a3f47 !important;color:#ffffff !important;}
-.card[data-rarity="Comum"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;}
+.card[data-rarity="Comum"]::before{
+  background:linear-gradient(180deg,#3a3f47ee,#23262ccc);
+  border-left:1px dashed #5a6068;
+  border-right:1px dashed #5a6068;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Comum"] .card-art{
+  background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;
+  border-color:#3a3f47 !important;
+  box-shadow:
+    inset 0 0 0 2px #3a3f47,
+    inset 0 0 22px #00000080 !important;
+}
+.card[data-rarity="Comum"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff12,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff06 18px 20px) !important;
+}
+.card[data-rarity="Comum"] .card-art::after{
+  background:linear-gradient(180deg,#0000 40%,#181a1fee 100%) !important;
+}
+.card[data-rarity="Comum"] .card-bottom{
+  background:#23262c !important;
+  border-top:1px dashed #3a3f47 !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Comum"] .card-name{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
 .card[data-rarity="Comum"] .card-meta{color:#c8ccd2 !important}
-.card[data-rarity="Comum"] .card-meta .rarity{color:#ffffff !important;}
-.card[data-rarity="Comum"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Comum"] .card-meta .rarity{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Comum"] .card-number{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
 .card[data-rarity="Comum"] .gender-badge{color:#c8ccd2 !important}
 
-/* RARO */
+/* ============================================================
+   RARO: AZUL (#65c9ff) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
 .card[data-rarity="Raro"]{
-  background:#0a1a26 !important;border-color:#65c9ff !important;
-  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,
-    inset 0 0 0 3px #65c9ff,inset 0 0 0 5px #0a1a26,inset 0 0 0 1px #65c9ff88,0 0 18px #65c9ff55 !important;
+  background:#0a1a26 !important;
+  border-color:#65c9ff !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #65c9ff,
+    inset 0 0 0 5px #0a1a26,
+    inset 0 0 0 1px #65c9ff88,
+    0 0 18px #65c9ff55 !important;
 }
-.card[data-rarity="Raro"]::before{background:linear-gradient(180deg,#65c9ffee,#2f8fbfcc);border-left:1px dashed #a8e3ff;border-right:1px dashed #a8e3ff;}
-.card[data-rarity="Raro"] .card-art{background:radial-gradient(ellipse at 50% 30%,#65c9ff55,transparent 60%),radial-gradient(ellipse at 50% 34%,#123047 0%,#0a1a26 42%,#050c12 100%) !important;border-color:#65c9ff !important;box-shadow:inset 0 0 0 2px #65c9ff,inset 0 0 26px #65c9ff66 !important;}
-.card[data-rarity="Raro"] .card-bottom{background:linear-gradient(180deg,#0a1a26 0%,#050c12 100%) !important;border-top:1px dashed #65c9ff !important;color:#ffffff !important;}
-.card[data-rarity="Raro"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Raro"]::before{
+  background:linear-gradient(180deg,#65c9ffee,#2f8fbfcc);
+  border-left:1px dashed #a8e3ff;border-right:1px dashed #a8e3ff;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Raro"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #65c9ff55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #123047 0%, #0a1a26 42%, #050c12 100%) !important;
+  border-color:#65c9ff !important;
+  box-shadow:
+    inset 0 0 0 2px #65c9ff,
+    inset 0 0 26px #65c9ff66 !important;
+}
+.card[data-rarity="Raro"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Raro"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#050c12ee 100%) !important;
+}
+.card[data-rarity="Raro"] .card-bottom{
+  background:linear-gradient(180deg,#0a1a26 0%,#050c12 100%) !important;
+  border-top:1px dashed #65c9ff !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Raro"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Raro"] .card-meta{color:#b7e6ff !important}
-.card[data-rarity="Raro"] .card-meta .rarity{color:#ffffff !important;}
-.card[data-rarity="Raro"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Raro"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Raro"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Raro"] .gender-badge{color:#b7e6ff !important}
 
-/* ÉPICO */
+/* ============================================================
+   ÉPICO: ROXO (#d99aff) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
 .card[data-rarity="Épico"]{
-  background:#1a0f26 !important;border-color:#d99aff !important;
-  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,
-    inset 0 0 0 3px #d99aff,inset 0 0 0 5px #1a0f26,inset 0 0 0 1px #d99aff88,0 0 18px #d99aff55 !important;
+  background:#1a0f26 !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #d99aff,
+    inset 0 0 0 5px #1a0f26,
+    inset 0 0 0 1px #d99aff88,
+    0 0 18px #d99aff55 !important;
 }
-.card[data-rarity="Épico"]::before{background:linear-gradient(180deg,#d99affee,#8a4fbfcc);border-left:1px dashed #eccaff;border-right:1px dashed #eccaff;}
-.card[data-rarity="Épico"] .card-art{background:radial-gradient(ellipse at 50% 30%,#d99aff55,transparent 60%),radial-gradient(ellipse at 50% 34%,#2a1640 0%,#1a0f26 42%,#0a0510 100%) !important;border-color:#d99aff !important;box-shadow:inset 0 0 0 2px #d99aff,inset 0 0 26px #d99aff66 !important;}
-.card[data-rarity="Épico"] .card-bottom{background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important;border-top:1px dashed #d99aff !important;color:#ffffff !important;}
-.card[data-rarity="Épico"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Épico"]::before{
+  background:linear-gradient(180deg,#d99affee,#8a4fbfcc);
+  border-left:1px dashed #eccaff;border-right:1px dashed #eccaff;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Épico"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #d99aff55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #2a1640 0%, #1a0f26 42%, #0a0510 100%) !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    inset 0 0 0 2px #d99aff,
+    inset 0 0 26px #d99aff66 !important;
+}
+.card[data-rarity="Épico"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Épico"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0a0510ee 100%) !important;
+}
+.card[data-rarity="Épico"] .card-bottom{
+  background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important;
+  border-top:1px dashed #d99aff !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Épico"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Épico"] .card-meta{color:#e8ccff !important}
-.card[data-rarity="Épico"] .card-meta .rarity{color:#ffffff !important;}
-.card[data-rarity="Épico"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Épico"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Épico"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Épico"] .gender-badge{color:#e8ccff !important}
 
-/* LENDÁRIO */
+/* ============================================================
+   LENDÁRIO: DOURADO (#e8a800) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
 .card[data-rarity="Lendário"]{
-  background:#1f1603 !important;border-color:#e8a800 !important;
-  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,
-    inset 0 0 0 3px #e8a800,inset 0 0 0 5px #1f1603,inset 0 0 0 1px #e8a80088,0 0 20px #e8a80077 !important;
+  background:#1f1603 !important;
+  border-color:#e8a800 !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #e8a800,
+    inset 0 0 0 5px #1f1603,
+    inset 0 0 0 1px #e8a80088,
+    0 0 20px #e8a80077 !important;
 }
-.card[data-rarity="Lendário"]::before{background:linear-gradient(180deg,#e8a800ee,#a06f00cc);border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a;}
-.card[data-rarity="Lendário"] .card-art{background:radial-gradient(ellipse at 50% 30%,#e8a80066,transparent 60%),radial-gradient(ellipse at 50% 34%,#3a2a05 0%,#1f1603 42%,#0c0801 100%) !important;border-color:#e8a800 !important;box-shadow:inset 0 0 0 2px #e8a800,inset 0 0 28px #e8a80077 !important;}
-.card[data-rarity="Lendário"] .card-bottom{background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important;border-top:1px dashed #e8a800 !important;color:#ffffff !important;}
-.card[data-rarity="Lendário"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Lendário"]::before{
+  background:linear-gradient(180deg,#e8a800ee,#a06f00cc);
+  border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Lendário"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #e8a80066, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #3a2a05 0%, #1f1603 42%, #0c0801 100%) !important;
+  border-color:#e8a800 !important;
+  box-shadow:
+    inset 0 0 0 2px #e8a800,
+    inset 0 0 28px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Lendário"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0c0801ee 100%) !important;
+}
+.card[data-rarity="Lendário"] .card-bottom{
+  background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important;
+  border-top:1px dashed #e8a800 !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Lendário"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Lendário"] .card-meta{color:#ffe2a0 !important}
-.card[data-rarity="Lendário"] .card-meta .rarity{color:#ffffff !important;}
-.card[data-rarity="Lendário"] .card-number{color:#ffffff !important;}
+.card[data-rarity="Lendário"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Lendário"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Lendário"] .gender-badge{color:#ffe2a0 !important}
 
+/* brilho animado do Lendário (faixa dourada) */
 .card[data-rarity="Lendário"]::after{
-  content:'' !important;display:block !important;position:absolute !important;inset:6px !important;
+  content:'' !important;
+  display:block !important;
+  position:absolute !important;
+  inset:6px !important;
   border-radius:2px !important;
-  background-image:linear-gradient(110deg,transparent 42%,#fff0b000 44%,#fff8d8b3 50%,#fff0b000 56%,transparent 58%) !important;
-  background-size:300% 100% !important;background-repeat:no-repeat !important;background-position:100% 0;
-  mix-blend-mode:overlay !important;pointer-events:none !important;z-index:5 !important;
-  animation:shineGold 5s ease-in-out infinite !important;animation-delay:1s !important;
+  background-image:linear-gradient(110deg,
+    transparent 42%,
+    #fff0b000 44%,
+    #fff8d8b3 50%,
+    #fff0b000 56%,
+    transparent 58%) !important;
+  background-size:300% 100% !important;
+  background-repeat:no-repeat !important;
+  background-position:100% 0;
+  mix-blend-mode:overlay !important;
+  pointer-events:none !important;
+  z-index:5 !important;
+  animation:shineGold 5s ease-in-out infinite !important;
+  animation-delay:1s !important;
 }
-@keyframes shineGold{0%,65%{background-position:100% 0;}100%{background-position:0% 0;}}
+@keyframes shineGold{
+  0%,65% { background-position:100% 0; }
+  100%   { background-position:0% 0; }
+}
 .card[data-rarity="Lendário"] .card-bottom{ z-index:11; }
 
+/* EM FALTA — mantém papel cinzento */
 .card.missing{
-  box-shadow:0 2px 4px #00000030,0 8px 16px #00000025,
-    inset 0 0 0 3px #b8a070,inset 0 0 0 5px #fffaf0,inset 0 0 0 1px #c9b78a !important;
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 3px #b8a070,
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a !important;
 }
 .card.missing .card-art{
   box-shadow: inset 0 0 0 2px #b8a070 !important;
@@ -489,9 +676,13 @@ main.shell::after{
   filter: grayscale(1);
 }
 .card.missing .card-meta .rarity,
-.card.missing .card-number{color:#a89070 !important;text-shadow: none !important;}
+.card.missing .card-number{
+  color:#a89070 !important;
+  text-shadow: none !important;
+}
 .card.missing::after{ display: none !important; }
 
+/* Efeito Lendário nas cartas da saqueta */
 .mini .mini-shine{display:none}
 .mini[data-rarity="Lendário"] .mini-shine{
   display:block;position:absolute;inset:0;border-radius:7px;z-index:4;pointer-events:none;
@@ -499,140 +690,135 @@ main.shell::after{
   background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
   mix-blend-mode:screen;opacity:0;
 }
-.mini.revealed[data-rarity="Lendário"] .mini-shine{opacity:1;animation:shineGoldMini 2.6s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 850ms);}
-@keyframes shineGoldMini{0%,35%{background-position:100% 0;}100%{background-position:0% 0;}}
+.mini.revealed[data-rarity="Lendário"] .mini-shine{
+  opacity:1;
+  animation:shineGoldMini 2.6s ease-in-out infinite;
+  animation-delay:calc(var(--burst-delay,0ms) + 850ms);
+}
+@keyframes shineGoldMini{
+  0%,35% { background-position:100% 0; }
+  100%   { background-position:0% 0; }
+}
 .mini.revealed[data-rarity="Lendário"]::before{opacity:.8;animation-duration:1.6s;}
-.mini{box-shadow:0 4px 12px #0008,0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);}
 
-.rarity-legend{display:flex;flex-wrap:wrap;gap:14px;margin: 6px 0 18px;font-size: 11px;font-style: italic;color:#7a5a2b;}
-.rarity-legend span{display:inline-flex;align-items:center;gap:6px;}
-.rarity-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid #fffaf0;box-shadow: inset 0 0 0 2px #c9b78a;}
+/* Mini-cards da saqueta */
+.mini{
+  box-shadow:
+    0 4px 12px #0008,
+    0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);
+}
+
+/* Legenda das raridades */
+.rarity-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin: 6px 0 18px;
+  font-size: 11px;
+  font-style: italic;
+  color:#7a5a2b;
+}
+.rarity-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.rarity-legend i{
+  display:inline-block;
+  width:14px;height:14px;
+  border-radius:3px;
+  border:2px solid #fffaf0;
+  box-shadow: inset 0 0 0 2px #c9b78a;
+}
 .rarity-legend i.r-comum{ background:#2b2f36; box-shadow: inset 0 0 0 2px #2b2f36, 0 0 0 1px #5a6068; }
 .rarity-legend i.r-raro{ background:#65c9ff; box-shadow: inset 0 0 0 2px #65c9ff; }
 .rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
 .rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
 
-.detail-info h3#detailName{color: var(--rarity-color) !important;font-family: var(--site-font-body) !important;font-weight: 900 !important;letter-spacing: -.2px !important;text-shadow: 0 1px 0 #ffffff80 !important;}
-.detail-info .detail-brand{color: #2e2216 !important;}
-.detail-info .detail-brand .brand-fallback{color: #2e2216 !important;display: none !important;}
-.detail-info .detail-rarity{color: var(--rarity-color, #2e2216) !important;background: #fffaf0 !important;border-color: var(--rarity-color, #2e2216) !important;font-weight: 900;}
-.detail-info .detail-gender{background: #e8d9b8 !important;color: #2e2216 !important;border-color: #b8a070 !important;font-weight: 900;}
-.detail-info .detail-status{color: #2e2216 !important;}
-.detail-info .detail-status strong{color: var(--rarity-color) !important;font-weight: 900 !important;}
-
-.detail-photo-wrap{position: relative;overflow: hidden;}
-.detail-photo-wrap::after{
-  content:'';position:absolute;inset:0;border-radius:12px;
-  background-image:linear-gradient(110deg,transparent 42%,#fff0b000 44%,#fff8d8b3 50%,#fff0b000 56%,transparent 58%);
-  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
-  mix-blend-mode:overlay;pointer-events:none;z-index:6;
-  animation:shineGold 5s ease-in-out infinite;animation-delay:1s;opacity:0;
+/* ============================================================
+   MODAL DETALHE — nome na cor da raridade + texto castanho-couro
+   ============================================================ */
+.detail-info h3#detailName{
+  color: var(--rarity-color) !important;
+  font-family: var(--site-font-body) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.2px !important;
+  text-shadow: 0 1px 0 #ffffff80 !important;
 }
-.detail[data-rarity="Lendário"] .detail-photo-wrap::after{opacity:1;}
+.detail-info .detail-brand{
+  color: #2e2216 !important;
+}
+.detail-info .detail-brand .brand-fallback{
+  color: #2e2216 !important;
+  display: none !important;
+}
+.detail-info .detail-rarity{
+  color: var(--rarity-color, #2e2216) !important;
+  background: #fffaf0 !important;
+  border-color: var(--rarity-color, #2e2216) !important;
+  font-weight: 900;
+}
+.detail-info .detail-gender{
+  background: #e8d9b8 !important;
+  color: #2e2216 !important;
+  border-color: #b8a070 !important;
+  font-weight: 900;
+}
+.detail-info .detail-status{
+  color: #2e2216 !important;
+}
+.detail-info .detail-status strong{
+  color: var(--rarity-color) !important;
+  font-weight: 900 !important;
+}
+
+/* ============================================================
+   EFEITO DE CARTA LENDÁRIA NO MODAL
+   ============================================================ */
+.detail-photo-wrap{
+  position: relative;
+  overflow: hidden;
+}
+.detail-photo-wrap::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:12px;
+  background-image:linear-gradient(110deg,
+    transparent 42%,
+    #fff0b000 44%,
+    #fff8d8b3 50%,
+    #fff0b000 56%,
+    transparent 58%);
+  background-size:300% 100%;
+  background-repeat:no-repeat;
+  background-position:100% 0;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:6;
+  animation:shineGold 5s ease-in-out infinite;
+  animation-delay:1s;
+  opacity:0;
+}
+.detail[data-rarity="Lendário"] .detail-photo-wrap::after{
+  opacity:1;
+}
+
 .detail[data-rarity="Lendário"]{
-  box-shadow:0 20px 80px #000b,inset 0 0 40px #c9b78a40,0 0 0 6px #fffaf0,0 0 0 7px #e8a800,0 0 32px #e8a80066 !important;
+  box-shadow:
+    0 20px 80px #000b,
+    inset 0 0 40px #c9b78a40,
+    0 0 0 6px #fffaf0,
+    0 0 0 7px #e8a800,
+    0 0 32px #e8a80066 !important;
   border-color: #e8a800 !important;
 }
 
+/* Responsivos */
 @media(max-width:600px){.detail,.trade-modal{grid-template-columns:1fr;padding:18px}.detail-photo-wrap{max-width:220px;margin:auto}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
-@media(max-width:720px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
-@media(max-width:470px){.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
-
-/* ============================================================
-   MODO REVISTA FOLHEÁVEL (CORRIGIDO)
-   ============================================================ */
-.book {
-  position: relative;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0;
-  perspective: 2600px;
-  perspective-origin: 50% 40%;
-}
-.book-stage {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  min-height: 760px; 
-  transform-style: preserve-3d;
-}
-.book-stage::before {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0; left: 50%;
-  width: 40px;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg, #0000 0%, #00000060 40%, #00000090 50%, #00000060 60%, #0000 100%);
-  z-index: 20;
-  pointer-events: none;
-}
-.page {
-  position: relative;
-  background:
-    repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),
-    radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);
-  padding: 30px 26px;
-  box-shadow:
-    inset 0 0 40px #a07c4a30,
-    inset 14px 0 20px -14px #00000055,
-    inset -14px 0 20px -14px #00000055;
-  border-radius: 8px;
-  transform-style: preserve-3d;
-  transition: transform .55s cubic-bezier(.2,.8,.2,1), box-shadow .55s;
-  backface-visibility: hidden;
-  border: 1px solid #b8a070;
-  display: flex;
-  flex-direction: column;
-}
-.page.page-left  { border-radius: 12px 4px 4px 12px; }
-.page.page-right { border-radius: 4px 12px 12px 4px; }
-.book-stage.flipping .page-right {
-  transform: rotateY(-10deg);
-  box-shadow: inset 0 0 40px #a07c4a30, inset -30px 0 40px -20px #00000088, 30px 0 60px #00000050;
-}
-.book-stage.flipping .page-left {
-  transform: rotateY(6deg);
-}
-.page .grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 18px;
-  height: 100%;
-  width: 100%;
-  flex-grow: 1;
-}
-
-.book-nav {
-  display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 22px;
-}
-.book-nav button {
-  border: 1px solid #b8a070; background: #fffaf0; color: #5a1a12;
-  font-weight: 900; font-family: var(--site-font-heading); letter-spacing: 1px;
-  padding: 12px 22px; border-radius: 8px; cursor: pointer;
-  box-shadow: 2px 2px 0 #c9b78a80; transition: transform .15s, background .15s;
-  font-size: 15px;
-}
-.book-nav button:hover:not(:disabled) { background: #f5ebd2; transform: translateY(-1px); }
-.book-nav button:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
-.book-nav .page-indicator { font-size: 14px; color: #7a5a2b; font-weight: 800; font-style: italic; }
-.book-nav .page-indicator b { color: #8a0f20; }
-.book-hint { text-align: center; font-size: 12px; color: #9b8a6a; font-style: italic; margin-top: 8px; }
-
-@media (max-width: 820px) {
-  .book-stage { grid-template-columns: 1fr; min-height: 0; }
-  .book-stage::before { display: none; }
-  .page.page-left  { border-radius: 12px 12px 4px 4px; }
-  .page.page-right { border-radius: 4px 4px 12px 12px; }
-  .page + .page { margin-top: 16px; }
-  .page .grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); } 
-}
-@media (max-width: 470px) {
-  .page { padding: 20px 16px; }
-  .page .grid { grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(6, 1fr); gap: 14px; }
-}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
+@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
+@media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -704,20 +890,7 @@ main.shell::after{
   <span><i class="r-epico"></i> Épico</span>
   <span><i class="r-lendario"></i> Lendário</span>
  </div>
-
- <div class="book" id="book">
-   <div class="book-stage" id="bookStage">
-     <div class="page page-left"  id="pageLeft"></div>
-     <div class="page page-right" id="pageRight"></div>
-   </div>
-   <div class="book-nav">
-     <button id="prevPage" aria-label="Página anterior">‹ Anterior</button>
-     <span class="page-indicator" id="pageIndicator">Página <b>1</b></span>
-     <button id="nextPage" aria-label="Página seguinte">Seguinte ›</button>
-   </div>
-   <div class="book-hint">Arrasta a página para virar · usa ← → no teclado</div>
- </div>
-
+ <div class="grid" id="cards" aria-live="polite"></div>
  <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
 </main>
 <div id="welcome-screen" class="shell" style="text-align:center;padding-top:60px;display:none">
@@ -806,6 +979,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= DADOS ================= */
 const wrestlers = [
+ // ==================== LENDAS (IDs 1–25) ====================
  {id:1,   name:'John Cena',                  initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/john-cena.png'},
  {id:2,   name:'The Undertaker',             initials:'TAKER',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/undertaker.png'},
  {id:3,   name:'Stone Cold Steve Austin',    initials:'SCSA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/stone-cold.png'},
@@ -824,14 +998,14 @@ const wrestlers = [
  {id:16,  name:'Trish Stratus',              initials:'TRISH',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/trish-stratus.png'},
  {id:17,  name:'Lita',                       initials:'LITA',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/lita.png'},
  {id:18,  name:'Chyna',                      initials:'CHYNA',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/chyna.png'},
- {id:19,  name:'Rey Mysterio',               initials:'REY',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/rey-mysterio.png'},
- {id:20,  name:'Becky Lynch',                initials:'BECKY',   brand:'RAW',       rarity:'Lendário', gender:'Female', image:'img/becky-lynch.png'},
- {id:21,  name:'Charlotte Flair',            initials:'QUEEN',   brand:'SmackDown', rarity:'Lendário', gender:'Female', image:'img/charlotte-flair.png'},
- {id:22,  name:'CM Punk',                    initials:'PUNK',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/cm-punk.png'},
- {id:23,  name:'Roman Reigns',               initials:'OTC',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/roman-reigns.png'},
- {id:24,  name:'Seth Rollins',               initials:'SETH',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/seth-rollins.png'},
- {id:25,  name:'Randy Orton',                initials:'RKO',     brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/randy-orton.png'},
- {id:26,  name:'Cody Rhodes',                initials:'CODY',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/cody-rhodes.png'},
+ {id:19,  name:'Rey Mysterio',       		 initials:'REY',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/rey-mysterio.png'},
+ {id:20,  name:'Becky Lynch',        		 initials:'BECKY',  brand:'RAW',       rarity:'Lendário', gender:'Female', image:'img/becky-lynch.png'},
+ {id:21,  name:'Charlotte Flair',    		 initials:'QUEEN',  brand:'SmackDown', rarity:'Lendário', gender:'Female', image:'img/charlotte-flair.png'},
+ {id:22,  name:'CM Punk',            		 initials:'PUNK',   brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/cm-punk.png'},
+ {id:23,  name:'Roman Reigns',       		 initials:'OTC',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/roman-reigns.png'},
+ {id:24,  name:'Seth Rollins',       		 initials:'SETH',   brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/seth-rollins.png'},
+ {id:25,  name:'Randy Orton',        		 initials:'RKO',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/randy-orton.png'},
+ {id:26,  name:'Cody Rhodes',        		 initials:'CODY',   brand:'SmackDown',  rarity:'Épico', gender:'Male',   image:'img/cody-rhodes.png'},
  {id:27,  name:'Mick Foley',                 initials:'FOLEY',   brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/mick-foley.png'},
  {id:28,  name:'Kane',                       initials:'KANE',    brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/kane.png'},
  {id:29,  name:'Big Show',                   initials:'SHOW',    brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/big-show.png'},
@@ -839,6 +1013,9 @@ const wrestlers = [
  {id:31,  name:'Rob Van Dam',                initials:'RVD',     brand:'Legends',   rarity:'Épico',    gender:'Male',   image:'img/rob-van-dam.png'},
  {id:32,  name:'Beth Phoenix',               initials:'BETH',    brand:'Legends',   rarity:'Épico',    gender:'Female', image:'img/beth-phoenix.png'},
  {id:33,  name:'Mickie James',               initials:'MICKIE',  brand:'Legends',   rarity:'Épico',    gender:'Female', image:'img/mickie-james.png'},
+
+ // ==================== ROSTER ATUAL (IDs 26–137) ====================
+
  {id:34,  name:'Rhea Ripley',        initials:'MAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/rhea-ripley.png'},
  {id:35,  name:'Liv Morgan',         initials:'LIV',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/liv-morgan.png'},
  {id:36,  name:'Sami Zayn',          initials:'SAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/sami-zayn.png'},
@@ -1033,6 +1210,9 @@ async function loadState() {
       .eq('user_id', currentUser.id).eq('date', today).single();
     if (packError && packError.code !== 'PGRST116') throw packError;
     state.packs = packData ? (Number(packData.count) || 0) : 0;
+    const sig = JSON.stringify([state.ownedCounts, state.packs]);
+    if (sig === state.lastSig) return;
+    state.lastSig = sig;
     render();
   } catch (e) {
     console.error('Erro detalhado:', e);
@@ -1077,6 +1257,7 @@ function pickPack(){
    if (!picked.some(p => p.id === w.id)) picked.push(w);
    guard++;
  }
+ // Garante pelo menos 1 cromo que o jogador ainda não tem (posição aleatória)
  const unowned = wrestlers.filter(w => !(state.ownedCounts[w.id] > 0));
  if (unowned.length && !picked.some(p => !(state.ownedCounts[p.id] > 0))) {
    const candidates = unowned.filter(w => !picked.some(p => p.id === w.id));
@@ -1189,86 +1370,66 @@ function renderCard(w){
  </button>`;
 }
 
-/* ============================================================
-   MODO REVISTA — paginação (12 cromos por "página lógica" = 6+6)
-   ============================================================ */
-const CARDS_PER_PAGE = 12;
-const PER_SIDE = 6;
-let currentPage = 0;
-let pageList = [];
-let flipLock = false;
+function render(animate=false){
+ const q=norm($('search').value);
+ const cat=norm($('category').value);
+ const gen=$('genderFilter').value;
+ const rar=$('rarityFilter').value;
+ const own=$('ownership').value;
 
-function splitIntoPages(list) {
-  const pages = [];
-  for (let i = 0; i < list.length; i += CARDS_PER_PAGE) {
-    const chunk = list.slice(i, i + CARDS_PER_PAGE);
-    pages.push({ left: chunk.slice(0, PER_SIDE), right: chunk.slice(PER_SIDE) });
+ const list=wrestlers.filter(w=>{
+  if(q){
+   const hay=norm(w.name)+' '+norm(w.brand);
+   if(!hay.includes(q))return false;
   }
-  return pages.length ? pages : [{ left: [], right: [] }];
-}
+  if(cat!=='all'&&norm(w.brand)!==cat)return false;
+  if(gen!=='all'&&w.gender!==gen)return false;
+  if(rar!=='all'&&norm(w.rarity)!==norm(rar))return false;
+  if(own==='owned'&&!state.ownedCounts[w.id])return false;
+  if(own==='missing'&&state.ownedCounts[w.id])return false;
+  return true;
+ });
 
-function renderBookPage(animateDir = 0) {
-  const stage = $('bookStage');
-  const pages = splitIntoPages(pageList);
-  const p = pages[Math.min(currentPage, pages.length - 1)];
+ list.sort((a, b) => {
+   const rarA = rarityOrder[norm(a.rarity)] || 99;
+   const rarB = rarityOrder[norm(b.rarity)] || 99;
+   const rarDiff = rarA - rarB;
+   if (rarDiff !== 0) return rarDiff;
+   return a.id - b.id;
+ });
 
-  const cardHTML = (w, i) => {
-    const html = renderCard(w);
-    return html.replace('class="card', `style="--i:${i}; --rarity-color:${rarityColors[w.rarity]}" class="card`);
-  };
+ $('visibleCount').textContent=`${list.length} ${list.length===1?'cromo':'cromos'}`;
+ $('visibleCount').style.color='#7a5a2b';
+ $('visibleCount').style.fontStyle='italic';
 
-  $('pageLeft').innerHTML  = p.left.map(cardHTML).join('') || `<div class="empty"><span class="empty-icon">📖</span><strong>Página vazia</strong>Tenta ajustar os filtros.</div>`;
-  $('pageRight').innerHTML = p.right.map(cardHTML).join('') || '';
+ const grid = $('cards');
 
-  [$('pageLeft'), $('pageRight')].forEach(pg => {
-    pg.querySelectorAll('.card').forEach(b => {
-      b.addEventListener('click', () => openDetail(Number(b.dataset.id)));
-    });
+ if(list.length===0){
+  grid.innerHTML=`<div class="empty">
+   <span class="empty-icon">🃏</span>
+   <strong>Nenhum cromo encontrado</strong>
+   Tenta ajustar os filtros ou limpar a pesquisa.
+   <div style="margin-top:14px"><button class="btn secondary" id="clearFilters">Limpar filtros</button></div>
+  </div>`;
+  const cf=$('clearFilters');
+  if(cf)cf.addEventListener('click',clearFilters);
+ }else{
+  grid.innerHTML=list.map((w, i) => {
+    return renderCard(w).replace('class="card', `style="--i:${i}; --rarity-color:${rarityColors[w.rarity]}" class="card`);
+  }).join('');
+  grid.querySelectorAll('.card').forEach(b=>{
+   b.addEventListener('click',()=>openDetail(Number(b.dataset.id)));
   });
+ }
 
-  $('pageIndicator').innerHTML = `Página <b>${currentPage + 1}</b> de ${pages.length}`;
-  $('prevPage').disabled = currentPage === 0;
-  $('nextPage').disabled = currentPage >= pages.length - 1;
+ if(animate){
+  grid.classList.remove('turning');
+  void grid.offsetWidth;
+  grid.classList.add('turning');
+  setTimeout(()=>grid.classList.remove('turning'), 800);
+ }
 
-  if (animateDir !== 0) {
-    stage.classList.remove('flipping');
-    void stage.offsetWidth;
-    stage.classList.add('flipping');
-    setTimeout(() => stage.classList.remove('flipping'), 600);
-  }
-}
-
-function render(animate = false) {
-  const q = norm($('search').value);
-  const cat = norm($('category').value);
-  const gen = $('genderFilter').value;
-  const rar = $('rarityFilter').value;
-  const own = $('ownership').value;
-
-  pageList = wrestlers.filter(w => {
-    if (q) { const hay = norm(w.name) + ' ' + norm(w.brand); if (!hay.includes(q)) return false; }
-    if (cat !== 'all' && norm(w.brand) !== cat) return false;
-    if (gen !== 'all' && w.gender !== gen) return false;
-    if (rar !== 'all' && norm(w.rarity) !== norm(rar)) return false;
-    if (own === 'owned' && !state.ownedCounts[w.id]) return false;
-    if (own === 'missing' && state.ownedCounts[w.id]) return false;
-    return true;
-  });
-
-  pageList.sort((a, b) => {
-    const d = (rarityOrder[a.rarity] || 99) - (rarityOrder[b.rarity] || 99);
-    return d !== 0 ? d : a.id - b.id;
-  });
-
-  currentPage = 0;
-  renderBookPage(animate ? 1 : 0);
-
-  const totalVisible = pageList.length;
-  $('visibleCount').textContent = `${totalVisible} ${totalVisible === 1 ? 'cromo' : 'cromos'}`;
-  $('visibleCount').style.color = '#7a5a2b';
-  $('visibleCount').style.fontStyle = 'italic';
-
-  updateStats();
+ updateStats();
 }
 
 function clearFilters(){
@@ -1279,51 +1440,6 @@ function clearFilters(){
  $('ownership').value='all';
  render(true);
 }
-
-/* Navegação de páginas */
-$('prevPage').addEventListener('click', () => {
-  if (flipLock || currentPage === 0) return;
-  flipLock = true;
-  currentPage--;
-  renderBookPage(-1);
-  setTimeout(() => flipLock = false, 550);
-});
-
-$('nextPage').addEventListener('click', () => {
-  const pages = splitIntoPages(pageList);
-  if (flipLock || currentPage >= pages.length - 1) return;
-  flipLock = true;
-  currentPage++;
-  renderBookPage(1);
-  setTimeout(() => flipLock = false, 550);
-});
-
-/* Arrastar para virar (rato + touch) */
-(function setupBookDrag() {
-  const stage = $('bookStage');
-  let startX = null, moved = false;
-  stage.addEventListener('pointerdown', e => {
-    if (e.target.closest('button.card')) return;
-    startX = e.clientX;
-    moved = false;
-    try { stage.setPointerCapture(e.pointerId); } catch(_) {}
-  });
-  stage.addEventListener('pointermove', e => {
-    if (startX === null) return;
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) > 40) moved = true;
-  });
-  const end = e => {
-    if (startX === null) return;
-    const dx = (e.clientX ?? startX) - startX;
-    startX = null;
-    if (!moved) return;
-    if (dx > 60) $('prevPage').click();
-    if (dx < -60) $('nextPage').click();
-  };
-  stage.addEventListener('pointerup', end);
-  stage.addEventListener('pointercancel', () => { startX = null; });
-})();
 
 function openPack(){
  const packsSafe = Number(state.packs) || 0;
@@ -1670,11 +1786,7 @@ function setupKeyboard(){
    else if(tradeOpen){e.preventDefault();$('tradeBackdrop').classList.remove('show');}
    return;
   }
-  if(!packOpen&&!detailOpen&&!tradeOpen){
-    if(e.key==='ArrowLeft')  { e.preventDefault(); $('prevPage').click(); }
-    if(e.key==='ArrowRight') { e.preventDefault(); $('nextPage').click(); }
-    return;
-  }
+  if(!packOpen&&!detailOpen&&!tradeOpen)return;
 
   if(e.key==='Enter'&&packOpen){
    e.preventDefault();
