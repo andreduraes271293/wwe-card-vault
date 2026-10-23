@@ -496,32 +496,33 @@ main.shell::after{
 .card[data-rarity="Comum"] .gender-badge{color:#7a5a2b !important}
 
 /* ============================================================
-   RARO: AZUL (#65c9ff) EM VOLTA + TEXTO BRANCO
+   RARO: VERDE-MENTA (#2dd4bf) EM VOLTA + TEXTO BRANCO
    ============================================================ */
 .card[data-rarity="Raro"]{
-  background:#0a1a26 !important;
-  border-color:#65c9ff !important;
+  background:#042f2e !important;
+  border-color:#2dd4bf !important;
   box-shadow:
     0 2px 4px #00000060,
     0 8px 16px #00000050,
-    inset 0 0 0 3px #65c9ff,
-    inset 0 0 0 5px #0a1a26,
-    inset 0 0 0 1px #65c9ff88,
-    0 0 18px #65c9ff55 !important;
+    inset 0 0 0 3px #2dd4bf,
+    inset 0 0 0 5px #042f2e,
+    inset 0 0 0 1px #2dd4bf88,
+    0 0 18px #2dd4bf55 !important;
 }
 .card[data-rarity="Raro"]::before{
-  background:linear-gradient(180deg,#65c9ffee,#2f8fbfcc);
-  border-left:1px dashed #a8e3ff;border-right:1px dashed #a8e3ff;
+  background:linear-gradient(180deg,#2dd4bfee,#0f766ecc);
+  border-left:1px dashed #99f6e4;
+  border-right:1px dashed #99f6e4;
   box-shadow:0 1px 3px #000a;
 }
 .card[data-rarity="Raro"] .card-art{
   background:
-    radial-gradient(ellipse at 50% 30%, #65c9ff55, transparent 60%),
-    radial-gradient(ellipse at 50% 34%, #123047 0%, #0a1a26 42%, #050c12 100%) !important;
-  border-color:#65c9ff !important;
+    radial-gradient(ellipse at 50% 30%, #2dd4bf55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #115e59 0%, #042f2e 42%, #021615 100%) !important;
+  border-color:#2dd4bf !important;
   box-shadow:
-    inset 0 0 0 2px #65c9ff,
-    inset 0 0 26px #65c9ff66 !important;
+    inset 0 0 0 2px #2dd4bf,
+    inset 0 0 26px #2dd4bf66 !important;
 }
 .card[data-rarity="Raro"] .card-art::before{
   background:
@@ -529,18 +530,31 @@ main.shell::after{
     repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
 }
 .card[data-rarity="Raro"] .card-art::after{
-  background:linear-gradient(180deg,#0000 35%,#050c12ee 100%) !important;
+  background:linear-gradient(180deg,#0000 35%,#021615ee 100%) !important;
 }
 .card[data-rarity="Raro"] .card-bottom{
-  background:linear-gradient(180deg,#0a1a26 0%,#050c12 100%) !important;
-  border-top:1px dashed #65c9ff !important;
+  background:linear-gradient(180deg,#042f2e 0%,#021615 100%) !important;
+  border-top:1px dashed #2dd4bf !important;
   color:#ffffff !important;
 }
-.card[data-rarity="Raro"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
-.card[data-rarity="Raro"] .card-meta{color:#b7e6ff !important}
-.card[data-rarity="Raro"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
-.card[data-rarity="Raro"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
-.card[data-rarity="Raro"] .gender-badge{color:#b7e6ff !important}
+.card[data-rarity="Raro"] .card-name{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .card-meta{
+  color:#99f6e4 !important;
+}
+.card[data-rarity="Raro"] .card-meta .rarity{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .card-number{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .gender-badge{
+  color:#99f6e4 !important;
+}
 
 /* ============================================================
    ÉPICO: ROXO (#d99aff) EM VOLTA + TEXTO BRANCO
@@ -734,7 +748,7 @@ main.shell::after{
   box-shadow: inset 0 0 0 2px #c9b78a;
 }
 .rarity-legend i.r-comum{ background:#2b2f36; box-shadow: inset 0 0 0 2px #2b2f36; }
-.rarity-legend i.r-raro{ background:#65c9ff; box-shadow: inset 0 0 0 2px #65c9ff; }
+.rarity-legend i.r-raro{ background:#2dd4bf; box-shadow: inset 0 0 0 2px #2dd4bf; }
 .rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
 .rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
 
@@ -1187,7 +1201,7 @@ const wrestlers = [
  {id:137, name:'Danhausen',          initials:'DANH',   brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/danhausen.png'}
 ];
 
-const rarityColors={'Comum':'#2b2f36','Raro':'#65c9ff','Épico':'#d99aff','Lendário':'#e8a800'};
+const rarityColors={'Comum':'#2b2f36','Raro':'#2dd4bf','Épico':'#d99aff','Lendário':'#e8a800'};
 const packRarityColors={'Comum':'#9aa3b2'};
 const rarityWeights={'Comum':67,'Raro':27,'Épico':5,'Lendário':1};
 const RARITIES=Object.keys(rarityWeights);
