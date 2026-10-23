@@ -2012,9 +2012,11 @@ window.cancelTrade = async function(tradeId, btnElement) {
     
     if (row) row.remove();
 
-    toast('Proposta cancelada com sucesso!');
+    toast('Proposta cancelada! O cromo já está disponível para troca.');
     
     await loadTrades(); 
+    await populateTradeSelects(); 
+    
   } catch(e) {
     console.error(e);
     toast('Erro ao cancelar.');
