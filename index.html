@@ -441,6 +441,7 @@ main.shell::after{
 /* ============================================================
    COMUM: CINZA-ARDÓSIA (#2b2f36) + TEXTO BRANCO
    ============================================================ */
+
 .card[data-rarity="Comum"]{
   background:#2b2f36 !important;
   border-color:#2b2f36 !important;
@@ -451,11 +452,12 @@ main.shell::after{
     inset 0 0 0 5px #2b2f36,
     inset 0 0 0 1px #4a5058 !important;
 }
+/* A fita de papel no topo volta a ser amarela e com a sombra certa */
 .card[data-rarity="Comum"]::before{
-  background:linear-gradient(180deg,#3a3f47ee,#23262ccc);
-  border-left:1px dashed #5a6068;
-  border-right:1px dashed #5a6068;
-  box-shadow:0 1px 3px #000a;
+  background:linear-gradient(180deg,#f7e08aee,#e8c95fcc) !important;
+  border-left:1px dashed #b89a4a !important;
+  border-right:1px dashed #b89a4a !important;
+  box-shadow:0 1px 3px #0004 !important;
 }
 .card[data-rarity="Comum"] .card-art{
   background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;
@@ -472,25 +474,26 @@ main.shell::after{
 .card[data-rarity="Comum"] .card-art::after{
   background:linear-gradient(180deg,#0000 40%,#181a1fee 100%) !important;
 }
+/* O fundo da base volta a ser de papel para manter a moldura igual aos outros */
 .card[data-rarity="Comum"] .card-bottom{
-  background:#23262c !important;
-  border-top:1px dashed #3a3f47 !important;
-  color:#ffffff !important;
+  background:#fffaf0 !important;
+  border-top:1px dashed #b8a070 !important;
+  color:#2b1d0e !important;
 }
 .card[data-rarity="Comum"] .card-name{
-  color:#ffffff !important;
-  text-shadow:0 1px 2px #0008 !important;
+  color:#2b1d0e !important;
+  text-shadow:none !important;
 }
-.card[data-rarity="Comum"] .card-meta{color:#c8ccd2 !important}
+.card[data-rarity="Comum"] .card-meta{color:#7a5a2b !important}
 .card[data-rarity="Comum"] .card-meta .rarity{
-  color:#ffffff !important;
-  text-shadow:0 1px 2px #0008 !important;
+  color:#2b2f36 !important;
+  text-shadow:none !important;
 }
 .card[data-rarity="Comum"] .card-number{
-  color:#ffffff !important;
-  text-shadow:0 1px 2px #0008 !important;
+  color:#2b2f36 !important;
+  text-shadow:none !important;
 }
-.card[data-rarity="Comum"] .gender-badge{color:#c8ccd2 !important}
+.card[data-rarity="Comum"] .gender-badge{color:#7a5a2b !important}
 
 /* ============================================================
    RARO: AZUL (#65c9ff) EM VOLTA + TEXTO BRANCO
