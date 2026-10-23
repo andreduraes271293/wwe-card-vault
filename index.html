@@ -356,17 +356,25 @@ main.shell::after{
 }
 
 /* ============ CROMOS EM FALTA ============ */
-.card.missing{ background:#f0e6cf; }
+.card.missing{
+  background:#f0e6cf !important; /* Força o papel cinzento */
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 3px #b8a070,
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a !important;
+}
 .card.missing .card-art{
-  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px);
-  box-shadow: inset 0 0 0 2px #b8a070;
+  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px) !important;
+  box-shadow: inset 0 0 0 2px #b8a070 !important;
   filter: grayscale(1);
 }
 .card.missing .card-art:before{
-  background: repeating-linear-gradient(135deg, #0000 0 14px, #00000010 14px 16px);
+  background: repeating-linear-gradient(135deg, #0000 0 14px, #00000010 14px 16px) !important;
 }
 .card.missing .card-art:after{
-  background: linear-gradient(180deg,#0000 40%,#c9b78a99 100%);
+  background: linear-gradient(180deg,#0000 40%,#c9b78a99 100%) !important;
 }
 .card.missing .card-art > .missing-q{
   position: absolute; inset: 0;
@@ -387,8 +395,20 @@ main.shell::after{
   opacity: .55;
   z-index: 2; pointer-events: none;
 }
-.card.missing .card-name{ color:#a89070;font-style: italic;letter-spacing: 1px; }
-.card.missing .card-number{ color:#a89070; }
+/* A fita no topo das cartas em falta volta a ser amarela */
+.card.missing::before{
+  background: linear-gradient(180deg,#f7e08aee,#e8c95fcc) !important;
+  border-left:1px dashed #b89a4a !important;
+  border-right:1px dashed #b89a4a !important;
+}
+.card.missing .card-bottom{
+  background:#fffaf0 !important;
+  border-top:1px dashed #b8a070 !important;
+}
+.card.missing .card-name{ color:#a89070 !important; font-style: italic; letter-spacing: 1px; }
+.card.missing .card-number{ color:#a89070 !important; }
+.card.missing .card-meta .rarity{ color:#a89070 !important; text-shadow: none !important;}
+.card.missing .gender-badge{ color:#a89070 !important; }
 
 /* ============ VIRAR DE PÁGINA ============ */
 @keyframes turnPage{
@@ -475,7 +495,6 @@ main.shell::after{
 /* ============================================================
    COMUM: CINZA-ARDÓSIA (#2b2f36) + TEXTO BRANCO
    ============================================================ */
-
 .card[data-rarity="Comum"]{
   background:#2b2f36 !important;
   border-color:#2b2f36 !important;
@@ -486,7 +505,6 @@ main.shell::after{
     inset 0 0 0 5px #2b2f36,
     inset 0 0 0 1px #4a5058 !important;
 }
-/* A fita de papel no topo volta a ser amarela e com a sombra certa */
 .card[data-rarity="Comum"]::before{
   background:linear-gradient(180deg,#f7e08aee,#e8c95fcc) !important;
   border-left:1px dashed #b89a4a !important;
@@ -508,7 +526,6 @@ main.shell::after{
 .card[data-rarity="Comum"] .card-art::after{
   background:linear-gradient(180deg,#0000 40%,#181a1fee 100%) !important;
 }
-/* O fundo da base volta a ser de papel para manter a moldura igual aos outros */
 .card[data-rarity="Comum"] .card-bottom{
   background:#fffaf0 !important;
   border-top:1px dashed #b8a070 !important;
