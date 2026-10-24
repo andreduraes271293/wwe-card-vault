@@ -2423,21 +2423,23 @@ window.acceptBattle = async function(battleId, btnElement) {
       const el1 = document.getElementById(`p1-${attr}`);
       const el2 = document.getElementById(`p2-${attr}`);
       
-      if (winnerId === battle.challenger_id) {
-        el1.classList.add('win-val'); el2.classList.add('lose-val');
-        showBattleBanner(true, `O ${cCard.name} venceu (${cVal} vs ${oVal})! O desafiante roubou a carta ${oCard.name}.`);
-      } else if (winnerId === battle.opponent_id) {
-        el1.classList.add('lose-val'); el2.classList.add('win-val');
-        showBattleBanner(false, `O ${oCard.name} venceu (${oVal} vs ${cVal})! Roubaste a carta ${cCard.name}.`);
-      } else {
-        el1.classList.add('win-val'); el2.classList.add('win-val');
-        showBattleBanner(null, `Empate (${cVal} vs ${oVal}). Ninguém perdeu cartas!`);
-      }
+      const showResult = () => {
+        if (winnerId === battle.challenger_id) {
+          el1.classList.add('win-val'); el2.classList.add('lose-val');
+          showBattleBanner(true, `O ${cCard.name} venceu (${cVal} vs ${oVal})! O desafiante roubou a carta ${oCard.name}.`);
+        } else if (winnerId === battle.opponent_id) {
+          el1.classList.add('lose-val'); el2.classList.add('win-val');
+          showBattleBanner(false, `O ${oCard.name} venceu (${oVal} vs ${cVal})! Roubaste a carta ${cCard.name}.`);
+        } else {
+          el1.classList.add('win-val'); el2.classList.add('win-val');
+          showBattleBanner(null, `Empate (${cVal} vs ${oVal}). Ninguém perdeu cartas!`);
+        }
+      };
 
       // Grava no histórico com o ID da carta vencedora
       const winnerCardId = winnerId === battle.challenger_id ? battle.challenger_card_id : (winnerId === battle.opponent_id ? myCardId : null);
       
-      await supabaseClient.from('battles').update({
+      const { data: updated, error: updErr } = await supabaseClient.from('battles').update({
         opponent_card_id: myCardId,
         attribute_compared: attr,
         challenger_val: cVal,
@@ -2445,19 +2447,33 @@ window.acceptBattle = async function(battleId, btnElement) {
         winner_id: winnerId,
         winner_card_id: winnerCardId,
         status: 'accepted'
-      }).eq('id', battleId);
+      }).eq('id', battleId).select();
+
+      // Se o UPDATE for bloqueado por RLS, o Supabase não dá erro: devolve 0 linhas
+      if (updErr || !updated || updated.length === 0) {
+        console.error('Erro ao gravar batalha:', updErr || 'UPDATE não alterou nenhuma linha (RLS?)');
+        toast('Não foi possível gravar a batalha na base de dados.');
+        closeBattleBanner();
+        await loadBattles();
+        return;
+      }
 
       if (winnerId) {
         const loserId = winnerId === battle.challenger_id ? battle.opponent_id : battle.challenger_id;
         const lostCardId = winnerId === battle.challenger_id ? myCardId : battle.challenger_card_id;
 
-        const { data: lostCardData } = await supabaseClient.from('collections').select('id').eq('user_id', loserId).eq('card_id', lostCardId).limit(1);
+        const { data: lostCardData, error: selErr } = await supabaseClient.from('collections').select('id').eq('user_id', loserId).eq('card_id', lostCardId).limit(1);
+        if (selErr) console.error('Erro a procurar carta perdida:', selErr);
         if (lostCardData && lostCardData.length > 0) {
-          await supabaseClient.from('collections').delete().eq('id', lostCardData[0].id);
+          const { error: delErr } = await supabaseClient.from('collections').delete().eq('id', lostCardData[0].id);
+          if (delErr) console.error('Erro a remover carta ao perdedor:', delErr);
         }
-        await supabaseClient.from('collections').insert([{ user_id: winnerId, card_id: lostCardId }]);
+        const { error: insErr } = await supabaseClient.from('collections').insert([{ user_id: winnerId, card_id: lostCardId }]);
+        if (insErr) console.error('Erro a dar carta ao vencedor:', insErr);
       }
-      
+
+      showResult();
+      await loadBattles();
       await loadState();
 
     }, 1500);
@@ -2515,6 +2531,8 @@ function closeBattleBanner() {
     <input type="text" class="trade-input" id="battleFriendName" placeholder="Nome de Twitch do oponente">
     <button class="btn battle-btn" id="submitBattle" style="width:100%;margin-top:10px;background:#8b5cf6;color:#fff;">Lançar Desafio</button>
   `;
+  document.querySelectorAll('.battle-tab').forEach(t => t.classList.toggle('active', t.dataset.target === 'b-send'));
+  document.querySelectorAll('.battle-content').forEach(c => c.classList.toggle('active', c.id === 'tab-b-send'));
   populateBattleSelects();
 }
 
