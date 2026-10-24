@@ -1201,7 +1201,7 @@ main.shell::after{
         <thead>
           <tr>
             <th>Cartas Envolvidas</th>
-            <th>Resultado</th>
+            <th>Atributo</th>
             <th>Oponente</th>
           </tr>
         </thead>
@@ -2266,91 +2266,6 @@ async function loadBattles() {
             <div style="font-weight:900;color:${theirColor};font-size:11px;">${theirCard.name}</div>
           </td>
           <td style="text-align:center;"><span style="text-transform:uppercase;font-weight:900;background:#e8a800;padding:2px 5px;border-radius:4px;font-size:9px;color:#000;">${b.attribute_compared ? b.attribute_compared.substring(0,3) : '?'}</span></td>
-          <td><strong>${otherName}</strong></td>
-        </tr>
-      `;
-    }).join('');
-  } else {
-    historyList.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#9da1ab;padding:20px;">Ainda não fizeste nenhuma batalha.</td></tr>';
-  }
-}
-  const receivedList = document.getElementById('battleReceivedList');
-  const historyList = document.getElementById('battleHistoryList');
-
-  const { data: received, error: errRec } = await supabaseClient
-    .from('battles')
-    .select('*, challenger:challenger_id(username)')
-    .eq('opponent_id', currentUser.id).eq('status', 'pending');
-    
-  if (received && received.length > 0) {
-    receivedList.innerHTML = received.map(b => {
-      const challengerCard = WRESTLER_MAP.get(b.challenger_card_id) || {name:'?'};
-      const challengerName = b.challenger?.username || 'Desconhecido';
-      
-      let availableCards = '<option value="">Escolhe o teu cromo repetido...</option>';
-      Object.keys(state.ownedCounts).forEach(id => {
-        const qty = state.ownedCounts[id];
-        if (qty > 1) { // SÓ REPETIDOS
-          const w = WRESTLER_MAP.get(Number(id));
-          if (w) availableCards += `<option value="${w.id}">${w.name} (F:${w.forca} A:${w.agilidade} C:${w.carisma})</option>`;
-        }
-      });
-
-      return `
-        <div class="trade-item" style="flex-direction: column; align-items: stretch;">
-          <div class="trade-item-info">
-            <div class="trade-item-sub">Desafio de: <strong>${challengerName}</strong></div>
-            <div class="trade-item-cards">
-              Ele usou: <strong>${challengerCard.name}</strong>
-            </div>
-          </div>
-          <select class="trade-select" id="battleCard_${b.id}" style="margin-top:10px; margin-bottom:5px;">
-            ${availableCards}
-          </select>
-          <div class="trade-actions-sm" style="display:flex; gap:5px; margin-top:5px;">
-            <button class="btn" style="background:#22c55e; flex:1;" onclick="acceptBattle(${b.id}, this)">Aceitar Duelo</button>
-            <button class="btn secondary" style="flex:1;" onclick="rejectBattle(${b.id}, this)">Recusar</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-  } else {
-    receivedList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Não tens desafios pendentes.</p>';
-  }
-
-  const { data: history, error: errHist } = await supabaseClient
-    .from('battles')
-    .select('*, challenger:challenger_id(username), opponent:opponent_id(username)')
-    .or(`challenger_id.eq.${currentUser.id},opponent_id.eq.${currentUser.id}`)
-    .neq('status', 'pending')
-    .order('created_at', { ascending: false });
-    
-  if (history && history.length > 0) {
-    historyList.innerHTML = history.map(b => {
-      const isChallenger = b.challenger_id === currentUser.id;
-      const otherName = isChallenger ? b.opponent?.username : b.challenger?.username;
-      
-      const myCard = WRESTLER_MAP.get(isChallenger ? b.challenger_card_id : b.opponent_card_id) || {name:'?'};
-      const theirCard = WRESTLER_MAP.get(isChallenger ? b.opponent_card_id : b.challenger_card_id) || {name:'?'};
-
-      let myColor = 'inherit';
-      let theirColor = 'inherit';
-
-      if (b.winner_id === currentUser.id) {
-        myColor = '#16a34a'; // Verde
-        theirColor = '#b91c1c'; // Vermelho
-      } else if (b.winner_id) {
-        myColor = '#b91c1c'; // Vermelho
-        theirColor = '#16a34a'; // Verde
-      }
-
-      return `
-        <tr>
-          <td>
-            <div style="font-weight:900;color:${myColor};line-height:1.2;">${myCard.name}</div>
-            <div style="font-weight:900;color:${theirColor};font-size:10px;">${theirCard.name}</div>
-          </td>
-          <td style="text-align:center;"><span style="text-transform:uppercase;font-weight:900;">${b.attribute_compared ? b.attribute_compared.substring(0,3) : '?'}</span></td>
           <td><strong>${otherName}</strong></td>
         </tr>
       `;
