@@ -1200,9 +1200,9 @@ main.shell::after{
       <table class="trade-table">
         <thead>
           <tr>
-            <th>Oponente</th>
+            <th>Cartas Envolvidas</th>
             <th>Resultado</th>
-            <th>Data</th>
+            <th>Oponente</th>
           </tr>
         </thead>
         <tbody id="battleHistoryList">
@@ -1226,7 +1226,6 @@ const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= DADOS E ATRIBUTOS ================= */
-// (Substitui este array pelo teu array original completo se necessário)
 const wrestlers = [
  {id:1,   name:'John Cena',                  initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/john-cena.png', forca: 92, agilidade: 78, carisma: 99},
  {id:2,   name:'The Undertaker',             initials:'TAKER',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/undertaker.png', forca: 95, agilidade: 65, carisma: 98},
@@ -2223,16 +2222,28 @@ async function loadBattles() {
       const isChallenger = b.challenger_id === currentUser.id;
       const otherName = isChallenger ? b.opponent?.username : b.challenger?.username;
       
-      let resultado = 'Empate';
-      let resultColor = '#d97706';
-      if (b.winner_id === currentUser.id) { resultado = 'Vitória'; resultColor = '#16a34a'; }
-      else if (b.winner_id) { resultado = 'Derrota'; resultColor = '#b91c1c'; }
+      const myCard = WRESTLER_MAP.get(isChallenger ? b.challenger_card_id : b.opponent_card_id) || {name:'?'};
+      const theirCard = WRESTLER_MAP.get(isChallenger ? b.opponent_card_id : b.challenger_card_id) || {name:'?'};
+
+      let myColor = 'inherit';
+      let theirColor = 'inherit';
+
+      if (b.winner_id === currentUser.id) {
+        myColor = '#16a34a'; // Verde
+        theirColor = '#b91c1c'; // Vermelho
+      } else if (b.winner_id) {
+        myColor = '#b91c1c'; // Vermelho
+        theirColor = '#16a34a'; // Verde
+      }
 
       return `
         <tr>
+          <td>
+            <div style="font-weight:900;color:${myColor};line-height:1.2;">${myCard.name}</div>
+            <div style="font-weight:900;color:${theirColor};font-size:10px;">${theirCard.name}</div>
+          </td>
+          <td style="text-align:center;"><span style="text-transform:uppercase;font-weight:900;">${b.attribute_compared ? b.attribute_compared.substring(0,3) : '?'}</span></td>
           <td><strong>${otherName}</strong></td>
-          <td><span style="color:${resultColor};font-weight:900;">${resultado}</span></td>
-          <td><small>${new Date(b.created_at).toLocaleDateString()}</small></td>
         </tr>
       `;
     }).join('');
@@ -2370,12 +2381,16 @@ window.acceptBattle = async function(battleId, btnElement) {
         showBattleBanner(null, `Empate (${cVal} vs ${oVal}). Ninguém perdeu cartas!`);
       }
 
+      // Grava no histórico com o ID da carta vencedora
+      const winnerCardId = winnerId === battle.challenger_id ? battle.challenger_card_id : (winnerId === battle.opponent_id ? myCardId : null);
+      
       await supabaseClient.from('battles').update({
         opponent_card_id: myCardId,
         attribute_compared: attr,
         challenger_val: cVal,
         opponent_val: oVal,
         winner_id: winnerId,
+        winner_card_id: winnerCardId,
         status: 'accepted'
       }).eq('id', battleId);
 
