@@ -2152,13 +2152,30 @@ document.querySelectorAll('.battle-tab').forEach(tab => {
   });
 });
 
+// Cópias "comprometidas": cromos que já estão em desafios ou trocas pendentes enviados por mim
+async function getReservedCounts() {
+  const reserved = {};
+  try {
+    const [{ data: bt }, { data: tr }] = await Promise.all([
+      supabaseClient.from('battles').select('challenger_card_id').eq('challenger_id', currentUser.id).eq('status', 'pending'),
+      supabaseClient.from('trades').select('sender_card_id').eq('sender_id', currentUser.id).eq('status', 'pending')
+    ]);
+    (bt || []).forEach(b => { reserved[b.challenger_card_id] = (reserved[b.challenger_card_id] || 0) + 1; });
+    (tr || []).forEach(t => { reserved[t.sender_card_id] = (reserved[t.sender_card_id] || 0) + 1; });
+  } catch (e) {
+    console.error('Erro ao calcular cromos reservados:', e);
+  }
+  return reserved;
+}
+
 async function populateBattleSelects() {
   const myCardSelect = document.getElementById('battleMyCard');
   myCardSelect.innerHTML = '<option value="">O meu cromo repetido para a batalha...</option>';
 
+  const reservedNow = await getReservedCounts();
   Object.keys(state.ownedCounts).forEach(id => {
-    const qty = state.ownedCounts[id];
-    if (qty > 1) { // SÓ REPETIDOS
+    const free = state.ownedCounts[id] - (reservedNow[id] || 0);
+    if (free > 1) { // SÓ REPETIDOS AINDA LIVRES (não usados noutro desafio/troca pendente)
       const w = WRESTLER_MAP.get(Number(id));
       if (w) {
         myCardSelect.innerHTML += `<option value="${w.id}">${w.name} (F:${w.forca} | A:${w.agilidade} | C:${w.carisma})</option>`;
@@ -2188,7 +2205,7 @@ async function loadBattles() {
   }
 
   if (received && received.length > 0) {
-    // ... (o resto do código de renderização mantém-se igual)
+    const reservedMine = await getReservedCounts();
     const challengerIds = received.map(b => b.challenger_id);
     const { data: profiles } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', challengerIds);
     const profileMap = new Map((profiles || []).map(p => [p.user_id, p.username]));
@@ -2199,8 +2216,8 @@ async function loadBattles() {
       
       let availableCards = '<option value="">Escolhe o teu cromo repetido...</option>';
       Object.keys(state.ownedCounts).forEach(id => {
-        const qty = state.ownedCounts[id];
-        if (qty > 1) { // SÓ REPETIDOS
+        const qty = state.ownedCounts[id] - (reservedMine[id] || 0);
+        if (qty > 1) { // SÓ REPETIDOS AINDA LIVRES
           const w = WRESTLER_MAP.get(Number(id));
           if (w) availableCards += `<option value="${w.id}">${w.name} (F:${w.forca} A:${w.agilidade} C:${w.carisma})</option>`;
         }
@@ -2250,6 +2267,10 @@ async function loadBattles() {
       const isChallenger = b.challenger_id === currentUser.id;
       const otherId = isChallenger ? b.opponent_id : b.challenger_id;
       const otherName = nameMap.get(otherId) || 'Desconhecido';
+
+      if (b.status === 'cancelled') {
+        return `<tr><td colspan="3" style="text-align:center;color:#9da1ab;font-size:11px;">Desafio ${isChallenger ? 'para ' + otherName : 'de ' + otherName} foi cancelado (cromo já não estava em duplicado).</td></tr>`;
+      }
 
       if (b.status === 'rejected') {
         return `<tr><td colspan="3" style="text-align:center;color:#9da1ab;font-size:11px;">Desafio ${isChallenger ? 'para ' + otherName + ' foi recusado' : 'de ' + otherName + ' foi recusado por ti'}.</td></tr>`;
@@ -2330,6 +2351,12 @@ async function submitBattle(btn) {
       return toast('Amigo não encontrado. O nome de Twitch está correto?');
     }
 
+    const reservedNow = await getReservedCounts();
+    if ((state.ownedCounts[myCardId] || 0) - (reservedNow[myCardId] || 0) < 2) {
+      await populateBattleSelects();
+      return toast('Esse cromo já está a ser usado noutro desafio ou troca pendente.');
+    }
+
     const { error: sendErr } = await supabaseClient
       .from('battles')
       .insert({
@@ -2372,6 +2399,26 @@ window.acceptBattle = async function(battleId, btnElement) {
   try {
     const { data: battle } = await supabaseClient.from('battles').select('*').eq('id', battleId).single();
     if (!battle || battle.status !== 'pending') return toast('Batalha já processada.');
+    if (battle.opponent_id !== currentUser.id) return toast('Este desafio não é para ti.');
+
+    // Confirma, na base de dados e neste momento, que ambos ainda têm o cromo em duplicado
+    const [{ data: chCopies }, { data: myCopies }] = await Promise.all([
+      supabaseClient.from('collections').select('id').eq('user_id', battle.challenger_id).eq('card_id', battle.challenger_card_id),
+      supabaseClient.from('collections').select('id').eq('user_id', currentUser.id).eq('card_id', myCardId)
+    ]);
+
+    if (!chCopies || chCopies.length < 2) {
+      await supabaseClient.from('battles').update({ status: 'cancelled' }).eq('id', battleId).eq('status', 'pending');
+      toast('O desafiante já não tem esse cromo em duplicado. Desafio cancelado.');
+      await loadBattles();
+      return;
+    }
+    if (!myCopies || myCopies.length < 2) {
+      toast('Já não tens esse cromo em duplicado. Escolhe outro.');
+      btnElement.disabled = false;
+      btnElement.innerHTML = 'Aceitar';
+      return;
+    }
 
     const cCard = WRESTLER_MAP.get(battle.challenger_card_id);
     const oCard = WRESTLER_MAP.get(myCardId);
@@ -2469,28 +2516,33 @@ window.acceptBattle = async function(battleId, btnElement) {
         winner_id: winnerId,
         winner_card_id: winnerCardId,
         status: 'accepted'
-      }).eq('id', battleId).select();
+      }).eq('id', battleId).eq('status', 'pending').select();
 
       if (updErr || !updated || updated.length === 0) {
         console.error('Erro ao gravar batalha:', updErr || 'UPDATE não alterou nenhuma linha (RLS?)');
-        toast('Não foi possível gravar a batalha na base de dados.');
+        toast('Não foi possível gravar a batalha (já foi processada ou falta permissão).');
         closeBattleBanner();
         await loadBattles();
         return;
       }
 
       if (winnerId) {
-        const loserId = winnerId === battle.challenger_id ? battle.opponent_id : battle.challenger_id;
+        const loserCopyId = winnerId === battle.challenger_id ? myCopies[0].id : chCopies[0].id;
         const lostCardId = winnerId === battle.challenger_id ? myCardId : battle.challenger_card_id;
 
-        const { data: lostCardData, error: selErr } = await supabaseClient.from('collections').select('id').eq('user_id', loserId).eq('card_id', lostCardId).limit(1);
-        if (selErr) console.error('Erro a procurar carta perdida:', selErr);
-        if (lostCardData && lostCardData.length > 0) {
-          const { error: delErr } = await supabaseClient.from('collections').delete().eq('id', lostCardData[0].id);
-          if (delErr) console.error('Erro a remover carta ao perdedor:', delErr);
+        const { data: removed, error: delErr } = await supabaseClient
+          .from('collections').delete().eq('id', loserCopyId).select();
+
+        if (delErr || !removed || removed.length === 0) {
+          console.error('Erro a remover carta ao perdedor (RLS?):', delErr);
+          toast('A batalha foi gravada, mas não foi possível transferir o cromo.');
+        } else {
+          const { error: insErr } = await supabaseClient.from('collections').insert([{ user_id: winnerId, card_id: lostCardId }]);
+          if (insErr) {
+            console.error('Erro a dar carta ao vencedor:', insErr);
+            toast('O cromo foi retirado ao perdedor, mas falhou a entrega ao vencedor.');
+          }
         }
-        const { error: insErr } = await supabaseClient.from('collections').insert([{ user_id: winnerId, card_id: lostCardId }]);
-        if (insErr) console.error('Erro a dar carta ao vencedor:', insErr);
       }
 
       showResult();
@@ -2576,7 +2628,7 @@ async function checkBattleNotifications() {
       .from('battles')
       .select('*')
       .eq('challenger_id', currentUser.id)
-      .in('status', ['accepted', 'rejected'])
+      .in('status', ['accepted', 'rejected', 'cancelled'])
       .order('created_at', { ascending: false })
       .limit(30);
 
@@ -2609,9 +2661,11 @@ async function checkBattleNotifications() {
     const rejected = data.filter(b => b.status === 'rejected');
 
     if (accepted.length === 0) {
-      toast(rejected.length === 1
-        ? `${nameOf(rejected[0])} recusou o teu desafio.`
-        : `${rejected.length} desafios teus foram recusados.`);
+      toast(data.length > 1
+        ? `${data.length} desafios teus foram recusados ou cancelados.`
+        : (data[0].status === 'cancelled'
+            ? `O teu desafio a ${nameOf(data[0])} foi cancelado: já não tinhas esse cromo em duplicado.`
+            : `${nameOf(data[0])} recusou o teu desafio.`));
       return;
     }
 
