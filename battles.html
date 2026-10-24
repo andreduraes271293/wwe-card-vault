@@ -1414,6 +1414,7 @@ async function handleUser(user) {
     if (user.user_metadata.avatar_url) document.getElementById('userAvatar').src = user.user_metadata.avatar_url;
     await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() });
     await loadState();
+    startBattleNotifications();
   } else {
     document.getElementById('loginBtn').style.display = 'flex';
     document.getElementById('userProfile').style.display = 'none';
@@ -1421,6 +1422,7 @@ async function handleUser(user) {
     document.getElementById('welcome-screen').style.display = 'block';
     document.getElementById('openTradeBtn').style.display = 'none';
     document.getElementById('openBattleBtn').style.display = 'none';
+    stopBattleNotifications();
     state.ownedCounts = {};
     state.packs = 0;
     render();
@@ -1929,352 +1931,61 @@ async function loadTrades() {
   if (errHist) console.error(errHist);
 
   if (history && history.length > 0) {
-    historyList.innerHTML = history.map(t => {
-      const isSender = t.sender_id === currentUser.id;
-      const otherName = isSender ? (t.receiver_username || '?') : (t.sender_username || '?');
-      
-      const cardGive = WRESTLER_MAP.get(isSender ? t.sender_card_id : t.receiver_card_id) || {name:'?'};
-      const cardGet = WRESTLER_MAP.get(isSender ? t.receiver_card_id : t.sender_card_id) || {name:'?'};
-      
-      let statusColor = '#b91c1c';
-      let statusBg = '#fee2e2';
-      if (t.status === 'accepted') { statusColor = '#16a34a'; statusBg = '#dcfce7'; }
-      if (t.status === 'cancelled') { statusColor = '#d97706'; statusBg = '#fef3c7'; }
-      if (t.status === 'pending') { statusColor = '#2563eb'; statusBg = '#dbeafe'; }
-
-      let actionBtn = '—';
-      if (isSender && t.status === 'pending') {
-        actionBtn = `<button class="btn secondary" style="padding:4px 8px;font-size:10px;width:100%;" onclick="cancelTrade(${t.id}, this)">Cancelar</button>`;
-      }
-
-      return `
-        <tr id="trade-row-${t.id}">
-          <td>
-            <div style="font-weight:900;color:#8a0f20;line-height:1.2;">${cardGet.name}</div>
-            <div style="font-size:10px;color:#7a5a2b;">Deste: ${cardGive.name}</div>
-          </td>
-          <td><strong>${otherName}</strong></td>
-          <td>
-            <span style="background:${statusBg};color:${statusColor};padding:2px 6px;border-radius:4px;font-weight:900;font-size:10px;">
-              ${t.status.toUpperCase()}
-            </span>
-          </td>
-          <td>${actionBtn}</td>
-        </tr>
-      `;
-    }).join('');
-  } else {
-    historyList.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#9da1ab;padding:20px;">Ainda não fizeste nenhuma troca.</td></tr>';
-  }
-}
-
-document.getElementById('submitTrade').addEventListener('click', async (e) => {
-  const btn = e.target;
-  const myCardId = Number(document.getElementById('tradeMyCard').value);
-  const friendName = document.getElementById('tradeFriendName').value.trim().toLowerCase();
-  const theirCardId = Number(document.getElementById('tradeTheirCard').value);
-
-  if (!myCardId || !friendName || !theirCardId) {
-    return toast('Preenche todos os campos!');
-  }
-
-  if (friendName === document.getElementById('userName').textContent.toLowerCase()) {
-    return toast('Não podes trocar contigo próprio!');
-  }
-
-  btn.disabled = true;
-  const originalText = btn.innerHTML;
-  btn.innerHTML = 'A verificar...';
-
-  try {
-    const { data: existingTrade } = await supabaseClient
-      .from('trades')
-      .select('id')
-      .eq('sender_id', currentUser.id)
-      .eq('sender_card_id', myCardId)
-      .eq('status', 'pending');
-
-    if (existingTrade && existingTrade.length > 0) {
-      return toast('Já tens uma proposta pendente com este cromo. Cancela-a primeiro no Histórico.');
-    }
-
-    const { data: friendData, error: friendErr } = await supabaseClient
-      .from('profiles').select('user_id').eq('username', friendName).single();
-
-    if (friendErr || !friendData) {
-      return toast('Amigo não encontrado. O nome de Twitch está correto?');
-    }
-
-    const { data: friendCards } = await supabaseClient
-      .from('collections').select('card_id').eq('user_id', friendData.user_id).eq('card_id', theirCardId);
-
-    if (!friendCards || friendCards.length < 2) {
-      return toast(`O teu amigo não tem o cromo "${WRESTLER_MAP.get(theirCardId).name}" em duplicado.`);
-    }
-
-    const { error: sendErr } = await supabaseClient
-      .from('trades').insert({
-        sender_id: currentUser.id,
-        receiver_id: friendData.user_id,
-        sender_card_id: myCardId,
-        receiver_card_id: theirCardId
-      });
-
-    if (sendErr) throw sendErr;
-
-    toast('Proposta enviada com sucesso!');
-    document.getElementById('tradeMyCard').value = '';
-    document.getElementById('tradeFriendName').value = '';
-    document.getElementById('tradeTheirCard').value = '';
-    
-    await loadTrades();
-    await populateTradeSelects();
-
-  } catch (error) {
-    console.error(error);
-    toast('Erro ao enviar a proposta.');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-  }
-});
-
-window.acceptTrade = async function(tradeId, btnElement) {
-  btnElement.disabled = true;
-  btnElement.innerHTML = 'A processar...';
-  try {
-    const { data: trade, error } = await supabaseClient.from('trades').select('*').eq('id', tradeId).single();
-    if (error || !trade || trade.status !== 'pending') {
-      return toast('Esta troca já foi processada ou cancelada.');
-    }
-
-    const { data: senCardData } = await supabaseClient.from('collections').select('id').eq('user_id', trade.sender_id).eq('card_id', trade.sender_card_id);
-    if (!senCardData || senCardData.length < 2) {
-       await supabaseClient.from('trades').update({ status: 'cancelled' }).eq('id', tradeId);
-       return toast('O autor da proposta já não tem este cromo em duplicado. Troca cancelada.');
-    }
-
-    const { data: recCardData } = await supabaseClient.from('collections').select('id').eq('user_id', trade.receiver_id).eq('card_id', trade.receiver_card_id);
-    if (!recCardData || recCardData.length < 2) {
-       await supabaseClient.from('trades').update({ status: 'cancelled' }).eq('id', tradeId);
-       return toast('Já não tens este cromo em duplicado. Troca cancelada.');
-    }
-
-    await supabaseClient.from('collections').delete().eq('id', senCardData[0].id);
-    await supabaseClient.from('collections').delete().eq('id', recCardData[0].id);
-    
-    await supabaseClient.from('collections').insert([{ user_id: trade.receiver_id, card_id: trade.sender_card_id }]);
-    await supabaseClient.from('collections').insert([{ user_id: trade.sender_id, card_id: trade.receiver_card_id }]);
-    
-    await supabaseClient.from('trades').update({ status: 'accepted' }).eq('id', tradeId);
-    toast('Troca realizada com sucesso!');
-    await loadState();
-    await loadTrades();
-    populateTradeSelects();
-  } catch (e) {
-    console.error(e);
-    toast('Erro ao processar a troca.');
-    btnElement.disabled = false;
-    btnElement.innerHTML = 'Aceitar';
-  }
-};
-
-window.rejectTrade = async function(tradeId, btnElement) {
-  btnElement.disabled = true;
-  btnElement.innerHTML = '...';
-  try {
-    const { data: trade } = await supabaseClient.from('trades').select('status').eq('id', tradeId).single();
-    if (!trade || trade.status !== 'pending') return;
-    await supabaseClient.from('trades').update({ status: 'rejected' }).eq('id', tradeId);
-    toast('Proposta recusada.');
-    await loadTrades();
-  } catch(e) {
-    btnElement.disabled = false;
-    btnElement.innerHTML = 'Recusar';
-  }
-};
-
-window.cancelTrade = async function(tradeId, btnElement) {
-  btnElement.disabled = true;
-  btnElement.innerHTML = '...';
-  
-  const row = document.getElementById(`trade-row-${tradeId}`);
-  if (row) {
-    row.style.opacity = '0.3';
-    row.style.transition = 'opacity 0.3s ease';
-  }
-
-  try {
-    await supabaseClient.from('trades').delete().eq('id', tradeId);
-    
-    if (row) row.remove();
-
-    toast('Proposta cancelada! O cromo já está disponível para troca.');
-    
-    await loadTrades(); 
-    await populateTradeSelects(); 
-    
-  } catch(e) {
-    console.error(e);
-    toast('Erro ao cancelar.');
-    if (row) {
-      row.style.opacity = '1';
-      btnElement.disabled = false;
-      btnElement.innerHTML = 'Cancelar';
-    }
-  }
-};
-
-/* ================= SISTEMA DE BATALHAS ================= */
-const openBattleBtn = document.getElementById('openBattleBtn');
-const battleBackdrop = document.getElementById('battleBackdrop');
-
-openBattleBtn.addEventListener('click', async () => {
-  battleBackdrop.classList.add('show');
-  closeBattleBanner();
-  await populateBattleSelects();
-  await loadBattles();
-});
-
-document.getElementById('battleClose').addEventListener('click', () => {
-  battleBackdrop.classList.remove('show');
-  closeBattleBanner();
-});
-
-document.querySelectorAll('.battle-tab').forEach(tab => {
-  tab.addEventListener('click', (e) => {
-    document.querySelectorAll('.battle-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.battle-content').forEach(c => c.classList.remove('active'));
-    e.target.classList.add('active');
-    document.getElementById('tab-' + e.target.dataset.target).classList.add('active');
-  });
-});
-
-async function populateBattleSelects() {
-  const myCardSelect = document.getElementById('battleMyCard');
-  myCardSelect.innerHTML = '<option value="">O meu cromo repetido para a batalha...</option>';
-
-  Object.keys(state.ownedCounts).forEach(id => {
-    const qty = state.ownedCounts[id];
-    if (qty > 1) { // SÓ REPETIDOS
-      const w = WRESTLER_MAP.get(Number(id));
-      if (w) {
-        myCardSelect.innerHTML += `<option value="${w.id}">${w.name} (F:${w.forca} | A:${w.agilidade} | C:${w.carisma})</option>`;
-      }
-    }
-  });
-}
-
-async function loadBattles() {
-  const receivedList = document.getElementById('battleReceivedList');
-  const historyList = document.getElementById('battleHistoryList');
-
-  console.log("=== A CARREGAR BATALHAS ===");
-  console.log("O meu ID (currentUser.id):", currentUser ? currentUser.id : "NULL (Não logado!)");
-
-  // 1. Puxar Desafios Pendentes (Recebidos)
-  const { data: received, error: errRec } = await supabaseClient
-    .from('battles')
-    .select('*')
-    .eq('opponent_id', currentUser.id)
-    .eq('status', 'pending');
-    
-  if (errRec) {
-    console.error("Erro ao puxar desafios:", errRec);
-  } else {
-    console.log("Desafios encontrados na BD para mim:", received);
-  }
-
-  if (received && received.length > 0) {
-    // ... (o resto do código de renderização mantém-se igual)
-    const challengerIds = received.map(b => b.challenger_id);
-    const { data: profiles } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', challengerIds);
-    const profileMap = new Map((profiles || []).map(p => [p.user_id, p.username]));
-
-    receivedList.innerHTML = received.map(b => {
-      const challengerCard = WRESTLER_MAP.get(b.challenger_card_id) || {name:'?'};
-      const challengerName = profileMap.get(b.challenger_id) || 'Desconhecido';
-      
-      let availableCards = '<option value="">Escolhe o teu cromo repetido...</option>';
-      Object.keys(state.ownedCounts).forEach(id => {
-        const qty = state.ownedCounts[id];
-        if (qty > 1) { // SÓ REPETIDOS
-          const w = WRESTLER_MAP.get(Number(id));
-          if (w) availableCards += `<option value="${w.id}">${w.name} (F:${w.forca} A:${w.agilidade} C:${w.carisma})</option>`;
-        }
-      });
-
-      return `
-        <div class="trade-item" style="flex-direction: column; align-items: stretch; margin-bottom:10px;">
-          <div class="trade-item-info">
-            <div class="trade-item-sub">Desafio de: <strong>${challengerName}</strong></div>
-            <div class="trade-item-cards">
-              Ele usou: <strong>${challengerCard.name}</strong>
-            </div>
-          </div>
-          <select class="trade-select" id="battleCard_${b.id}" style="margin-top:10px; margin-bottom:5px;">
-            ${availableCards}
-          </select>
-          <div class="trade-actions-sm" style="display:flex; gap:5px; margin-top:5px;">
-            <button class="btn" style="background:#22c55e; flex:1;" onclick="acceptBattle(${b.id}, this)">Aceitar</button>
-            <button class="btn secondary" style="flex:1;" onclick="rejectBattle(${b.id}, this)">Recusar</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-  } else {
-    receivedList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Não tens desafios pendentes.</p>';
-  }
-
-  // 2. Puxar Histórico (Concluídos e Recusados)
-  // ... (o resto mantém-se igual)
-  const { data: history, error: errHist } = await supabaseClient
-    .from('battles')
-    .select('*')
-    .or(`challenger_id.eq.${currentUser.id},opponent_id.eq.${currentUser.id}`)
-    .neq('status', 'pending')
-    .order('created_at', { ascending: false });
-    
-  if (errHist) console.error('Erro history:', errHist);
-
-  if (history && history.length > 0) {
-    // ... (o resto do histórico mantém-se igual)
-    const otherIds = history.map(b => b.challenger_id === currentUser.id ? b.opponent_id : b.challenger_id);
-    const { data: profilesH } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', otherIds);
-    const profileMapH = new Map((profilesH || []).map(p => [p.user_id, p.username]));
+    const allIds = [...new Set(history.flatMap(b => [b.challenger_id, b.opponent_id]))];
+    const { data: profilesH } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', allIds);
+    const nameMap = new Map((profilesH || []).map(p => [p.user_id, p.username]));
+    const ownerLabel = id => id === currentUser.id ? 'Teu' : 'de ' + (nameMap.get(id) || 'Desconhecido');
+    const attrShort = { forca: 'FOR', agilidade: 'AGI', carisma: 'CAR' };
 
     historyList.innerHTML = history.map(b => {
-      // ... (render do histórico)
       const isChallenger = b.challenger_id === currentUser.id;
       const otherId = isChallenger ? b.opponent_id : b.challenger_id;
-      const otherName = profileMapH.get(otherId) || 'Desconhecido';
-      
-      const myCard = WRESTLER_MAP.get(isChallenger ? b.challenger_card_id : b.opponent_card_id) || {name:'?'};
-      const theirCard = WRESTLER_MAP.get(isChallenger ? b.opponent_card_id : b.challenger_card_id) || {name:'?'};
-
-      let myColor = 'inherit';
-      let theirColor = 'inherit';
-
-      if (b.winner_id === currentUser.id) {
-        myColor = '#16a34a'; theirColor = '#b91c1c';
-      } else if (b.winner_id) {
-        myColor = '#b91c1c'; theirColor = '#16a34a';
-      } else if (b.status === 'accepted') {
-        myColor = '#d97706'; theirColor = '#d97706';
-      }
+      const otherName = nameMap.get(otherId) || 'Desconhecido';
 
       if (b.status === 'rejected') {
-         return `<tr><td colspan="3" style="text-align:center;color:#9da1ab;font-size:11px;">Desafio para ${otherName} foi recusado.</td></tr>`;
+        return `<tr><td colspan="3" style="text-align:center;color:#9da1ab;font-size:11px;">Desafio ${isChallenger ? 'para ' + otherName + ' foi recusado' : 'de ' + otherName + ' foi recusado por ti'}.</td></tr>`;
+      }
+
+      const cCard = WRESTLER_MAP.get(b.challenger_card_id) || { name: '?' };
+      const oCard = WRESTLER_MAP.get(b.opponent_card_id) || { name: '?' };
+      const cVal = b.challenger_val, oVal = b.opponent_val;
+
+      // Ordem: vencedor primeiro (verde), perdedor depois (vermelho). Empate: desafiante primeiro (laranja).
+      let first, second, firstColor, secondColor, firstVal, secondVal, resultTag, resultColor;
+      if (b.winner_id === b.opponent_id && b.winner_id) {
+        first = { card: oCard, owner: b.opponent_id }; second = { card: cCard, owner: b.challenger_id };
+        firstVal = oVal; secondVal = cVal;
+      } else {
+        first = { card: cCard, owner: b.challenger_id }; second = { card: oCard, owner: b.opponent_id };
+        firstVal = cVal; secondVal = oVal;
+      }
+
+      if (b.winner_id) {
+        firstColor = '#16a34a'; secondColor = '#b91c1c';
+        const iWon = b.winner_id === currentUser.id;
+        resultTag = iWon ? 'Ganhaste' : 'Perdeste';
+        resultColor = iWon ? '#16a34a' : '#b91c1c';
+      } else {
+        firstColor = secondColor = '#d97706';
+        resultTag = 'Empate'; resultColor = '#d97706';
       }
 
       return `
         <tr>
           <td>
-            <div style="font-weight:900;color:${myColor};line-height:1.2;">${myCard.name}</div>
-            <div style="font-weight:900;color:${theirColor};font-size:11px;">${theirCard.name}</div>
+            <div style="font-weight:900;color:${firstColor};line-height:1.2;">${b.winner_id ? '🏆 ' : ''}${first.card.name}</div>
+            <div style="font-size:10px;color:${firstColor};margin-bottom:5px;">${ownerLabel(first.owner)}</div>
+            <div style="font-weight:900;color:${secondColor};line-height:1.2;">${second.card.name}</div>
+            <div style="font-size:10px;color:${secondColor};">${ownerLabel(second.owner)}</div>
           </td>
-          <td style="text-align:center;"><span style="text-transform:uppercase;font-weight:900;background:#e8a800;padding:2px 5px;border-radius:4px;font-size:9px;color:#000;">${b.attribute_compared ? b.attribute_compared.substring(0,3) : '?'}</span></td>
-          <td><strong>${otherName}</strong></td>
+          <td style="text-align:center;">
+            <span style="text-transform:uppercase;font-weight:900;background:#e8a800;padding:2px 5px;border-radius:4px;font-size:9px;color:#000;">${attrShort[b.attribute_compared] || '?'}</span>
+            <div style="font-size:10px;margin-top:4px;"><span style="color:${firstColor};font-weight:900;">${firstVal ?? '?'}</span> - <span style="color:${secondColor};font-weight:900;">${secondVal ?? '?'}</span></div>
+          </td>
+          <td>
+            <strong>${otherName}</strong>
+            <div style="font-size:10px;font-weight:900;color:${resultColor};">${resultTag}</div>
+          </td>
         </tr>
       `;
     }).join('');
@@ -2534,6 +2245,111 @@ function closeBattleBanner() {
   document.querySelectorAll('.battle-tab').forEach(t => t.classList.toggle('active', t.dataset.target === 'b-send'));
   document.querySelectorAll('.battle-content').forEach(c => c.classList.toggle('active', c.id === 'tab-b-send'));
   populateBattleSelects();
+}
+
+/* ================= NOTIFICAÇÕES DE BATALHA (para o desafiante) ================= */
+let battleNotifyBusy = false;
+let battleChannel = null;
+let battlePollTimer = null;
+
+async function checkBattleNotifications() {
+  if (!currentUser || battleNotifyBusy) return;
+  // Se já há um resultado no ecrã, espera que o utilizador carregue em "Continuar"
+  if (document.getElementById('resultBanner').classList.contains('show')) return;
+  battleNotifyBusy = true;
+  try {
+    const { data: rows, error } = await supabaseClient
+      .from('battles')
+      .select('*')
+      .eq('challenger_id', currentUser.id)
+      .in('status', ['accepted', 'rejected'])
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    if (error) { console.error('Erro ao verificar notificações de batalha:', error); return; }
+
+    // Se a coluna challenger_seen existir usa-a; senão guarda os "vistos" neste browser
+    const seenKey = 'battleSeen_' + currentUser.id;
+    let localSeen = [];
+    try { localSeen = JSON.parse(localStorage.getItem(seenKey) || '[]'); } catch (_) {}
+    const hasCol = rows && rows.length > 0 && 'challenger_seen' in rows[0];
+    const data = (rows || []).filter(b => hasCol ? b.challenger_seen === false : !localSeen.includes(b.id));
+    if (data.length === 0) return;
+
+    const { data: profiles } = await supabaseClient
+      .from('profiles').select('user_id, username')
+      .in('user_id', data.map(b => b.opponent_id));
+    const names = new Map((profiles || []).map(p => [p.user_id, p.username]));
+    const nameOf = b => names.get(b.opponent_id) || 'O teu oponente';
+
+    // Marca tudo como visto antes de mostrar (evita repetir a notificação)
+    if (hasCol) {
+      const { error: seenErr } = await supabaseClient
+        .from('battles').update({ challenger_seen: true }).in('id', data.map(b => b.id));
+      if (seenErr) console.error('Erro ao marcar como visto:', seenErr);
+    } else {
+      try { localStorage.setItem(seenKey, JSON.stringify([...localSeen, ...data.map(b => b.id)].slice(-200))); } catch (_) {}
+    }
+
+    await loadState(); // o cromo ganho/perdido já mudou
+
+    const accepted = data.filter(b => b.status === 'accepted');
+    const rejected = data.filter(b => b.status === 'rejected');
+
+    if (accepted.length === 0) {
+      toast(rejected.length === 1
+        ? `${nameOf(rejected[0])} recusou o teu desafio.`
+        : `${rejected.length} desafios teus foram recusados.`);
+      await loadBattles();
+      return;
+    }
+
+    const b = accepted[0];
+    const mine = WRESTLER_MAP.get(b.challenger_card_id) || { name: '?' };
+    const theirs = WRESTLER_MAP.get(b.opponent_card_id) || { name: '?' };
+    const attrNames = { forca: 'Força', agilidade: 'Agilidade', carisma: 'Carisma' };
+    const attr = attrNames[b.attribute_compared] || b.attribute_compared || '?';
+    const who = nameOf(b);
+    const score = `${b.challenger_val} vs ${b.opponent_val}`;
+
+    document.getElementById('battleBackdrop').classList.add('show');
+    await loadBattles();
+
+    if (b.winner_id === currentUser.id) {
+      showBattleBanner(true, `${who} aceitou o desafio! O teu ${mine.name} venceu o ${theirs.name} em ${attr} (${score}). Ganhaste o cromo ${theirs.name}!`);
+    } else if (b.winner_id) {
+      showBattleBanner(false, `${who} aceitou o desafio! O teu ${mine.name} perdeu contra o ${theirs.name} em ${attr} (${score}). Perdeste o cromo ${mine.name}.`);
+    } else {
+      showBattleBanner(null, `${who} aceitou o desafio! ${mine.name} vs ${theirs.name} em ${attr} (${score}). Empate, ninguém perdeu cromos.`);
+    }
+
+    if (data.length > 1) toast(`Tens mais ${data.length - 1} resultado(s) no Histórico.`);
+  } catch (e) {
+    console.error('Erro nas notificações de batalha:', e);
+  } finally {
+    battleNotifyBusy = false;
+  }
+}
+
+function startBattleNotifications() {
+  if (!currentUser) return;
+  checkBattleNotifications();
+  // Tempo real (precisa de Replication ativo na tabela battles)
+  if (!battleChannel) {
+    battleChannel = supabaseClient
+      .channel('battles-' + currentUser.id)
+      .on('postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'battles', filter: `challenger_id=eq.${currentUser.id}` },
+        () => checkBattleNotifications())
+      .subscribe();
+  }
+  // Plano B: verifica de 45 em 45 segundos
+  if (!battlePollTimer) battlePollTimer = setInterval(checkBattleNotifications, 45000);
+}
+
+function stopBattleNotifications() {
+  if (battleChannel) { supabaseClient.removeChannel(battleChannel); battleChannel = null; }
+  if (battlePollTimer) { clearInterval(battlePollTimer); battlePollTimer = null; }
 }
 
 /* ================= GERAL ================= */
