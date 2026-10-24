@@ -2296,24 +2296,39 @@ document.getElementById('submitBattle').addEventListener('click', async (e) => {
   btn.innerHTML = 'A lançar...';
 
   try {
-    const { data: friendData } = await supabaseClient.from('profiles').select('user_id').eq('username', friendName).single();
-    if (!friendData) return toast('Amigo não encontrado.');
+    const { data: friendData, error: friendErr } = await supabaseClient
+      .from('profiles').select('user_id').eq('username', friendName).single();
 
-    const { error: sendErr } = await supabaseClient.from('battles').insert({
-      challenger_id: currentUser.id,
-      opponent_id: friendData.user_id,
-      challenger_card_id: myCardId
-    });
+    if (friendErr || !friendData) {
+      console.error("Erro ao procurar amigo:", friendErr);
+      return toast('Amigo não encontrado. O nome de Twitch está correto?');
+    }
 
-    if (sendErr) throw sendErr;
+    console.log("A tentar gravar batalha:", { challenger: currentUser.id, opponent: friendData.user_id, card: myCardId });
 
+    // --- AQUI ESTÁ A GRAVAÇÃO ---
+    const { data: insertData, error: sendErr } = await supabaseClient
+      .from('battles')
+      .insert({
+        challenger_id: currentUser.id,
+        opponent_id: friendData.user_id,
+        challenger_card_id: myCardId
+      })
+      .select(); // O .select() obriga o Supabase a devolver os dados gravados
+
+    if (sendErr) {
+      console.error("ERRO NA BASE DE DADOS:", sendErr);
+      alert("Erro do Supabase: " + sendErr.message + "\n\nDetalhes: " + sendErr.details);
+      throw sendErr;
+    }
+
+    console.log("Batalha gravada com sucesso! Retorno da BD:", insertData);
     toast('Desafio lançado! Aguarda a resposta.');
     document.getElementById('battleMyCard').value = '';
     document.getElementById('battleFriendName').value = '';
     await loadBattles();
   } catch (error) {
-    console.error(error);
-    toast('Erro ao enviar o desafio.');
+    console.error("Erro na função de envio:", error);
   } finally {
     btn.disabled = false;
     btn.innerHTML = originalText;
