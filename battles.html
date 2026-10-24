@@ -2283,45 +2283,64 @@ async function loadBattles() {
   }
 }
 
-async function testarBatalhaManual() {
-  alert("O botão foi clicado!");
-  
+async function submitBattle(btn) {
   const myCardId = Number(document.getElementById('battleMyCard').value);
   const friendName = document.getElementById('battleFriendName').value.trim().toLowerCase();
 
   if (!myCardId || !friendName) {
-    return alert("Falta preencher o cromo ou o nome do amigo!");
+    return toast('Escolhe o cromo e escreve o nome do oponente!');
   }
 
-  console.log("O meu ID:", currentUser.id, "| Amigo a procurar:", friendName);
-
-  const { data: friendData, error: friendErr } = await supabaseClient
-    .from('profiles').select('user_id').eq('username', friendName).single();
-
-  if (friendErr || !friendData) {
-    return alert("Erro ao encontrar o amigo: " + (friendErr ? friendErr.message : "Não existe"));
+  if (friendName === document.getElementById('userName').textContent.trim().toLowerCase()) {
+    return toast('Não podes desafiar-te a ti próprio!');
   }
 
-  console.log("ID do amigo encontrado:", friendData.user_id);
+  if ((state.ownedCounts[myCardId] || 0) < 2) {
+    return toast('Só podes apostar cromos repetidos!');
+  }
 
-  // Tentar gravar
-  const { data: insertData, error: sendErr } = await supabaseClient
-    .from('battles')
-    .insert({
-      challenger_id: currentUser.id,
-      opponent_id: friendData.user_id,
-      challenger_card_id: myCardId
-    })
-    .select();
+  btn.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = 'A enviar...';
 
-  if (sendErr) {
-    alert("ERRO DO SUPABASE: \n\n" + sendErr.message + "\n\nDetalhes: " + sendErr.details);
-    console.error("Erro do Supabase:", sendErr);
-  } else {
-    alert("SUCESSO! Batalha gravada na base de dados!");
-    console.log("Dados gravados:", insertData);
+  try {
+    const { data: friendData, error: friendErr } = await supabaseClient
+      .from('profiles').select('user_id').eq('username', friendName).single();
+
+    if (friendErr || !friendData) {
+      return toast('Amigo não encontrado. O nome de Twitch está correto?');
+    }
+
+    const { error: sendErr } = await supabaseClient
+      .from('battles')
+      .insert({
+        challenger_id: currentUser.id,
+        opponent_id: friendData.user_id,
+        challenger_card_id: myCardId,
+        status: 'pending'
+      });
+
+    if (sendErr) throw sendErr;
+
+    toast('Desafio lançado com sucesso!');
+    document.getElementById('battleMyCard').value = '';
+    document.getElementById('battleFriendName').value = '';
+    await loadBattles();
+
+  } catch (error) {
+    console.error('Erro ao lançar desafio:', error);
+    toast('Erro ao lançar desafio: ' + (error.message || 'desconhecido'));
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
   }
 }
+
+// Delegação de eventos: o botão é recriado em closeBattleBanner(), por isso o listener fica no contentor
+document.getElementById('tab-b-send').addEventListener('click', (e) => {
+  const btn = e.target.closest('#submitBattle');
+  if (btn) submitBattle(btn);
+});
 
 window.acceptBattle = async function(battleId, btnElement) {
   const selectEl = document.getElementById(`battleCard_${battleId}`);
@@ -2494,9 +2513,9 @@ function closeBattleBanner() {
       <option value="">O meu cromo repetido para a batalha...</option>
     </select>
     <input type="text" class="trade-input" id="battleFriendName" placeholder="Nome de Twitch do oponente">
-    <button class="btn battle-btn" id="submitBattle" style="width:100%;margin-top:10px;background:#8b5cf6;color:#fff;" onclick="location.reload()">Lançar Desafio</button>
+    <button class="btn battle-btn" id="submitBattle" style="width:100%;margin-top:10px;background:#8b5cf6;color:#fff;">Lançar Desafio</button>
   `;
-  // Nota: o botão acima recarrega a página para simplificar, mas a lógica real já atualizou a BD.
+  populateBattleSelects();
 }
 
 /* ================= GERAL ================= */
