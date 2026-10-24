@@ -2169,6 +2169,9 @@ async function loadBattles() {
   const receivedList = document.getElementById('battleReceivedList');
   const historyList = document.getElementById('battleHistoryList');
 
+  console.log("=== A CARREGAR BATALHAS ===");
+  console.log("O meu ID (currentUser.id):", currentUser ? currentUser.id : "NULL (Não logado!)");
+
   // 1. Puxar Desafios Pendentes (Recebidos)
   const { data: received, error: errRec } = await supabaseClient
     .from('battles')
@@ -2176,10 +2179,14 @@ async function loadBattles() {
     .eq('opponent_id', currentUser.id)
     .eq('status', 'pending');
     
-  if (errRec) console.error('Erro received:', errRec);
+  if (errRec) {
+    console.error("Erro ao puxar desafios:", errRec);
+  } else {
+    console.log("Desafios encontrados na BD para mim:", received);
+  }
 
   if (received && received.length > 0) {
-    // Ir buscar os usernames dos desafiantes
+    // ... (o resto do código de renderização mantém-se igual)
     const challengerIds = received.map(b => b.challenger_id);
     const { data: profiles } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', challengerIds);
     const profileMap = new Map((profiles || []).map(p => [p.user_id, p.username]));
@@ -2220,6 +2227,7 @@ async function loadBattles() {
   }
 
   // 2. Puxar Histórico (Concluídos e Recusados)
+  // ... (o resto mantém-se igual)
   const { data: history, error: errHist } = await supabaseClient
     .from('battles')
     .select('*')
@@ -2230,12 +2238,13 @@ async function loadBattles() {
   if (errHist) console.error('Erro history:', errHist);
 
   if (history && history.length > 0) {
-    // Ir buscar os usernames dos oponentes
+    // ... (o resto do histórico mantém-se igual)
     const otherIds = history.map(b => b.challenger_id === currentUser.id ? b.opponent_id : b.challenger_id);
     const { data: profilesH } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', otherIds);
     const profileMapH = new Map((profilesH || []).map(p => [p.user_id, p.username]));
 
     historyList.innerHTML = history.map(b => {
+      // ... (render do histórico)
       const isChallenger = b.challenger_id === currentUser.id;
       const otherId = isChallenger ? b.opponent_id : b.challenger_id;
       const otherName = profileMapH.get(otherId) || 'Desconhecido';
@@ -2254,7 +2263,6 @@ async function loadBattles() {
         myColor = '#d97706'; theirColor = '#d97706';
       }
 
-      // Se foi recusado, mostra texto diferente
       if (b.status === 'rejected') {
          return `<tr><td colspan="3" style="text-align:center;color:#9da1ab;font-size:11px;">Desafio para ${otherName} foi recusado.</td></tr>`;
       }
