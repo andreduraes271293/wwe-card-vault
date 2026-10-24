@@ -2443,12 +2443,15 @@ window.acceptBattle = async function(battleId, btnElement) {
       const el2 = document.getElementById(`p2-${attr}`);
       
       const showResult = () => {
+        // Quem vê este banner é o OPONENTE (quem aceitou o desafio)
         if (winnerId === battle.challenger_id) {
           el1.classList.add('win-val'); el2.classList.add('lose-val');
-          showBattleBanner(true, `O ${cCard.name} venceu (${cVal} vs ${oVal})! O desafiante roubou a carta ${oCard.name}.`);
+          const gc = gram(cCard), go = gram(oCard);
+          showBattleBanner(false, `${gc.Art} ${cCard.name} do desafiante venceu ${go.art} ${go.poss} ${oCard.name} (${cVal} vs ${oVal}). Perdeste o cromo ${oCard.name}.`);
         } else if (winnerId === battle.opponent_id) {
           el1.classList.add('lose-val'); el2.classList.add('win-val');
-          showBattleBanner(false, `O ${oCard.name} venceu (${oVal} vs ${cVal})! Roubaste a carta ${cCard.name}.`);
+          const gc = gram(cCard), go = gram(oCard);
+          showBattleBanner(true, `${go.Art} ${go.poss} ${oCard.name} venceu ${gc.art} ${cCard.name} do desafiante (${oVal} vs ${cVal}). Ganhaste o cromo ${cCard.name}!`);
         } else {
           el1.classList.add('win-val'); el2.classList.add('win-val');
           showBattleBanner(null, `Empate (${cVal} vs ${oVal}). Ninguém perdeu cartas!`);
@@ -2516,6 +2519,11 @@ window.rejectBattle = async function(battleId, btnElement) {
     btnElement.innerHTML = 'Recusar';
   }
 };
+
+function gram(w) {
+  const f = !!w && w.gender === 'Female';
+  return { art: f ? 'a' : 'o', Art: f ? 'A' : 'O', poss: f ? 'tua' : 'teu' };
+}
 
 function showBattleBanner(isWin, text) {
   const banner = document.getElementById('resultBanner');
@@ -2614,14 +2622,15 @@ async function checkBattleNotifications() {
     const attr = attrNames[b.attribute_compared] || b.attribute_compared || '?';
     const who = nameOf(b);
     const score = `${b.challenger_val} vs ${b.opponent_val}`;
+    const gm = gram(mine), gt = gram(theirs);
 
     document.getElementById('battleBackdrop').classList.add('show');
     await loadBattles();
 
     if (b.winner_id === currentUser.id) {
-      showBattleBanner(true, `${who} aceitou o desafio! O teu ${mine.name} venceu o ${theirs.name} em ${attr} (${score}). Ganhaste o cromo ${theirs.name}!`);
+      showBattleBanner(true, `${who} aceitou o desafio! ${gm.Art} ${gm.poss} ${mine.name} venceu ${gt.art} ${theirs.name} em ${attr} (${score}). Ganhaste o cromo ${theirs.name}!`);
     } else if (b.winner_id) {
-      showBattleBanner(false, `${who} aceitou o desafio! O teu ${mine.name} perdeu contra o ${theirs.name} em ${attr} (${score}). Perdeste o cromo ${mine.name}.`);
+      showBattleBanner(false, `${who} aceitou o desafio! ${gm.Art} ${gm.poss} ${mine.name} perdeu contra ${gt.art} ${theirs.name} em ${attr} (${score}). Perdeste o cromo ${mine.name}.`);
     } else {
       showBattleBanner(null, `${who} aceitou o desafio! ${mine.name} vs ${theirs.name} em ${attr} (${score}). Empate, ninguém perdeu cromos.`);
     }
