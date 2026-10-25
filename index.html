@@ -1421,7 +1421,6 @@ const wrestlers = [
 ];
 
 const rarityColors={'Comum':'#22c55e','Raro':'#2dd4bf','Épico':'#d99aff','Lendário':'#e8a800'};
-const packRarityColors={'Comum':'#9aa3b2'};
 const rarityWeights={'Comum':67,'Raro':27,'Épico':5,'Lendário':1};
 const RARITIES=Object.keys(rarityWeights);
 const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
@@ -1791,7 +1790,7 @@ function openPack(){
  $('packCards').innerHTML=pending.map((w,i)=>{
   const finalImage = w.image + '?v=' + IMG_V;
   const isDup = dupMap[i];
-  const mc = packRarityColors[w.rarity] || rarityColors[w.rarity];
+  const mc = rarityColors[w.rarity];
   const inner = w.image
    ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();">`
    : '';
