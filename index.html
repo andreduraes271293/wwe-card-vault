@@ -219,7 +219,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .result-banner.show .result-text { transform: scale(1); }
 .text-win { color: #22c55e; text-shadow: 0 0 20px #22c55e; }
 .text-lose { color: #ef4444; text-shadow: 0 0 20px #ef4444; }
-.result-sub { font-size: 14px; color: #fff; margin-top: 15px; font-weight: bold; text-align: center; padding: 0 20px; line-height: 1.5;}
+.result-sub { font-size: 14px; color: #fff; margin-top: 15px; font-weight: bold; text-align: center; padding: 0 20px; line-height: 1.5; }
 
 
 /* --- ABERTURA DE SAQUETA --- */
@@ -891,7 +891,7 @@ main.shell::after{
   text-shadow: none !important;
 }
 .detail[data-rarity="missing"] .detail-info .detail-brand {
-  color: #6b7280 !important;
+  display: none !important; /* Esconde a marca */
 }
 .detail[data-rarity="missing"] .detail-info .detail-rarity {
   color: #6b7280 !important;
@@ -916,6 +916,13 @@ main.shell::after{
 }
 .detail[data-rarity="missing"] .detail-status strong {
   color: #4b5563 !important;
+}
+
+/* Caixa da imagem a cinza quando em falta */
+.detail[data-rarity="missing"] .detail-photo-wrap {
+  background: radial-gradient(circle at 50% 30%, #6b7280, #2b2f36 75%) !important;
+  filter: grayscale(1) !important;
+  border-color: #4b5563 !important;
 }
 
 /* ============================================================
@@ -1859,10 +1866,12 @@ function openDetail(id){
  $('detailName').textContent = has ? w.name : '???';
 
  const brandImg = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
- $('detailBrand').innerHTML =
-   `<img src="${brandImg}" alt="${w.brand}"
-      onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-    <span class="brand-fallback" style="display:none">${w.brand}</span>`;
+ // Mostra ou esconde a marca (brand) dependendo se tens a carta
+ $('detailBrand').innerHTML = has 
+   ? `<img src="${brandImg}" alt="${w.brand}"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="brand-fallback" style="display:none">${w.brand}</span>`
+   : '';
 
  const rar=$('detailRarity');
  rar.textContent = has ? w.rarity : 'Em falta';
