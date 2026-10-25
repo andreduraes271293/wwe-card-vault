@@ -837,7 +837,7 @@ main.shell::after{
    MODAL DETALHE — nome na cor da raridade + texto castanho-couro
    ============================================================ */
 .detail-info h3#detailName{
-  color: #4b5563 !important; /* Cinza escuro */
+  color: var(--rarity-color, #4b5563) !important;
   font-family: var(--site-font-body) !important;
   font-weight: 900 !important;
   letter-spacing: -.2px !important;
@@ -873,11 +873,11 @@ main.shell::after{
 
 /* Atributos no modal */
 .attr-label {
-  color: #6b7280 !important; /* Cinza */
-  font-weight: 900 !important; /* Negrito */
+  color: var(--rarity-color) !important;
+  font-weight: 900 !important;
 }
 .attr-value {
-  color: var(--rarity-color) !important; /* Cor da raridade */
+  color: #4b5563 !important; /* Cinza escuro */
   font-weight: 900;
 }
 
