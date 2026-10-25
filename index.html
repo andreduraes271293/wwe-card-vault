@@ -2212,6 +2212,7 @@ function canBattle(myCard, theirCard) {
 
 async function populateBattleSelects() {
   const myCardSelect = document.getElementById('battleMyCard');
+  // Limpa tudo antes de começar
   myCardSelect.innerHTML = '<option value="">O meu cromo repetido para a batalha...</option>';
 
   const reservedNow = await getReservedCounts();
@@ -2224,7 +2225,7 @@ async function populateBattleSelects() {
     }
   });
 
-  // Separar em grupos: Lendário, Épico, Raro, Comum (agrupando por raridade)
+  // Separar em grupos
   const groups = { 'Lendário': '', 'Épico': '', 'Raro': '', 'Comum': '' };
   Object.keys(reps).forEach(id => {
     const w = WRESTLER_MAP.get(Number(id));
@@ -2233,9 +2234,16 @@ async function populateBattleSelects() {
     groups[r] += `<option value="${w.id}">${w.name} (x${reps[id]}) — F:${w.forca} A:${w.agilidade} C:${w.carisma}</option>`;
   });
 
+  // Constrói a string HTML final
+  let html = '<option value="">O meu cromo repetido para a batalha...</option>';
   Object.keys(groups).forEach(r => {
-    if (groups[r]) myCardSelect.innerHTML += `<optgroup label="${r}">${groups[r]}</optgroup>`;
+    if (groups[r]) {
+      html += `<optgroup label="${r}">${groups[r]}</optgroup>`;
+    }
   });
+  
+  // SUBSTITUI o HTML de uma só vez (em vez de acrescentar)
+  myCardSelect.innerHTML = html;
 }
 
 async function loadBattles() {
