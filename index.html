@@ -393,74 +393,71 @@ main.shell::after{
   z-index:12;
 }
 
-/* ============ CROMOS EM FALTA ============ */
+/* ============ CROMOS EM FALTA — cinza-ardósia + logo WWE a cores + fita cinzenta ============ */
 .card.missing{
-  background:#f0e6cf !important; /* Força o papel cinzento */
+  --rarity-color:#2b2f36;
+  --accent-color:#ffffff;
+  --meta-color:#c8ccd2;
+  background:#2b2f36 !important;
+  border-color:#2b2f36 !important;
   box-shadow:
-    0 2px 4px #00000030,
-    0 8px 16px #00000025,
-    inset 0 0 0 3px #b8a070,
-    inset 0 0 0 5px #fffaf0,
-    inset 0 0 0 1px #c9b78a !important;
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #3a3f47,
+    inset 0 0 0 5px #2b2f36,
+    inset 0 0 0 1px #4a5058 !important;
+}
+/* FITA CINZENTA no topo (antes era amarela) */
+.card.missing::before{
+  background:linear-gradient(180deg,#c8ccd2ee,#8a8f98cc) !important;
+  border-left:1px dashed #e2e5ea !important;
+  border-right:1px dashed #e2e5ea !important;
+  box-shadow:0 1px 3px #0004 !important;
 }
 .card.missing .card-art{
-  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px) !important;
-  box-shadow: inset 0 0 0 2px #b8a070 !important;
-  filter: grayscale(1);
+  background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;
+  border-color:#3a3f47 !important;
+  box-shadow:inset 0 0 0 2px #3a3f47,inset 0 0 22px #00000080 !important;
 }
-.card.missing .card-art:before{
-  background: repeating-linear-gradient(135deg, #0000 0 14px, #00000010 14px 16px) !important;
-}
-.card.missing .card-art:after{
-  background: linear-gradient(180deg,#0000 40%,#c9b78a99 100%) !important;
-}
-.card.missing .card-art > .missing-q{
-  position: absolute; inset: 0;
-  display: grid; place-items: center;
-  font-family: var(--site-font-heading);
-  font-size: clamp(48px, 8vw, 92px);
-  color: #b8a070;
-  text-shadow: 0 3px 0 #ffffff80;
-  z-index: 3; pointer-events: none;
-}
-.card.missing .card-art > .missing-silhouette{
-  position: absolute; inset: 0;
+.card.missing .card-art::before{
   background:
-    radial-gradient(ellipse 30% 22% at 50% 30%, #b8a070 0 100%, transparent 101%),
-    radial-gradient(ellipse 46% 26% at 50% 62%, #b8a070 0 100%, transparent 101%),
-    radial-gradient(ellipse 40% 20% at 50% 92%, #b8a070 0 100%, transparent 101%);
-  filter: blur(.4px);
-  opacity: .55;
-  z-index: 2; pointer-events: none;
+    linear-gradient(160deg,#ffffff12,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff06 18px 20px) !important;
 }
-.card.missing .card-art > .wwe-logo{
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  pointer-events: none;
-  opacity: .6;
-}
-.card.missing .card-art > .wwe-logo img{
-  width: 60%;
-  height: auto;
-}
-/* A fita no topo das cartas em falta volta a ser amarela */
-.card.missing::before{
-  background: linear-gradient(180deg,#f7e08aee,#e8c95fcc) !important;
-  border-left:1px dashed #b89a4a !important;
-  border-right:1px dashed #b89a4a !important;
+.card.missing .card-art::after{
+  background:linear-gradient(180deg,#0000 40%,#181a1fee 100%) !important;
 }
 .card.missing .card-bottom{
-  background:#fffaf0 !important;
-  border-top:1px dashed #b8a070 !important;
+  background:linear-gradient(180deg,#2b2f36 0%,#181a1f 100%) !important;
+  border-top:1px dashed #3a3f47 !important;
+  color:#ffffff !important;
 }
-.card.missing .card-name{ color:#a89070 !important; font-style: italic; letter-spacing: 1px; }
-.card.missing .card-number{ color:#a89070 !important; }
-.card.missing .card-meta .rarity{ color:#a89070 !important; text-shadow: none !important;}
-.card.missing .gender-badge{ color:#a89070 !important; }
+.card.missing .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;font-style:normal}
+.card.missing .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card.missing .card-meta{color:#c8ccd2 !important}
+.card.missing .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card.missing .gender-badge{color:#c8ccd2 !important}
+.card.missing::after{display:none !important}
+
+/* Só o logo WWE centrado — sem "?" */
+.missing-stage{
+  position:absolute;inset:0;z-index:3;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.card.missing .wwe-logo{
+  position:relative !important;
+  inset:auto !important;
+  z-index:2;
+  width:62%;
+  display:block;
+  opacity:.95;
+}
+.card.missing .wwe-logo img{
+  width:100% !important;
+  height:auto !important;
+  filter:none !important;
+}
 
 /* ============ VIRAR DE PÁGINA ============ */
 @keyframes turnPage{
@@ -784,27 +781,6 @@ main.shell::after{
 }
 .card[data-rarity="Lendário"] .card-bottom{ z-index:11; }
 
-/* EM FALTA — mantém papel cinzento */
-.card.missing{
-  box-shadow:
-    0 2px 4px #00000030,
-    0 8px 16px #00000025,
-    inset 0 0 0 3px #b8a070,
-    inset 0 0 0 5px #fffaf0,
-    inset 0 0 0 1px #c9b78a !important;
-}
-.card.missing .card-art{
-  box-shadow: inset 0 0 0 2px #b8a070 !important;
-  background: repeating-linear-gradient(45deg, #d8c8a0 0 10px, #e2d3b1 10px 20px) !important;
-  filter: grayscale(1);
-}
-.card.missing .card-meta .rarity,
-.card.missing .card-number{
-  color:#a89070 !important;
-  text-shadow: none !important;
-}
-.card.missing::after{ display: none !important; }
-
 /* Efeito Lendário nas cartas da saqueta */
 .mini .mini-shine{display:none}
 .mini[data-rarity="Lendário"] .mini-shine{
@@ -1073,7 +1049,7 @@ main.shell::after{
   <option value="all">Todos os cromos</option>
   <option value="owned">Na coleção</option>
   <option value="missing">Em falta</option>
-  <option value="duplicates">Apenas repetidos</option> <!-- NOVA LINHA -->
+  <option value="duplicates">Apenas repetidos</option>
 </select>
   <button class="btn pulse" id="openPack">✦ Abrir saqueta (3)</button>
   <button class="btn trade-btn" id="openTradeBtn" style="display:none">🔄 Trocas</button>
@@ -1614,7 +1590,9 @@ function renderCard(w){
    art = `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
         onerror="this.style.display='none';">`;
  } else if(!has){
-   art = `<div class="wwe-logo"><img src="img/wwe.png" alt="WWE"></div>`;
+   art = `<div class="missing-stage">
+            <div class="wwe-logo"><img src="img/wwe.png" alt="WWE"></div>
+          </div>`;
  } else {
    art = '';
  }
