@@ -1068,10 +1068,11 @@ main.shell::after{
    <option value="Lendário">Lendário</option>
   </select>
   <select class="filter" id="ownership" aria-label="Filtrar cromos">
-   <option value="all">Todos os cromos</option>
-   <option value="owned">Na coleção</option>
-   <option value="missing">Em falta</option>
-  </select>
+  <option value="all">Todos os cromos</option>
+  <option value="owned">Na coleção</option>
+  <option value="missing">Em falta</option>
+  <option value="duplicates">Apenas repetidos</option> <!-- NOVA LINHA -->
+</select>
   <button class="btn pulse" id="openPack">✦ Abrir saqueta (3)</button>
   <button class="btn trade-btn" id="openTradeBtn" style="display:none">🔄 Trocas</button>
   <button class="btn battle-btn" id="openBattleBtn" style="display:none">⚔️ Batalhas</button>
@@ -1641,18 +1642,24 @@ function render(animate=false){
  const rar=$('rarityFilter').value;
  const own=$('ownership').value;
 
- const list=wrestlers.filter(w=>{
-  if(q){
-   const hay=norm(w.name)+' '+norm(w.brand);
-   if(!hay.includes(q))return false;
+const list = wrestlers.filter(w => {
+  if (q) {
+    const hay = norm(w.name) + ' ' + norm(w.brand);
+    if (!hay.includes(q)) return false;
   }
-  if(cat!=='all'&&norm(w.brand)!==cat)return false;
-  if(gen!=='all'&&w.gender!==gen)return false;
-  if(rar!=='all'&&norm(w.rarity)!==norm(rar))return false;
-  if(own==='owned'&&!state.ownedCounts[w.id])return false;
-  if(own==='missing'&&state.ownedCounts[w.id])return false;
+  if (cat !== 'all' && norm(w.brand) !== cat) return false;
+  if (gen !== 'all' && w.gender !== gen) return false;
+  if (rar !== 'all' && norm(w.rarity) !== norm(rar)) return false;
+  
+  if (own === 'owned' && !state.ownedCounts[w.id]) return false;
+  if (own === 'missing' && state.ownedCounts[w.id]) return false;
+  
+  if (own === 'duplicates') {
+    const qty = state.ownedCounts[w.id] || 0;
+    if (qty <= 1) return false;
+  }
   return true;
- });
+});
 
  list.sort((a, b) => {
    const rarA = rarityOrder[norm(a.rarity)] || 99;
