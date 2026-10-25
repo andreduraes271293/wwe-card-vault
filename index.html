@@ -446,7 +446,6 @@ main.shell::after{
 .card.missing .card-art > .wwe-logo img{
   width: 60%;
   height: auto;
-  filter: grayscale(1) brightness(1.2);
 }
 /* A fita no topo das cartas em falta volta a ser amarela */
 .card.missing::before{
@@ -546,49 +545,52 @@ main.shell::after{
 }
 
 /* ============================================================
-   COMUM: CINZA-ARDÓSIA (#2b2f36) + TEXTO BRANCO
+   COMUM: VERDE (#22c55e) + TEXTO BRANCO
    ============================================================ */
 .card[data-rarity="Comum"]{
-  background:#2b2f36 !important;
-  border-color:#2b2f36 !important;
+  background:#052e16 !important;
+  border-color:#22c55e !important;
   box-shadow:
     0 2px 4px #00000060,
     0 8px 16px #00000050,
-    inset 0 0 0 3px #3a3f47,
-    inset 0 0 0 5px #2b2f36,
-    inset 0 0 0 1px #4a5058 !important;
+    inset 0 0 0 3px #22c55e,
+    inset 0 0 0 5px #052e16,
+    inset 0 0 0 1px #22c55e88,
+    0 0 18px #22c55e44 !important;
 }
 .card[data-rarity="Comum"]::before{
-  background:linear-gradient(180deg,#f7e08aee,#e8c95fcc) !important;
-  border-left:1px dashed #b89a4a !important;
-  border-right:1px dashed #b89a4a !important;
-  box-shadow:0 1px 3px #0004 !important;
+  background:linear-gradient(180deg,#22c55eee,#15803dcc) !important;
+  border-left:1px dashed #86efac !important;
+  border-right:1px dashed #86efac !important;
+  box-shadow:0 1px 3px #000a !important;
 }
 .card[data-rarity="Comum"] .card-art{
-  background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;
-  border-color:#3a3f47 !important;
+  background:
+    radial-gradient(ellipse at 50% 30%, #22c55e55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #14532d 0%, #052e16 42%, #021a0b 100%) !important;
+  border-color:#22c55e !important;
   box-shadow:
-    inset 0 0 0 2px #3a3f47,
-    inset 0 0 22px #00000080 !important;
+    inset 0 0 0 2px #22c55e,
+    inset 0 0 26px #22c55e66 !important;
 }
 .card[data-rarity="Comum"] .card-art::before{
   background:
-    linear-gradient(160deg,#ffffff12,transparent 40%,#00000060 100%),
-    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff06 18px 20px) !important;
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
 }
 .card[data-rarity="Comum"] .card-art::after{
-  background:linear-gradient(180deg,#0000 40%,#181a1fee 100%) !important;
+  background:linear-gradient(180deg,#0000 35%,#021a0bee 100%) !important;
 }
 .card[data-rarity="Comum"] .card-bottom{
-  background:linear-gradient(180deg,#2b2f36 0%,#181a1f 100%) !important;
-  border-top:1px dashed #3a3f47 !important;
+  background:linear-gradient(180deg,#052e16 0%,#021a0b 100%) !important;
+  border-top:1px dashed #22c55e !important;
   color:#ffffff !important;
 }
 .card[data-rarity="Comum"] .card-name{
   color:#ffffff !important;
   text-shadow:0 1px 2px #0008 !important;
 }
-.card[data-rarity="Comum"] .card-meta{color:#c8ccd2 !important}
+.card[data-rarity="Comum"] .card-meta{color:#86efac !important}
 .card[data-rarity="Comum"] .card-meta .rarity{
   color:#ffffff !important;
   text-shadow:0 1px 2px #0008 !important;
@@ -597,7 +599,7 @@ main.shell::after{
   color:#ffffff !important;
   text-shadow:0 1px 2px #0008 !important;
 }
-.card[data-rarity="Comum"] .gender-badge{color:#c8ccd2 !important}
+.card[data-rarity="Comum"] .gender-badge{color:#86efac !important}
 
 /* ============================================================
    RARO: VERDE-MENTA (#2dd4bf) EM VOLTA + TEXTO BRANCO
@@ -851,7 +853,7 @@ main.shell::after{
   border:2px solid #fffaf0;
   box-shadow: inset 0 0 0 2px #c9b78a;
 }
-.rarity-legend i.r-comum{ background:#2b2f36; box-shadow: inset 0 0 0 2px #2b2f36; }
+.rarity-legend i.r-comum{ background:#22c55e; box-shadow: inset 0 0 0 2px #22c55e; }
 .rarity-legend i.r-raro{ background:#2dd4bf; box-shadow: inset 0 0 0 2px #2dd4bf; }
 .rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
 .rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
@@ -1390,7 +1392,7 @@ const wrestlers = [
  {id:137, name:'Danhausen',          initials:'DANH',   brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/danhausen.png', forca: 55, agilidade: 72, carisma: 85}
 ];
 
-const rarityColors={'Comum':'#2b2f36','Raro':'#2dd4bf','Épico':'#d99aff','Lendário':'#e8a800'};
+const rarityColors={'Comum':'#22c55e','Raro':'#2dd4bf','Épico':'#d99aff','Lendário':'#e8a800'};
 const packRarityColors={'Comum':'#9aa3b2'};
 const rarityWeights={'Comum':67,'Raro':27,'Épico':5,'Lendário':1};
 const RARITIES=Object.keys(rarityWeights);
