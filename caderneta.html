@@ -59,6 +59,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
 .section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;letter-spacing:.7px}
 .section-head p{color:#9da1ab;font-size:12px;margin:5px 0 0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;perspective:1600px;}
 
 /* --- CARTAS (base) --- */
 .card{position:relative;aspect-ratio:3/4.15;border-radius:calc(12px * var(--site-radius-scale));overflow:hidden;border:2px solid var(--rarity-color, #ffffff26);background:#1c1e25;cursor:pointer;text-align:left;color:white;padding:0;min-width:0;box-shadow:0 8px 20px #0004;transition:transform .18s,border-color .18s,box-shadow .18s;font:inherit}
@@ -151,11 +152,39 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .trade-actions-sm{display:flex;gap:6px}
 .trade-actions-sm .btn{padding:6px 10px;font-size:11px}
 
-.trade-table-container {max-height: 300px;overflow-y: auto;border: 1px solid #c9b78a;border-radius: 8px;background: #fffaf0;}
-.trade-table {width: 100%;border-collapse: collapse;font-size: 12px;text-align: left;}
-.trade-table th {position: sticky;top: 0;background: #e8d9b8;color: #5a1a12;padding: 10px;font-weight: 800;border-bottom: 2px solid #c9b78a;z-index: 10;}
-.trade-table td {padding: 10px;border-bottom: 1px dashed #c9b78a;color: #2b1d0e;vertical-align: middle;}
-.trade-table tr:last-child td {border-bottom: none;}
+/* Estilo da Tabela de Histórico */
+.trade-table-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #c9b78a;
+  border-radius: 8px;
+  background: #fffaf0;
+}
+.trade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+.trade-table th {
+  position: sticky;
+  top: 0;
+  background: #e8d9b8;
+  color: #5a1a12;
+  padding: 10px;
+  font-weight: 800;
+  border-bottom: 2px solid #c9b78a;
+  z-index: 10;
+}
+.trade-table td {
+  padding: 10px;
+  border-bottom: 1px dashed #c9b78a;
+  color: #2b1d0e;
+  vertical-align: middle;
+}
+.trade-table tr:last-child td {
+  border-bottom: none;
+}
 
 /* --- MODAL BATALHAS --- */
 .battle-modal{max-width:800px;width:100%;background:#181a20;border:2px solid #8b5cf6;border-radius:18px;padding:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative}
@@ -167,6 +196,7 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .battle-content{display:none}
 .battle-content.active{display:block}
 
+/* Arena de Combate Visual */
 .arena-visual { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; margin-top: 15px; }
 .combat-card-preview { background: #1c1e25; border: 2px solid #444; border-radius: 8px; padding: 10px; text-align: center; color: white; position: relative; }
 .combat-card-preview .name { font-family: var(--site-font-heading); font-size: 18px; margin-top: 5px; }
@@ -193,23 +223,47 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 
 /* --- ABERTURA DE SAQUETA --- */
 .modal{overflow:hidden;position:relative}
-.modal::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 50% 42%,var(--pack-glow,#ffd15b66) 0%,transparent 62%);opacity:0;transition:opacity .6s ease;}
+.modal::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 42%,var(--pack-glow,#ffd15b66) 0%,transparent 62%);
+  opacity:0;transition:opacity .6s ease;
+}
 .modal-backdrop.show .modal::before{opacity:1;animation:backdropPulse 2.6s ease-in-out infinite}
 @keyframes backdropPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 .modal > *{position:relative;z-index:1}
 
 .pack-cards{display:flex;justify-content:center;align-items:center;gap:8px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
-.mini{flex:1 1 0;min-width:0;max-width:82px;aspect-ratio:3/4;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--site-font-heading);font-size:24px;font-style:italic;border:2px solid var(--rarity-color);box-shadow:0 4px 12px #0008;position:relative;overflow:visible;opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);}
+.mini{
+  flex:1 1 0;min-width:0;max-width:82px;aspect-ratio:3/4;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--site-font-heading);font-size:24px;font-style:italic;
+  border:2px solid var(--rarity-color);
+  box-shadow:0 4px 12px #0008;
+  position:relative;overflow:visible;
+  opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);
+  filter:brightness(.25) blur(4px);
+}
 .mini .mini-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;border-radius:7px;overflow:hidden}
+.mini .mini-initials{position:relative;z-index:1}
 .mini::after{content:'';position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2;pointer-events:none}
 .mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
 .mini.revealed{animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
-@keyframes cardBurst{0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}55%{opacity:1;transform:translateY(-10px) scale(1.14) rotate(3deg);filter:brightness(1.4) blur(0);box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);}100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(1) blur(0);box-shadow:0 4px 12px #0008,0 0 14px var(--rarity-color),0 0 34px color-mix(in srgb,var(--rarity-color) 55%,transparent);}}
+@keyframes cardBurst{
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  55%{opacity:1;transform:translateY(-10px) scale(1.14) rotate(3deg);filter:brightness(1.4) blur(0);box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(1) blur(0);box-shadow:0 4px 12px #0008,0 0 14px var(--rarity-color),0 0 34px color-mix(in srgb,var(--rarity-color) 55%,transparent);}
+}
 .mini.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,var(--rarity-color),transparent 70%);opacity:.5;animation:cardGlow 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
 @keyframes cardGlow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.85;transform:scale(1.18)}}
 
 .mini.duplicate{border-color:#6b7280 !important;animation:cardBurstDup .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
-@keyframes cardBurstDup{0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}40%{opacity:1;transform:translateY(-14px) scale(1.18) rotate(-6deg);filter:brightness(1.2) blur(0);box-shadow:0 4px 12px #0008,0 0 22px #6b7280,0 0 50px #6b7280;}55%{transform:translateY(-6px) scale(1.08) rotate(4deg);}70%{transform:translateY(-10px) scale(1.12) rotate(-3deg);}100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(.85) blur(0);box-shadow:0 4px 12px #0008,0 0 10px #6b7280;}}
+@keyframes cardBurstDup{
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  40%{opacity:1;transform:translateY(-14px) scale(1.18) rotate(-6deg);filter:brightness(1.2) blur(0);box-shadow:0 4px 12px #0008,0 0 22px #6b7280,0 0 50px #6b7280;}
+  55%{transform:translateY(-6px) scale(1.08) rotate(4deg);}
+  70%{transform:translateY(-10px) scale(1.12) rotate(-3deg);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(.85) blur(0);box-shadow:0 4px 12px #0008,0 0 10px #6b7280;}
+}
 .mini.duplicate.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,#6b7280,transparent 70%);opacity:.4;animation:cardGlowDup 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
 @keyframes cardGlowDup{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
 .mini .dup-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-14deg) scale(0);font-family:var(--site-font-heading);font-size:11px;letter-spacing:1.5px;font-weight:900;color:#fff;background:#374151;border:2px solid #9ca3af;padding:3px 7px;border-radius:5px;z-index:4;text-shadow:0 1px 2px #000;box-shadow:0 2px 8px #000a;opacity:0;pointer-events:none;}
@@ -221,10 +275,45 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 /* ============================================================
    TEMA CADERNETA
    ============================================================ */
-body{background:radial-gradient(ellipse at 50% 0%, #2b1c10 0%, #150d07 60%, #0a0604 100%),repeating-linear-gradient(90deg, #0000 0 40px, #ffffff05 40px 41px);}
-main.shell{background:repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);border: 1px solid #b8a070;border-left: 14px solid #6b4a2b;border-radius: 8px 14px 14px 8px;box-shadow:0 20px 60px #000c,inset 0 0 80px #a07c4a40,inset 6px 0 12px #00000060;position: relative;color: #2b1d0e;margin-top: 26px;margin-bottom: 26px;padding: 32px clamp(18px, 4vw, 48px) 48px;max-width: 1180px;}
-main.shell::before{content:'';position:absolute;left:-11px;top:30px;bottom:30px;width:8px;background-image: radial-gradient(circle, #2b1d0e 0 3px, transparent 3.5px);background-size: 8px 38px;background-repeat: repeat-y;background-position: center top;opacity:.8;pointer-events:none;}
-main.shell::after{content:'★ ÁLBUM OFICIAL ★';position:absolute;top:-14px;right:22px;background:#c8102e;color:#fff;font-family:var(--site-font-heading);font-size:12px;letter-spacing:2px;padding:6px 14px;border-radius:6px;box-shadow:0 4px 10px #0008;transform:rotate(2deg);}
+body{
+  background:
+    radial-gradient(ellipse at 50% 0%, #2b1c10 0%, #150d07 60%, #0a0604 100%),
+    repeating-linear-gradient(90deg, #0000 0 40px, #ffffff05 40px 41px);
+}
+main.shell{
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),
+    radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);
+  border: 1px solid #b8a070;
+  border-left: 14px solid #6b4a2b;
+  border-radius: 8px 14px 14px 8px;
+  box-shadow:
+    0 20px 60px #000c,
+    inset 0 0 80px #a07c4a40,
+    inset 6px 0 12px #00000060;
+  position: relative;
+  color: #2b1d0e;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  padding: 32px clamp(18px, 4vw, 48px) 48px;
+  max-width: 1180px;
+}
+main.shell::before{
+  content:'';position:absolute;left:-11px;top:30px;bottom:30px;width:8px;
+  background-image: radial-gradient(circle, #2b1d0e 0 3px, transparent 3.5px);
+  background-size: 8px 38px;background-repeat: repeat-y;background-position: center top;
+  opacity:.8;pointer-events:none;
+}
+main.shell::after{
+  content:'★ ÁLBUM OFICIAL ★';
+  position:absolute;top:-14px;right:22px;
+  background:#c8102e;color:#fff;
+  font-family:var(--site-font-heading);
+  font-size:12px;letter-spacing:2px;
+  padding:6px 14px;border-radius:6px;
+  box-shadow:0 4px 10px #0008;
+  transform:rotate(2deg);
+}
 .stat{background:#fffaf0;border:1px solid #c9b78a;border-radius:6px;box-shadow:2px 2px 0 #c9b78a80;color:#2b1d0e;position:relative;}
 .stat::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-2deg);width:60px;height:16px;background:#f4d77a80;border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;opacity:.9;}
 .stat label{ color:#7a5a2b; }
@@ -241,350 +330,753 @@ main.shell::after{content:'★ ÁLBUM OFICIAL ★';position:absolute;top:-14px;r
 .section-head p{ color:#7a5a2b; }
 
 /* ============ CROMOS COMO "COLADOS" ============ */
-.card{background:#fffaf0;border: 3px solid #fffaf0;border-radius: 3px;box-shadow:0 2px 4px #00000030,0 8px 16px #00000025,inset 0 0 0 1px #c9b78a;padding: 6px 6px 46px;overflow: visible;transition: transform .18s ease, box-shadow .18s ease;}
-.card:hover{transform: translateY(-3px) rotate(-.6deg);box-shadow:0 4px 8px #00000035,0 14px 26px #00000040,inset 0 0 0 1px #c9b78a;}
-.card-art{position: relative;inset: auto;height: 100%;border-radius: 2px;border: 1px solid #d8c8a0;overflow: hidden;box-shadow: inset 0 0 0 2px var(--rarity-color);}
-.card::before{content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-3deg);width:62px;height:18px;background: linear-gradient(180deg,#f7e08aee,#e8c95fcc);border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;box-shadow:0 1px 3px #0004;z-index:10;pointer-events:none;transition: transform .18s ease;}
+.grid{ gap: 22px 18px; padding-top: 8px; }
+.card{
+  background:#fffaf0;
+  border: 3px solid #fffaf0;
+  border-radius: 3px;
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 1px #c9b78a;
+  padding: 6px 6px 46px;
+  overflow: visible;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover{
+  transform: translateY(-3px) rotate(-.6deg);
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 1px #c9b78a;
+}
+.card-art{
+  position: relative;
+  inset: auto;
+  height: 100%;
+  border-radius: 2px;
+  border: 1px solid #d8c8a0;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px var(--rarity-color);
+}
+.card::before{
+  content:'';
+  position:absolute;top:-9px;left:50%;
+  transform:translateX(-50%) rotate(-3deg);
+  width:62px;height:18px;
+  background: linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;
+  border-right:1px dashed #b89a4a;
+  box-shadow:0 1px 3px #0004;
+  z-index:10;pointer-events:none;
+  transition: transform .18s ease;
+}
 .card:hover::before{ transform:translateX(-50%) rotate(1deg); }
-.card-bottom{position:absolute;left:6px;right:6px;bottom:6px;padding: 8px 8px 6px;background: #fffaf0;border-top: 1px dashed #b8a070;color: #2b1d0e;}
+.card-bottom{
+  position:absolute;left:6px;right:6px;bottom:6px;
+  padding: 8px 8px 6px;
+  background: #fffaf0;
+  border-top: 1px dashed #b8a070;
+  color: #2b1d0e;
+}
 .card-number{ color:#8a6a2b; }
 .card-name{ color:#2b1d0e; font-family: var(--site-font-heading); text-shadow: none; }
 .card-meta{ color:#7a5a2b; }
 .card-meta .rarity{ color:#8a0f20; font-weight: 900; }
 .gender-badge{ color:#7a5a2b; }
-.dup-badge{background:#8a0f20;color:#fff;border:2px solid #2b2f36;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;bottom: 52px; right: 8px;font-size:11px;box-shadow: 0 2px 6px #0006;z-index:12;}
-
-/* ============ SLOTS VAZIOS PANINI ============ */
-.card.missing{
-  --rarity-color:#b8a070;
-  background:#fffaf0 !important;
-  border-color:#fffaf0 !important;
-  box-shadow:
-    0 2px 4px #00000020,
-    0 8px 16px #00000015,
-    inset 0 0 0 1px #c9b78a !important;
+.dup-badge{
+  background:#8a0f20;color:#fff;border:2px solid #2b2f36;border-radius:50%;
+  width:32px;height:32px;display:grid;place-items:center;
+  bottom: 52px; right: 8px;font-size:11px;box-shadow: 0 2px 6px #0006;
+  z-index:12;
 }
-.card.missing:hover{
+
+/* ============ CROMOS EM FALTA ============ */
+.card.missing{
+  --rarity-color:#2b2f36;
+  --accent-color:#ffffff;
+  --meta-color:#c8ccd2;
+  background:#2b2f36 !important;
+  border-color:#2b2f36 !important;
   box-shadow:
-    0 4px 8px #00000030,
-    0 14px 26px #00000030,
-    inset 0 0 0 1px #b8a070 !important;
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #3a3f47,
+    inset 0 0 0 5px #2b2f36,
+    inset 0 0 0 1px #4a5058 !important;
 }
 .card.missing::before{
-  background: linear-gradient(180deg, #e8e2d2cc, #d8d0bccc) !important;
-  border-left:1px dashed #b8a070 !important;
-  border-right:1px dashed #b8a070 !important;
+  background:linear-gradient(180deg,#c8ccd2ee,#8a8f98cc) !important;
+  border-left:1px dashed #e2e5ea !important;
+  border-right:1px dashed #e2e5ea !important;
+  box-shadow:0 1px 3px #0004 !important;
 }
 .card.missing .card-art{
-  background: repeating-linear-gradient(45deg, #f5ebd2 0 10px, #fdf6e3 10px 20px) !important;
-  border: 2px dashed #c9b78a !important;
-  box-shadow: inset 0 0 22px #c9b78a30 !important;
+  background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;
+  border-color:#3a3f47 !important;
+  box-shadow:inset 0 0 0 2px #3a3f47,inset 0 0 22px #00000080 !important;
 }
-.card.missing .card-art::before{ display:none !important; }
-.card.missing .card-art::after{ display:none !important; }
-.card.missing::after{ display:none !important; }
-
-.slot{
-  position:absolute; inset:0;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding: 10px 8px; text-align:center; z-index:3;
-}
-.slot-num{
-  font-family: var(--site-font-heading);
-  font-size: clamp(32px, 5vw, 46px);
-  color:#c9b78a; line-height:1; letter-spacing:1px;
-  text-shadow: 0 1px 0 #fffaf0;
-}
-.slot-brand{
-  font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase;
-  margin-top: 6px; color: #a08b5f; font-weight: 800;
-}
-.slot-q{
-  font-family: var(--site-font-heading);
-  font-size: clamp(22px, 3.5vw, 32px);
-  color:#8a0f20; opacity:.5; margin-top: 4px; line-height:1;
-}
-
-/* ============================================================
-   ÁLBUM PANINI — DUPLA PÁGINA
-   ============================================================ */
-.album-view{
-  display:flex; align-items:center; gap:14px;
-  margin: 10px 0 20px;
-}
-.page-nav{
-  flex:0 0 44px; height:44px; border-radius:50%;
-  border:2px solid #b8a070; background:#fffaf0; color:#8a0f20;
-  font-size:18px; font-weight:900; cursor:pointer;
-  box-shadow:0 3px 0 #c9b78a, 0 6px 12px #0003;
-  transition: transform .12s, box-shadow .12s, opacity .15s;
-  display:flex; align-items:center; justify-content:center;
-}
-.page-nav:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 5px 0 #c9b78a, 0 8px 16px #0004; background:#fdf6e3; }
-.page-nav:active:not(:disabled){ transform:translateY(2px); box-shadow:0 1px 0 #c9b78a; }
-.page-nav:disabled{ opacity:.3; cursor:not-allowed; }
-
-.album-spread{
-  flex:1; display:grid; grid-template-columns:1fr 1fr;
-  border-radius:8px; overflow:hidden;
-  box-shadow:0 18px 50px #0007, inset 0 0 60px #a07c4a30;
-  position:relative; perspective:2400px; min-height:640px;
-}
-/* Lombada central */
-.album-spread::before{
-  content:''; position:absolute; top:0; bottom:0; left:50%; width:26px;
-  transform:translateX(-50%);
-  background: linear-gradient(90deg, #00000060, #00000010 30%, #00000010 70%, #00000060);
-  box-shadow: inset 0 0 20px #000a;
-  z-index:6; pointer-events:none;
-}
-
-.album-page{
+.card.missing .card-art::before{
   background:
-    repeating-linear-gradient(0deg, transparent 0 26px, #00000008 26px 27px),
-    radial-gradient(circle at 30% 20%, #fdf6e3 0%, #f5ebd2 45%, #e8d9b8 100%);
-  padding: 18px 22px 14px;
-  display:flex; flex-direction:column;
-  min-height: 640px;
-  position:relative;
+    linear-gradient(160deg,#ffffff12,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff06 18px 20px) !important;
 }
-.album-page:first-child{ border-right:1px solid #c9b78a; }
+.card.missing .card-art::after{
+  background:linear-gradient(180deg,#0000 40%,#181a1fee 100%) !important;
+}
+.card.missing .card-bottom{
+  background:linear-gradient(180deg,#2b2f36 0%,#181a1f 100%) !important;
+  border-top:1px dashed #3a3f47 !important;
+  color:#ffffff !important;
+}
+.card.missing .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;font-style:normal}
+.card.missing .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card.missing .card-meta{color:#c8ccd2 !important}
+.card.missing .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card.missing .gender-badge{color:#c8ccd2 !important}
+.card.missing::after{display:none !important}
 
-.page-header{
-  display:flex; justify-content:space-between; align-items:baseline;
-  border-bottom:2px solid #8a0f20; padding-bottom:6px; margin-bottom:12px;
+.missing-stage{
+  position:absolute;inset:0;z-index:3;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
 }
-.page-section{
-  font-family:var(--site-font-heading); font-size:18px;
-  letter-spacing:1.5px; color:#8a0f20; text-transform:uppercase;
+.card.missing .wwe-logo{
+  position:relative !important;
+  inset:auto !important;
+  z-index:2;
+  width:62%;
+  display:block;
+  opacity:.95;
 }
-.page-counter{ font-size:11px; color:#7a5a2b; font-weight:800; letter-spacing:1px; }
-.page-footer{
-  margin-top:auto; text-align:center; font-size:9px;
-  color:#b8a070; letter-spacing:2px; padding-top:10px;
-  border-top:1px dashed #c9b78a;
+.card.missing .wwe-logo img{
+  width:100% !important;
+  height:auto !important;
+  filter:none !important;
 }
 
-.page-grid{
-  display:grid; grid-template-columns:repeat(2, 1fr);
-  grid-auto-rows: 1fr; gap:14px; flex:1;
+/* ============ VIRAR DE PÁGINA ============ */
+@keyframes turnPage{
+  0%   { opacity: 0; transform: rotateY(-14deg) translateX(-24px); filter: blur(2px); }
+  60%  { opacity: 1; transform: rotateY(4deg)  translateX(6px);  filter: blur(0);  }
+  100% { opacity: 1; transform: rotateY(0)    translateX(0);     filter: blur(0);  }
 }
-
-/* Animação de virar página */
-.album-spread.flip-next .album-page:last-child{
-  animation: flipIn .55s cubic-bezier(.2,.8,.2,1) both;
+.grid.turning .card{
+  animation: turnPage .5s cubic-bezier(.2,.8,.2,1) both;
   transform-origin: left center;
+  animation-delay: calc(var(--i, 0) * 12ms);
 }
-.album-spread.flip-next .album-page:first-child{
-  animation: flipOut .55s cubic-bezier(.2,.8,.2,1) both;
-  transform-origin: right center;
-}
-@keyframes flipIn{
-  from{ opacity:0; transform:rotateY(-35deg) translateX(20px); filter:blur(2px); }
-  to{ opacity:1; transform:none; filter:none; }
-}
-@keyframes flipOut{
-  from{ opacity:1; transform:none; }
-  to{ opacity:0; transform:rotateY(35deg) translateX(-20px); filter:blur(2px); }
-}
-.album-spread.flip-prev .album-page:first-child{
-  animation: flipIn .55s cubic-bezier(.2,.8,.2,1) both;
-  transform-origin: right center;
-}
-.album-spread.flip-prev .album-page:last-child{
-  animation: flipOut .55s cubic-bezier(.2,.8,.2,1) both;
+.grid{ position: relative; }
+.grid.turning::after{
+  content:'';
+  position:absolute;inset:0;
+  background: linear-gradient(90deg, #fdf6e3cc 0%, #fdf6e300 60%);
   transform-origin: left center;
+  animation: pageVeil .55s ease-out both;
+  pointer-events:none;
+  z-index: 5;
+  border-radius: 6px;
+}
+@keyframes pageVeil{
+  0%   { opacity:0; transform: scaleX(0); }
+  40%  { opacity:.9; transform: scaleX(1); }
+  100% { opacity:0; transform: scaleX(1); }
 }
 
-/* Dots */
-.page-dots{
-  display:flex; justify-content:center; gap:6px; margin: 6px 0 18px; flex-wrap:wrap;
+/* Modais em papel */
+.modal, .detail, .trade-modal, .battle-modal{
+  background: #fffaf0 !important;
+  border: 2px solid #b8a070 !important;
+  color: #2b1d0e;
+  box-shadow:
+    0 20px 60px #000b,
+    inset 0 0 40px #c9b78a40,
+    0 0 0 6px #fffaf0,
+    0 0 0 7px #b8a070;
 }
-.page-dot{
-  width:10px; height:10px; border-radius:50%;
-  background:#c9b78a; border:1px solid #b8a070; cursor:pointer;
-  transition: transform .15s, background .15s; padding:0;
-}
-.page-dot.active{ background:#8a0f20; transform:scale(1.4); }
-.page-dot:hover{ background:#e8d9b8; }
+.modal h3, .detail h3, .trade-header h3, .battle-header h3{ color:#8a0f20;font-family: var(--site-font-heading); }
+.modal p, .detail-status, .trade-modal p, .battle-modal p{ color:#5a4020; }
+.detail-info .detail-brand{ color:#7a5a2b; }
+.detail-info .detail-gender{ background:#e8d9b8;color:#5a4020;border-color:#b8a070; }
+.detail-info .detail-rarity{ background:#fffaf0; }
+.detail-info .detail-status strong{ color:#8a0f20; }
+.trade-tab, .battle-tab{ background:#e8d9b8;color:#5a4020;border-color:#c9b78a; }
+.trade-tab.active, .battle-tab.active{ background:#8a0f20;color:#fff;border-color:#8a0f20; }
+.trade-select, .trade-input{ background:#fffaf0;color:#2b1d0e;border-color:#b8a070; }
+.trade-item{ background:#f5ebd2;border-color:#c9b78a;color:#2b1d0e; }
+.trade-item-sub{ color:#7a5a2b; }
+.trade-item-cards{ color:#5a4020; }
 
-/* Página comemorativa */
-.final-page{
-  grid-column:1/-1; text-align:center; padding: 30px 20px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap: 14px; position:relative; overflow:hidden;
-}
-.final-page h3{
-  font-family:var(--site-font-heading); font-size: 38px; color:#8a0f20;
-  margin:0; letter-spacing:2px;
-}
-.final-page p{ color:#5a4020; font-size:14px; max-width:400px; line-height:1.6; margin:0; }
-.final-trophy{ font-size: 80px; animation: trophyBounce 2s ease-in-out infinite; }
-@keyframes trophyBounce{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(5deg)}}
-.confetti{ position:absolute; width:10px; height:10px; border-radius:2px; animation: confettiFall 3s linear infinite; }
-@keyframes confettiFall{
-  0%{ transform: translateY(-100%) rotate(0); opacity:1; }
-  100%{ transform: translateY(600px) rotate(720deg); opacity:0; }
+@media (max-width:470px){
+  main.shell{ border-left-width: 8px; padding: 24px 12px 36px; }
+  main.shell::after{ font-size:10px; padding:4px 10px; right:10px; }
 }
 
 /* ============================================================
    DIFERENCIAÇÃO POR RARIDADE
    ============================================================ */
-.card .card-art{ box-shadow: inset 0 0 0 2px var(--rarity-color), inset 0 0 22px color-mix(in srgb, var(--rarity-color) 35%, transparent); }
-.card .card-meta .rarity{ color: var(--rarity-color); text-shadow: 0 1px 0 #0006; }
-.card .card-number{ color: var(--rarity-color); text-shadow: 0 1px 0 #0006; }
+.card{
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a;
+}
+.card .card-art{
+  box-shadow:
+    inset 0 0 0 2px var(--rarity-color),
+    inset 0 0 22px color-mix(in srgb, var(--rarity-color) 35%, transparent);
+}
+.card .card-meta .rarity{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
+.card .card-number{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
 
-.card[data-rarity="Comum"]{ background:#052e16 !important; border-color:#22c55e !important; box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #22c55e,inset 0 0 0 5px #052e16,inset 0 0 0 1px #22c55e88,0 0 18px #22c55e44 !important; }
-.card[data-rarity="Comum"]::before{ background:linear-gradient(180deg,#22c55eee,#15803dcc) !important; border-left:1px dashed #86efac !important; border-right:1px dashed #86efac !important; }
-.card[data-rarity="Comum"] .card-art{ background: radial-gradient(ellipse at 50% 30%, #22c55e55, transparent 60%),radial-gradient(ellipse at 50% 34%, #14532d 0%, #052e16 42%, #021a0b 100%) !important; border-color:#22c55e !important; box-shadow: inset 0 0 0 2px #22c55e, inset 0 0 26px #22c55e66 !important; }
-.card[data-rarity="Comum"] .card-art::after{ background:linear-gradient(180deg,#0000 35%,#021a0bee 100%) !important; }
-.card[data-rarity="Comum"] .card-bottom{ background:linear-gradient(180deg,#052e16 0%,#021a0b 100%) !important; border-top:1px dashed #22c55e !important; color:#ffffff !important; }
-.card[data-rarity="Comum"] .card-name{ color:#ffffff !important; text-shadow:0 1px 2px #0008 !important; }
+/* ============================================================
+   COMUM: VERDE (#22c55e) + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Comum"]{
+  background:#052e16 !important;
+  border-color:#22c55e !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #22c55e,
+    inset 0 0 0 5px #052e16,
+    inset 0 0 0 1px #22c55e88,
+    0 0 18px #22c55e44 !important;
+}
+.card[data-rarity="Comum"]::before{
+  background:linear-gradient(180deg,#22c55eee,#15803dcc) !important;
+  border-left:1px dashed #86efac !important;
+  border-right:1px dashed #86efac !important;
+  box-shadow:0 1px 3px #000a !important;
+}
+.card[data-rarity="Comum"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #22c55e55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #14532d 0%, #052e16 42%, #021a0b 100%) !important;
+  border-color:#22c55e !important;
+  box-shadow:
+    inset 0 0 0 2px #22c55e,
+    inset 0 0 26px #22c55e66 !important;
+}
+.card[data-rarity="Comum"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Comum"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#021a0bee 100%) !important;
+}
+.card[data-rarity="Comum"] .card-bottom{
+  background:linear-gradient(180deg,#052e16 0%,#021a0b 100%) !important;
+  border-top:1px dashed #22c55e !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Comum"] .card-name{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
 .card[data-rarity="Comum"] .card-meta{color:#86efac !important}
-.card[data-rarity="Comum"] .card-meta .rarity{ color:#ffffff !important; text-shadow:0 1px 2px #0008 !important; }
-.card[data-rarity="Comum"] .card-number{ color:#ffffff !important; text-shadow:0 1px 2px #0008 !important; }
+.card[data-rarity="Comum"] .card-meta .rarity{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Comum"] .card-number{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
 .card[data-rarity="Comum"] .gender-badge{color:#86efac !important}
 
-.card[data-rarity="Raro"]{ background:#042f2e !important; border-color:#2dd4bf !important; box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #2dd4bf,inset 0 0 0 5px #042f2e,inset 0 0 0 1px #2dd4bf88,0 0 18px #2dd4bf55 !important; }
-.card[data-rarity="Raro"]::before{ background:linear-gradient(180deg,#2dd4bfee,#0f766ecc); border-left:1px dashed #99f6e4; border-right:1px dashed #99f6e4; }
-.card[data-rarity="Raro"] .card-art{ background: radial-gradient(ellipse at 50% 30%, #2dd4bf55, transparent 60%),radial-gradient(ellipse at 50% 34%, #115e59 0%, #042f2e 42%, #021615 100%) !important; border-color:#2dd4bf !important; box-shadow: inset 0 0 0 2px #2dd4bf, inset 0 0 26px #2dd4bf66 !important; }
-.card[data-rarity="Raro"] .card-art::after{ background:linear-gradient(180deg,#0000 35%,#021615ee 100%) !important; }
-.card[data-rarity="Raro"] .card-bottom{ background:linear-gradient(180deg,#042f2e 0%,#021615 100%) !important; border-top:1px dashed #2dd4bf !important; color:#ffffff !important; }
-.card[data-rarity="Raro"] .card-name{ color:#ffffff !important; text-shadow:0 1px 2px #0008 !important; }
-.card[data-rarity="Raro"] .card-meta{ color:#99f6e4 !important; }
-.card[data-rarity="Raro"] .card-meta .rarity{ color:#ffffff !important; text-shadow:0 1px 2px #0008 !important; }
-.card[data-rarity="Raro"] .card-number{ color:#ffffff !important; text-shadow:0 1px 2px #0008 !important; }
-.card[data-rarity="Raro"] .gender-badge{ color:#99f6e4 !important; }
+/* ============================================================
+   RARO: VERDE-MENTA (#2dd4bf) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Raro"]{
+  background:#042f2e !important;
+  border-color:#2dd4bf !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #2dd4bf,
+    inset 0 0 0 5px #042f2e,
+    inset 0 0 0 1px #2dd4bf88,
+    0 0 18px #2dd4bf55 !important;
+}
+.card[data-rarity="Raro"]::before{
+  background:linear-gradient(180deg,#2dd4bfee,#0f766ecc);
+  border-left:1px dashed #99f6e4;
+  border-right:1px dashed #99f6e4;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Raro"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #2dd4bf55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #115e59 0%, #042f2e 42%, #021615 100%) !important;
+  border-color:#2dd4bf !important;
+  box-shadow:
+    inset 0 0 0 2px #2dd4bf,
+    inset 0 0 26px #2dd4bf66 !important;
+}
+.card[data-rarity="Raro"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Raro"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#021615ee 100%) !important;
+}
+.card[data-rarity="Raro"] .card-bottom{
+  background:linear-gradient(180deg,#042f2e 0%,#021615 100%) !important;
+  border-top:1px dashed #2dd4bf !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Raro"] .card-name{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .card-meta{
+  color:#99f6e4 !important;
+}
+.card[data-rarity="Raro"] .card-meta .rarity{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .card-number{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .gender-badge{
+  color:#99f6e4 !important;
+}
 
-.card[data-rarity="Épico"]{ background:#1a0f26 !important; border-color:#d99aff !important; box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #d99aff,inset 0 0 0 5px #1a0f26,inset 0 0 0 1px #d99aff88,0 0 18px #d99aff55 !important; }
-.card[data-rarity="Épico"]::before{ background:linear-gradient(180deg,#d99affee,#8a4fbfcc); border-left:1px dashed #eccaff;border-right:1px dashed #eccaff; }
-.card[data-rarity="Épico"] .card-art{ background: radial-gradient(ellipse at 50% 30%, #d99aff55, transparent 60%),radial-gradient(ellipse at 50% 34%, #2a1640 0%, #1a0f26 42%, #0a0510 100%) !important; border-color:#d99aff !important; box-shadow: inset 0 0 0 2px #d99aff, inset 0 0 26px #d99aff66 !important; }
-.card[data-rarity="Épico"] .card-art::after{ background:linear-gradient(180deg,#0000 35%,#0a0510ee 100%) !important; }
-.card[data-rarity="Épico"] .card-bottom{ background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important; border-top:1px dashed #d99aff !important; color:#ffffff !important; }
+/* ============================================================
+   ÉPICO: ROXO (#d99aff) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Épico"]{
+  background:#1a0f26 !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #d99aff,
+    inset 0 0 0 5px #1a0f26,
+    inset 0 0 0 1px #d99aff88,
+    0 0 18px #d99aff55 !important;
+}
+.card[data-rarity="Épico"]::before{
+  background:linear-gradient(180deg,#d99affee,#8a4fbfcc);
+  border-left:1px dashed #eccaff;border-right:1px dashed #eccaff;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Épico"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #d99aff55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #2a1640 0%, #1a0f26 42%, #0a0510 100%) !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    inset 0 0 0 2px #d99aff,
+    inset 0 0 26px #d99aff66 !important;
+}
+.card[data-rarity="Épico"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Épico"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0a0510ee 100%) !important;
+}
+.card[data-rarity="Épico"] .card-bottom{
+  background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important;
+  border-top:1px dashed #d99aff !important;
+  color:#ffffff !important;
+}
 .card[data-rarity="Épico"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Épico"] .card-meta{color:#e8ccff !important}
 .card[data-rarity="Épico"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Épico"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Épico"] .gender-badge{color:#e8ccff !important}
 
-.card[data-rarity="Lendário"]{ background:#1f1603 !important; border-color:#e8a800 !important; box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #e8a800,inset 0 0 0 5px #1f1603,inset 0 0 0 1px #e8a80088,0 0 20px #e8a80077 !important; }
-.card[data-rarity="Lendário"]::before{ background:linear-gradient(180deg,#e8a800ee,#a06f00cc); border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a; }
-.card[data-rarity="Lendário"] .card-art{ background: radial-gradient(ellipse at 50% 30%, #e8a80066, transparent 60%),radial-gradient(ellipse at 50% 34%, #3a2a05 0%, #1f1603 42%, #0c0801 100%) !important; border-color:#e8a800 !important; box-shadow: inset 0 0 0 2px #e8a800, inset 0 0 28px #e8a80077 !important; }
-.card[data-rarity="Lendário"] .card-art::after{ background:linear-gradient(180deg,#0000 35%,#0c0801ee 100%) !important; }
-.card[data-rarity="Lendário"] .card-bottom{ background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important; border-top:1px dashed #e8a800 !important; color:#ffffff !important; }
+/* ============================================================
+   LENDÁRIO: DOURADO (#e8a800) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Lendário"]{
+  background:#1f1603 !important;
+  border-color:#e8a800 !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #e8a800,
+    inset 0 0 0 5px #1f1603,
+    inset 0 0 0 1px #e8a80088,
+    0 0 20px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"]::before{
+  background:linear-gradient(180deg,#e8a800ee,#a06f00cc);
+  border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Lendário"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #e8a80066, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #3a2a05 0%, #1f1603 42%, #0c0801 100%) !important;
+  border-color:#e8a800 !important;
+  box-shadow:
+    inset 0 0 0 2px #e8a800,
+    inset 0 0 28px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Lendário"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0c0801ee 100%) !important;
+}
+.card[data-rarity="Lendário"] .card-bottom{
+  background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important;
+  border-top:1px dashed #e8a800 !important;
+  color:#ffffff !important;
+}
 .card[data-rarity="Lendário"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Lendário"] .card-meta{color:#ffe2a0 !important}
 .card[data-rarity="Lendário"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Lendário"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
 .card[data-rarity="Lendário"] .gender-badge{color:#ffe2a0 !important}
 
+/* brilho animado do Lendário (faixa dourada) */
 .card[data-rarity="Lendário"]::after{
-  content:'' !important; display:block !important;
-  position:absolute !important; inset:6px !important;
+  content:'' !important;
+  display:block !important;
+  position:absolute !important;
+  inset:6px !important;
   border-radius:2px !important;
-  background-image:linear-gradient(110deg,transparent 42%,#fff0b000 44%,#fff8d8b3 50%,#fff0b000 56%,transparent 58%) !important;
-  background-size:300% 100% !important; background-repeat:no-repeat !important;
-  background-position:100% 0; mix-blend-mode:overlay !important;
-  pointer-events:none !important; z-index:5 !important;
+  background-image:linear-gradient(110deg,
+    transparent 42%,
+    #fff0b000 44%,
+    #fff8d8b3 50%,
+    #fff0b000 56%,
+    transparent 58%) !important;
+  background-size:300% 100% !important;
+  background-repeat:no-repeat !important;
+  background-position:100% 0;
+  mix-blend-mode:overlay !important;
+  pointer-events:none !important;
+  z-index:5 !important;
   animation:shineGold 5s ease-in-out infinite !important;
   animation-delay:1s !important;
 }
-@keyframes shineGold{0%,65% { background-position:100% 0; }100%   { background-position:0% 0; }}
+@keyframes shineGold{
+  0%,65% { background-position:100% 0; }
+  100%   { background-position:0% 0; }
+}
 .card[data-rarity="Lendário"] .card-bottom{ z-index:11; }
 
+/* Efeito Lendário nas cartas da saqueta */
 .mini .mini-shine{display:none}
-.mini[data-rarity="Lendário"] .mini-shine{display:block;position:absolute;inset:0;border-radius:7px;z-index:4;pointer-events:none;background-image:linear-gradient(110deg,transparent 40%,#fff0b000 43%,#fff8d8cc 50%,#fff0b000 57%,transparent 60%);background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;mix-blend-mode:screen;opacity:0;}
-.mini.revealed[data-rarity="Lendário"] .mini-shine{opacity:1;animation:shineGoldMini 2.6s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 850ms);}
-@keyframes shineGoldMini{0%,35% { background-position:100% 0; }100%   { background-position:0% 0; }}
+.mini[data-rarity="Lendário"] .mini-shine{
+  display:block;position:absolute;inset:0;border-radius:7px;z-index:4;pointer-events:none;
+  background-image:linear-gradient(110deg,transparent 40%,#fff0b000 43%,#fff8d8cc 50%,#fff0b000 57%,transparent 60%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  mix-blend-mode:screen;opacity:0;
+}
+.mini.revealed[data-rarity="Lendário"] .mini-shine{
+  opacity:1;
+  animation:shineGoldMini 2.6s ease-in-out infinite;
+  animation-delay:calc(var(--burst-delay,0ms) + 850ms);
+}
+@keyframes shineGoldMini{
+  0%,35% { background-position:100% 0; }
+  100%   { background-position:0% 0; }
+}
 .mini.revealed[data-rarity="Lendário"]::before{opacity:.8;animation-duration:1.6s;}
 
-.mini{box-shadow:0 4px 12px #0008,0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);}
+.mini{
+  box-shadow:
+    0 4px 12px #0008,
+    0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);
+}
 
-.rarity-legend{display:flex;flex-wrap:wrap;gap:14px;margin: 6px 0 18px;font-size: 11px;font-style: italic;color:#7a5a2b;}
-.rarity-legend span{display:inline-flex;align-items:center;gap:6px;}
-.rarity-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid #fffaf0;box-shadow: inset 0 0 0 2px #c9b78a;}
+/* Legenda das raridades */
+.rarity-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin: 6px 0 18px;
+  font-size: 11px;
+  font-style: italic;
+  color:#7a5a2b;
+}
+.rarity-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.rarity-legend i{
+  display:inline-block;
+  width:14px;height:14px;
+  border-radius:3px;
+  border:2px solid #fffaf0;
+  box-shadow: inset 0 0 0 2px #c9b78a;
+}
 .rarity-legend i.r-comum{ background:#22c55e; box-shadow: inset 0 0 0 2px #22c55e; }
 .rarity-legend i.r-raro{ background:#2dd4bf; box-shadow: inset 0 0 0 2px #2dd4bf; }
 .rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
 .rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
 
-.detail-info h3#detailName{ color: var(--rarity-color, #4b5563) !important; font-family: var(--site-font-body) !important; font-weight: 900 !important; letter-spacing: -.2px !important; text-shadow: none !important; }
-.detail-info .detail-brand{ color: #6b7280 !important; }
-.detail-info .detail-brand .brand-fallback{ color: #6b7280 !important; display: none !important; }
-.detail-info .detail-rarity{ color: var(--rarity-color, #2e2216) !important; background: #fffaf0 !important; border-color: var(--rarity-color, #2e2216) !important; font-weight: 900; }
-.detail-info .detail-gender{ background: #e5e7eb !important; color: #4b5563 !important; border-color: #9ca3af !important; font-weight: 900; }
-.detail-info .detail-status{ color: #6b7280 !important; }
-.detail-info .detail-status strong{ color: var(--rarity-color) !important; font-weight: 900 !important; }
-.attr-label { color: var(--rarity-color) !important; font-weight: 900 !important; }
-.attr-value { color: #4b5563 !important; font-weight: 900; }
+.detail-info h3#detailName{
+  color: var(--rarity-color, #4b5563) !important;
+  font-family: var(--site-font-body) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.2px !important;
+  text-shadow: none !important;
+}
+.detail-info .detail-brand{
+  color: #6b7280 !important;
+}
+.detail-info .detail-brand .brand-fallback{
+  color: #6b7280 !important;
+  display: none !important;
+}
+.detail-info .detail-rarity{
+  color: var(--rarity-color, #2e2216) !important;
+  background: #fffaf0 !important;
+  border-color: var(--rarity-color, #2e2216) !important;
+  font-weight: 900;
+}
+.detail-info .detail-gender{
+  background: #e5e7eb !important;
+  color: #4b5563 !important;
+  border-color: #9ca3af !important;
+  font-weight: 900;
+}
+.detail-info .detail-status{
+  color: #6b7280 !important;
+}
+.detail-info .detail-status strong{
+  color: var(--rarity-color) !important;
+  font-weight: 900 !important;
+}
+.attr-label {
+  color: var(--rarity-color) !important;
+  font-weight: 900 !important;
+}
+.attr-value {
+  color: #4b5563 !important;
+  font-weight: 900;
+}
 
-.detail[data-rarity="missing"] .detail-info h3#detailName { color: #6b7280 !important; text-shadow: none !important; }
-.detail[data-rarity="missing"] .detail-info .detail-brand { display: none !important; }
-.detail[data-rarity="missing"] .detail-info .detail-rarity { color: #6b7280 !important; border-color: #9ca3af !important; }
-.detail[data-rarity="missing"] .detail-info .detail-gender { color: #6b7280 !important; background: #e5e7eb !important; border-color: #9ca3af !important; }
-.detail[data-rarity="missing"] .attr-label { color: #6b7280 !important; }
-.detail[data-rarity="missing"] .attr-value { color: #374151 !important; }
-.detail[data-rarity="missing"] .detail-status hr { border-top-color: #9ca3af !important; }
-.detail[data-rarity="missing"] .detail-status { color: #6b7280 !important; }
-.detail[data-rarity="missing"] .detail-status strong { color: #4b5563 !important; }
-.detail[data-rarity="missing"] .detail-photo-wrap { background: repeating-linear-gradient(45deg, #f5ebd2 0 10px, #fdf6e3 10px 20px) !important; filter: none !important; border-color: #c9b78a !important; }
+.detail[data-rarity="missing"] .detail-info h3#detailName {
+  color: #6b7280 !important;
+  text-shadow: none !important;
+}
+.detail[data-rarity="missing"] .detail-info .detail-brand {
+  display: none !important;
+}
+.detail[data-rarity="missing"] .detail-info .detail-rarity {
+  color: #6b7280 !important;
+  border-color: #9ca3af !important;
+}
+.detail[data-rarity="missing"] .detail-info .detail-gender {
+  color: #6b7280 !important;
+  background: #e5e7eb !important;
+  border-color: #9ca3af !important;
+}
+.detail[data-rarity="missing"] .attr-label {
+  color: #6b7280 !important;
+}
+.detail[data-rarity="missing"] .attr-value {
+  color: #374151 !important;
+}
+.detail[data-rarity="missing"] .detail-status hr {
+  border-top-color: #9ca3af !important;
+}
+.detail[data-rarity="missing"] .detail-status {
+  color: #6b7280 !important;
+}
+.detail[data-rarity="missing"] .detail-status strong {
+  color: #4b5563 !important;
+}
+.detail[data-rarity="missing"] .detail-photo-wrap {
+  background: radial-gradient(circle at 50% 30%, #6b7280, #2b2f36 75%) !important;
+  filter: grayscale(1) !important;
+  border-color: #4b5563 !important;
+}
 
-.detail-photo-wrap{ position: relative; overflow: hidden; }
+.detail-photo-wrap{
+  position: relative;
+  overflow: hidden;
+}
 .detail-photo-wrap::after{
-  content:''; position:absolute; inset:0; border-radius:12px;
-  background-image:linear-gradient(110deg,transparent 42%,#fff0b000 44%,#fff8d8b3 50%,#fff0b000 56%,transparent 58%);
-  background-size:300% 100%; background-repeat:no-repeat; background-position:100% 0;
-  mix-blend-mode:overlay; pointer-events:none; z-index:6;
-  animation:shineGold 5s ease-in-out infinite; animation-delay:1s; opacity:0;
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:12px;
+  background-image:linear-gradient(110deg,
+    transparent 42%,
+    #fff0b000 44%,
+    #fff8d8b3 50%,
+    #fff0b000 56%,
+    transparent 58%);
+  background-size:300% 100%;
+  background-repeat:no-repeat;
+  background-position:100% 0;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:6;
+  animation:shineGold 5s ease-in-out infinite;
+  animation-delay:1s;
+  opacity:0;
 }
-.detail[data-rarity="Lendário"] .detail-photo-wrap::after{ opacity:1; }
-.detail[data-rarity="Lendário"]{ box-shadow:0 20px 80px #000b,inset 0 0 40px #c9b78a40,0 0 0 6px #fffaf0,0 0 0 7px #e8a800,0 0 32px #e8a80066 !important; border-color: #e8a800 !important; }
+.detail[data-rarity="Lendário"] .detail-photo-wrap::after{
+  opacity:1;
+}
 
-@media(max-width:860px){
-  .album-spread{ grid-template-columns:1fr; }
-  .album-spread::before{ display:none; }
-  .album-page:first-child{ border-right:none; border-bottom:2px solid #8a0f20; }
-  .page-grid{ grid-template-columns:repeat(2,1fr); }
+.detail[data-rarity="Lendário"]{
+  box-shadow:
+    0 20px 80px #000b,
+    inset 0 0 40px #c9b78a40,
+    0 0 0 6px #fffaf0,
+    0 0 0 7px #e8a800,
+    0 0 32px #e8a80066 !important;
+  border-color: #e8a800 !important;
 }
+
 @media(max-width:600px){
-  .detail, .trade-modal, .battle-modal { grid-template-columns: 1fr; padding: 20px; gap: 16px; text-align: center; }
-  .detail-photo-wrap { max-width: 220px; width: 100%; margin: 0 auto; min-height: 280px; aspect-ratio: 3/4.15; }
-  .detail-photo-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .detail-info { display: flex; flex-direction: column; align-items: center; flex-direction: row; flex-wrap: wrap; }
-  .detail-info h3#detailName, .detail-info .detail-brand, .detail-info .detail-status { width: 100%; }
-  .detail-info h3#detailName { font-size: 28px; margin: 0 0 8px 0; }
-  .detail-info .detail-brand { display: flex; justify-content: center; margin-bottom: 12px; }
-  .detail-info .detail-rarity { margin-left: auto; margin-right: 5px; }
-  .detail-info .detail-gender { margin-left: 5px; margin-right: auto; }
-  .detail-info .detail-rarity, .detail-info .detail-gender { height: 28px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; }
-  .detail-info .detail-status { margin-top: 12px; width: 100%; }
+  .detail, .trade-modal, .battle-modal {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 16px;
+    text-align: center;
+  }
+  .detail-photo-wrap {
+    max-width: 220px;
+    width: 100%;
+    margin: 0 auto;
+    min-height: 280px;
+    aspect-ratio: 3/4.15;
+  }
+  .detail-photo-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .detail-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .detail-info h3#detailName {
+    font-size: 28px;
+    margin: 0 0 8px 0;
+  }
+  .detail-info .detail-brand {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .detail-info {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .detail-info h3#detailName,
+  .detail-info .detail-brand,
+  .detail-info .detail-status {
+    width: 100%;
+  }
+  .detail-info .detail-rarity {
+    margin-left: auto;
+    margin-right: 5px;
+  }
+  .detail-info .detail-gender {
+    margin-left: 5px;
+    margin-right: auto;
+  }
+  .detail-info .detail-rarity,
+  .detail-info .detail-gender {
+    height: 28px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .detail-info .detail-status {
+    margin-top: 12px;
+    width: 100%;
+  }
 }
 
 /* ============================================================
    CAPA DO ÁLBUM
    ============================================================ */
-#cover{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 40%, #3a2416 0%, #1a0f08 60%, #080402 100%),repeating-linear-gradient(90deg,#0000 0 40px,#ffffff05 40px 41px);transition:opacity .6s ease, transform .6s ease;}
+#cover{
+  position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;
+  background:
+    radial-gradient(ellipse at 50% 40%, #3a2416 0%, #1a0f08 60%, #080402 100%),
+    repeating-linear-gradient(90deg,#0000 0 40px,#ffffff05 40px 41px);
+  transition:opacity .6s ease, transform .6s ease;
+}
 #cover.hidden{ opacity:0;transform:scale(1.05);pointer-events:none; }
-.cover-book{position:relative;width:min(460px, 92vw);aspect-ratio:3/4.2;background:radial-gradient(ellipse at 30% 20%, #c8102e 0%, #8f071d 45%, #4a0410 100%),repeating-linear-gradient(135deg,#0000 0 18px,#ffffff08 18px 20px);border-radius:6px 14px 14px 6px;box-shadow:0 30px 80px #000c, 0 10px 30px #0008,inset 0 0 0 2px #00000060, inset 8px 0 20px #00000070, inset -4px 0 12px #00000040;padding:34px 28px 28px;display:flex;flex-direction:column;align-items:center;text-align:center;color:#fff;overflow:hidden;transform:rotate(-1.5deg);transition:transform .4s ease;}
+.cover-book{
+  position:relative;width:min(460px, 92vw);aspect-ratio:3/4.2;
+  background:
+    radial-gradient(ellipse at 30% 20%, #c8102e 0%, #8f071d 45%, #4a0410 100%),
+    repeating-linear-gradient(135deg,#0000 0 18px,#ffffff08 18px 20px);
+  border-radius:6px 14px 14px 6px;
+  box-shadow:
+    0 30px 80px #000c, 0 10px 30px #0008,
+    inset 0 0 0 2px #00000060, inset 8px 0 20px #00000070, inset -4px 0 12px #00000040;
+  padding:34px 28px 28px;display:flex;flex-direction:column;align-items:center;
+  text-align:center;color:#fff;overflow:hidden;transform:rotate(-1.5deg);
+  transition:transform .4s ease;
+}
 .cover-book:hover{ transform:rotate(-1.5deg) translateY(-4px); }
-.cover-book::before{content:'';position:absolute;left:0;top:0;bottom:0;width:22px;background:linear-gradient(90deg,#00000090,#00000040 40%,transparent),repeating-linear-gradient(0deg,#00000000 0 28px,#00000080 28px 30px);border-right:1px solid #00000080;border-radius:6px 0 0 6px;z-index:2;}
-.cover-book::after{content:'';position:absolute;top:-14px;right:24px;width:70px;height:26px;background:linear-gradient(180deg,#f7e08aee,#e8c95fcc);border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;box-shadow:0 2px 6px #0006;transform:rotate(6deg);z-index:3;}
-.cover-brand{font-family:var(--site-font-heading);font-size:13px;letter-spacing:4px;color:#ffd15b;margin-top:18px;text-shadow:0 2px 4px #0008;z-index:1;}
-.cover-title{font-family:var(--site-font-heading);font-size:clamp(38px,9vw,58px);line-height:.9;letter-spacing:1px;margin:14px 0 6px;text-shadow:0 3px 0 #00000050, 0 6px 14px #00000090;z-index:1;}
+.cover-book::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:22px;
+  background:
+    linear-gradient(90deg,#00000090,#00000040 40%,transparent),
+    repeating-linear-gradient(0deg,#00000000 0 28px,#00000080 28px 30px);
+  border-right:1px solid #00000080;border-radius:6px 0 0 6px;z-index:2;
+}
+.cover-book::after{
+  content:'';position:absolute;top:-14px;right:24px;width:70px;height:26px;
+  background:linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;
+  box-shadow:0 2px 6px #0006;transform:rotate(6deg);z-index:3;
+}
+.cover-brand{
+  font-family:var(--site-font-heading);font-size:13px;letter-spacing:4px;
+  color:#ffd15b;margin-top:18px;text-shadow:0 2px 4px #0008;z-index:1;
+}
+.cover-title{
+  font-family:var(--site-font-heading);font-size:clamp(38px,9vw,58px);
+  line-height:.9;letter-spacing:1px;margin:14px 0 6px;
+  text-shadow:0 3px 0 #00000050, 0 6px 14px #00000090;z-index:1;
+}
 .cover-title span{ display:block;font-size:.62em;color:#ffd15b;letter-spacing:2px;margin-top:6px; }
-.cover-edition{font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:#fff;background:#00000055;border:1px solid #ffffff44;padding:6px 14px;border-radius:999px;margin-top:10px;z-index:1;}
+.cover-edition{
+  font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:#fff;
+  background:#00000055;border:1px solid #ffffff44;padding:6px 14px;border-radius:999px;
+  margin-top:10px;z-index:1;
+}
 .cover-logo{ margin:auto 0;width:60%;max-width:220px;z-index:1; }
 .cover-logo img{ width:100%;height:auto;display:block;filter:drop-shadow(0 4px 12px #000a); }
-.cover-progress{
-  z-index:1; margin: 8px 0 4px; width: 100%;
-  background: #00000055; border: 1px solid #ffffff33;
-  border-radius: 999px; padding: 6px 14px;
-  font-size: 12px; font-weight: 800; color: #fff; letter-spacing: .5px;
-}
-.cover-progress b{ color: #ffd15b; font-size: 14px; }
 .cover-footer{ width:100%;border-top:1px solid #ffffff33;padding-top:14px;margin-top:auto;z-index:1; }
 .cover-footer p{ margin:0 0 12px;font-size:11px;color:#e7dfe2;line-height:1.5; }
-.cover-btn{width:100%;border:0;border-radius:10px;padding:14px 18px;background:#ffd15b;color:#1a0f08;font:inherit;font-weight:900;font-size:15px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;box-shadow:0 6px 0 #8a6a1a, 0 8px 20px #0008;transition:transform .12s ease, box-shadow .12s ease;display:flex;align-items:center;justify-content:center;gap:10px;}
+.cover-btn{
+  width:100%;border:0;border-radius:10px;padding:14px 18px;background:#ffd15b;color:#1a0f08;
+  font:inherit;font-weight:900;font-size:15px;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;box-shadow:0 6px 0 #8a6a1a, 0 8px 20px #0008;
+  transition:transform .12s ease, box-shadow .12s ease;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
 .cover-btn:hover{ transform:translateY(-2px);box-shadow:0 8px 0 #8a6a1a, 0 10px 24px #000a; }
 .cover-btn:active{ transform:translateY(2px);box-shadow:0 2px 0 #8a6a1a, 0 4px 12px #0008; }
 .cover-btn.twitch-btn{ background:#9146FF;color:#fff;box-shadow:0 6px 0 #4a1f8a, 0 8px 20px #0008; }
@@ -592,23 +1084,20 @@ main.shell::after{content:'★ ÁLBUM OFICIAL ★';position:absolute;top:-14px;r
 .cover-btn.twitch-btn:active{ box-shadow:0 2px 0 #4a1f8a, 0 4px 12px #0008; }
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
-@media(max-width:720px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
-@media(max-width:470px){.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}
-  .album-view{ gap:6px; }
-  .page-nav{ flex:0 0 34px; height:34px; font-size:13px; }
-  .album-page{ padding:12px 10px; min-height:auto; }
-  .page-grid{ gap:8px; }
-  .album-spread{ min-height:auto; }
-}
+@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
+@media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* Estado de autenticação inicial: esconde cabeçalho/álbum até sabermos se há sessão */
 (function(){var r=document.documentElement;r.classList.add('auth-pending');
 try{if(localStorage.getItem('wwe_card_vault_was_logged_in')==='1')r.classList.add('hint-in');}catch(e){}})();
 </script>
 <style>
+/* Nunca mostrar a página "pública" (hero + botão Entrar) — só a capa */
 html.auth-pending header, html.auth-pending main,
 html.logged-out header, html.logged-out main{visibility:hidden}
+/* Utilizador que costuma estar logado: sem capa a piscar enquanto a sessão carrega */
 html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
 </style>
 </head>
@@ -623,7 +1112,6 @@ html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
       <span>Edição 2026</span>
     </h2>
     <div class="cover-edition">★ Álbum de Cromos ★</div>
-    <div class="cover-progress" id="coverProgress">0 / 137 cromos</div>
     <div class="cover-logo">
       <img src="img/wwe.png" alt="WWE"
            onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'font-family:Impact,sans-serif;font-size:48px;letter-spacing:4px;color:#fff;text-shadow:0 4px 0 #000;\'>WWE</div>'">
@@ -634,6 +1122,7 @@ html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
     </div>
   </div>
 </div>
+<!-- ========== FIM DA CAPA ========== -->
 
 <header>
  <div class="topline">
@@ -695,7 +1184,7 @@ html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
   <button class="btn battle-btn" id="openBattleBtn" style="display:none">⚔️ Batalhas</button>
  </div>
  <div class="section-head">
-  <div><h2>O TEU ÁLBUM</h2><p>Folheia o álbum. Clica num cromo para ver detalhes — a imagem do lutador só aparece depois de o teres.</p></div>
+  <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
   <span id="visibleCount" style="color:#7a5a2b;font-size:12px;font-style:italic">137 cromos</span>
  </div>
  <div class="rarity-legend" aria-label="Legenda de raridades">
@@ -704,36 +1193,7 @@ html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
   <span><i class="r-epico"></i> Épico</span>
   <span><i class="r-lendario"></i> Lendário</span>
  </div>
-
- <!-- ============ ÁLBUM PANINI ============ -->
- <div class="album-view">
-   <button class="page-nav prev" id="prevPage" aria-label="Página anterior">◀</button>
-
-   <div class="album-spread" id="albumSpread">
-     <div class="album-page" id="pageLeft">
-       <div class="page-header">
-         <span class="page-section" id="pageSectionLeft">—</span>
-         <span class="page-counter" id="pageCounterLeft">—</span>
-       </div>
-       <div class="page-grid" id="gridLeft"></div>
-       <div class="page-footer">WWE CARD VAULT · Edição 2026</div>
-     </div>
-
-     <div class="album-page" id="pageRight">
-       <div class="page-header">
-         <span class="page-section" id="pageSectionRight">—</span>
-         <span class="page-counter" id="pageCounterRight">—</span>
-       </div>
-       <div class="page-grid" id="gridRight"></div>
-       <div class="page-footer">WWE CARD VAULT · Edição 2026</div>
-     </div>
-   </div>
-
-   <button class="page-nav next" id="nextPage" aria-label="Página seguinte">▶</button>
- </div>
-
- <div class="page-dots" id="pageDots"></div>
-
+ <div class="grid" id="cards" aria-live="polite"></div>
  <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
 </main>
 
@@ -822,6 +1282,7 @@ html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
  <div class="battle-modal">
   <button class="detail-close" id="battleClose" aria-label="Fechar">✕</button>
   
+  <!-- BANNER DE RESULTADO -->
   <div class="result-banner" id="resultBanner">
     <div class="result-text" id="resultText">VITÓRIA</div>
     <div class="result-sub" id="resultSub"></div>
@@ -900,8 +1361,10 @@ function setupCover(){
   const btn = document.getElementById('coverOpenBtn');
   if (!btn) return;
   btn.addEventListener('click', async () => {
+    // Ainda a verificar a sessão → ignora o clique
     if (document.documentElement.classList.contains('auth-pending')) return;
     if (!currentUser) {
+      // Não logado: a capa FICA visível até a Twitch redirecionar
       btn.disabled = true;
       btn.textContent = 'A abrir a Twitch…';
       await supabaseClient.auth.signInWithOAuth({
@@ -912,44 +1375,7 @@ function setupCover(){
     }
     hideCover();
   });
-}
-
-/* ================= SOM DE VIRAR PÁGINA (Web Audio) ================= */
-let audioCtx = null;
-function playPageFlipSound(){
-  try{
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const ctx = audioCtx;
-    const now = ctx.currentTime;
-    // Ruído branco filtrado (whoosh)
-    const bufferSize = ctx.sampleRate * 0.25;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++){
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 2);
-    }
-    const noise = ctx.createBufferSource();
-    noise.buffer = buffer;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 1800;
-    filter.Q.value = 0.8;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.08, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-    noise.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
-    noise.start(now);
-    // Pequeno "click" no fim
-    const osc = ctx.createOscillator();
-    const g2 = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.value = 140;
-    g2.gain.setValueAtTime(0.0001, now);
-    g2.gain.exponentialRampToValueAtTime(0.04, now + 0.2);
-    g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
-    osc.connect(g2); g2.connect(ctx.destination);
-    osc.start(now + 0.18); osc.stop(now + 0.4);
-  } catch(e) { /* som é opcional */ }
+  // A capa começa visível (HTML); só é escondida quando há sessão (handleUser)
 }
 
 /* ================= DADOS E ATRIBUTOS ================= */
@@ -1103,16 +1529,11 @@ const genderLabels={Male:'Masculino',Female:'Feminino'};
 const MAX_PACKS_PER_DAY = 3;
 const IMG_V = 1;
 
-/* === PAGINAÇÃO PANINI === */
-const CARDS_PER_PAGE = 8;
-const CARDS_PER_SPREAD = CARDS_PER_PAGE * 2;
-let currentSpread = 0;
-let filteredList = [];
-
 let state = { ownedCounts: {}, packs: 0, recent: new Set() };
 let currentUser=null;
 let pending=[];
 let detailId=null;
+
 let lastUserId;
 
 function onUser(user){
@@ -1149,9 +1570,8 @@ async function handleUser(user) {
       await loadState();
     } catch (e) { console.error(e); }
     try { localStorage.setItem(AUTH_HINT_KEY,'1'); } catch(_) {}
-    setAuthState(true);
+    setAuthState(true);   // só agora mostra o álbum (já com dados carregados)
     hideCover();
-    updateCoverProgress();
     startBattleNotifications();
   } else {
     document.getElementById('loginBtn').style.display = 'flex';
@@ -1162,11 +1582,12 @@ async function handleUser(user) {
     stopBattleNotifications();
     state.ownedCounts = {};
     state.packs = 0;
-    updateCoverProgress();
+    render();
     try { localStorage.removeItem(AUTH_HINT_KEY); } catch(_) {}
-    setAuthState(false);
-    showCover(true);
+    setAuthState(false);  // esconde cabeçalho/hero de imediato
+    showCover(true);      // capa aparece instantaneamente, sem mostrar a página por trás
   }
+  // Atualiza o botão da capa conforme login
   const coverBtn = document.getElementById('coverOpenBtn');
   const coverSub = document.getElementById('coverSubtitle');
   if (coverBtn && coverSub) {
@@ -1181,12 +1602,6 @@ async function handleUser(user) {
       coverSub.textContent = 'Faz login para começares a colecionar.';
     }
   }
-}
-
-function updateCoverProgress(){
-  const n = Object.keys(state.ownedCounts).filter(id => WRESTLER_MAP.has(Number(id))).length;
-  const el = document.getElementById('coverProgress');
-  if (el) el.innerHTML = `<b>${n}</b> / ${wrestlers.length} cromos`;
 }
 
 document.getElementById('loginBtn').addEventListener('click', async () => {
@@ -1221,7 +1636,6 @@ async function loadState() {
     const sig = JSON.stringify([state.ownedCounts, state.packs]);
     if (sig === state.lastSig) return;
     state.lastSig = sig;
-    updateCoverProgress();
     render();
   } catch (e) {
     console.error('Erro detalhado:', e);
@@ -1316,7 +1730,6 @@ function updateStats(){
     return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#7a5a2b">${got}/${tot}</span></div>`;
  }).join('');
  updatePackButton();
- updateCoverProgress();
 }
 
 function updatePackButton() {
@@ -1344,171 +1757,109 @@ function renderCard(w){
  if(isNew&&has)classes.push('new-badge');
 
  const finalImage = w.image + '?v=' + IMG_V;
- const brandImage = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
 
- if (has) {
-   const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
-   return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" data-rarity="${w.rarity}" aria-label="${w.name}, ${w.brand}, ${w.rarity}">
-    <div class="card-art">
-      ${w.image ? `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy" onerror="this.style.display='none';">` : ''}
-    </div>
-    ${dupBadge}
-    <div class="card-bottom">
-      <div class="card-number">WWE · ${String(w.id).padStart(3,'0')}</div>
-      <div class="card-name">${w.name}</div>
-      <div class="card-meta">
-        <span>
-          <img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'">
-          <span class="gender-badge">${w.gender==='Female'?'♀':'♂'}</span>
-        </span>
-        <span class="rarity">${w.rarity}</span>
-      </div>
-    </div>
-   </button>`;
+ let art;
+ if(has && w.image){
+   art = `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
+        onerror="this.style.display='none';">`;
+ } else if(!has){
+   art = `<div class="missing-stage">
+            <div class="wwe-logo"><img src="img/wwe.png" alt="WWE"></div>
+          </div>`;
+ } else {
+   art = '';
  }
 
- // Slot vazio PANINI
- return `<button class="${classes.join(' ')}" style="--rarity-color:#b8a070" data-id="${w.id}" data-rarity="missing" aria-label="Cromo em falta: ${w.name}">
-   <div class="card-art">
-     <div class="slot">
-       <div class="slot-num">${String(w.id).padStart(3,'0')}</div>
-       <div class="slot-brand">${w.brand}</div>
-       <div class="slot-q">?</div>
-     </div>
+ const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
+ const brandImage = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ const displayName = has ? w.name : '???';
+ const displayNumber = has ? String(w.id).padStart(3,'0') : '—';
+
+ return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" data-rarity="${has ? w.rarity : 'missing'}" aria-label="${has?w.name:'Cromo em falta'}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
+  <div class="card-art">
+   ${art}
+  </div>
+  ${dupBadge}
+  <div class="card-bottom">
+   <div class="card-number">WWE · ${displayNumber}</div>
+   <div class="card-name">${displayName}</div>
+   <div class="card-meta">
+    <span>
+      ${has ? `<img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'">` : ''}
+      <span class="gender-badge">${has ? (w.gender==='Female'?'♀':'♂') : '·'}</span>
+    </span>
+    <span class="rarity">${has ? w.rarity : '—'}</span>
    </div>
+  </div>
  </button>`;
 }
 
-function render(animate = false){
- const q = norm($('search').value);
- const cat = norm($('category').value);
- const gen = $('genderFilter').value;
- const rar = $('rarityFilter').value;
- const own = $('ownership').value;
+function render(animate=false){
+ const q=norm($('search').value);
+ const cat=norm($('category').value);
+ const gen=$('genderFilter').value;
+ const rar=$('rarityFilter').value;
+ const own=$('ownership').value;
 
- filteredList = wrestlers.filter(w => {
-   if (q) {
-     const hay = norm(w.name) + ' ' + norm(w.brand);
-     if (!hay.includes(q)) return false;
-   }
-   if (cat !== 'all' && norm(w.brand) !== cat) return false;
-   if (gen !== 'all' && w.gender !== gen) return false;
-   if (rar !== 'all' && norm(w.rarity) !== norm(rar)) return false;
-   if (own === 'owned' && !state.ownedCounts[w.id]) return false;
-   if (own === 'missing' && state.ownedCounts[w.id]) return false;
-   if (own === 'duplicates' && (state.ownedCounts[w.id] || 0) <= 1) return false;
-   return true;
- });
+const list = wrestlers.filter(w => {
+  if (q) {
+    const hay = norm(w.name) + ' ' + norm(w.brand);
+    if (!hay.includes(q)) return false;
+  }
+  if (cat !== 'all' && norm(w.brand) !== cat) return false;
+  if (gen !== 'all' && w.gender !== gen) return false;
+  if (rar !== 'all' && norm(w.rarity) !== norm(rar)) return false;
+  
+  if (own === 'owned' && !state.ownedCounts[w.id]) return false;
+  if (own === 'missing' && state.ownedCounts[w.id]) return false;
+  
+  if (own === 'duplicates') {
+    const qty = state.ownedCounts[w.id] || 0;
+    if (qty <= 1) return false;
+  }
+  return true;
+});
 
- filteredList.sort((a, b) => {
+ list.sort((a, b) => {
    const rarA = rarityOrder[norm(a.rarity)] || 99;
    const rarB = rarityOrder[norm(b.rarity)] || 99;
-   if (rarA !== rarB) return rarA - rarB;
+   const rarDiff = rarA - rarB;
+   if (rarDiff !== 0) return rarDiff;
    return a.id - b.id;
  });
 
- $('visibleCount').textContent = `${filteredList.length} ${filteredList.length === 1 ? 'cromo' : 'cromos'}`;
+ $('visibleCount').textContent=`${list.length} ${list.length===1?'cromo':'cromos'}`;
  $('visibleCount').style.color='#7a5a2b';
  $('visibleCount').style.fontStyle='italic';
 
- const totalSpreads = Math.max(1, Math.ceil(filteredList.length / CARDS_PER_SPREAD));
- if (currentSpread >= totalSpreads) currentSpread = totalSpreads - 1;
- if (currentSpread < 0) currentSpread = 0;
+ const grid = $('cards');
 
- renderSpread(animate);
- buildDots(totalSpreads);
- updateStats();
-}
-
-function renderSpread(animate = false){
-  const start = currentSpread * CARDS_PER_SPREAD;
-  const leftCards  = filteredList.slice(start, start + CARDS_PER_PAGE);
-  const rightCards = filteredList.slice(start + CARDS_PER_PAGE, start + CARDS_PER_SPREAD);
-
-  const gridL = $('gridLeft');
-  const gridR = $('gridRight');
-
-  gridL.innerHTML = leftCards.length
-    ? leftCards.map(renderCard).join('')
-    : `<div class="empty" style="grid-column:1/-1">—</div>`;
-  gridR.innerHTML = rightCards.length
-    ? rightCards.map(renderCard).join('')
-    : `<div class="empty" style="grid-column:1/-1">—</div>`;
-
-  const total = filteredList.length;
-  const leftStart = total ? start + 1 : 0;
-  const leftEnd = Math.min(start + CARDS_PER_PAGE, total);
-  const rightStart = Math.min(start + CARDS_PER_PAGE + 1, total);
-  const rightEnd = Math.min(start + CARDS_PER_SPREAD, total);
-
-  const sectionOf = arr => {
-    if (!arr.length) return '—';
-    const brands = [...new Set(arr.map(w => w.brand))];
-    return brands.length === 1 ? brands[0] : 'VÁRIOS';
-  };
-
-  $('pageSectionLeft').textContent = sectionOf(leftCards);
-  $('pageCounterLeft').textContent = total ? `${leftStart}–${leftEnd} / ${total}` : '0 / 0';
-  $('pageSectionRight').textContent = sectionOf(rightCards);
-  $('pageCounterRight').textContent = total ? `${rightStart}–${rightEnd} / ${total}` : '0 / 0';
-
-  $('prevPage').disabled = currentSpread === 0;
-  $('nextPage').disabled = currentSpread >= Math.ceil(filteredList.length / CARDS_PER_SPREAD) - 1
-                            || filteredList.length === 0;
-
-  [gridL, gridR].forEach(g => {
-    g.querySelectorAll('.card').forEach(b => {
-      b.addEventListener('click', () => openDetail(Number(b.dataset.id)));
-    });
+ if(list.length===0){
+  grid.innerHTML=`<div class="empty">
+   <span class="empty-icon">🃏</span>
+   <strong>Nenhum cromo encontrado</strong>
+   Tenta ajustar os filtros ou limpar a pesquisa.
+   <div style="margin-top:14px"><button class="btn secondary" id="clearFilters">Limpar filtros</button></div>
+  </div>`;
+  const cf=$('clearFilters');
+  if(cf)cf.addEventListener('click',clearFilters);
+ }else{
+  grid.innerHTML=list.map((w, i) => {
+    return renderCard(w).replace('class="card', `style="--i:${i}; --rarity-color:${rarityColors[w.rarity]}" class="card`);
+  }).join('');
+  grid.querySelectorAll('.card').forEach(b=>{
+   b.addEventListener('click',()=>openDetail(Number(b.dataset.id)));
   });
+ }
 
-  // Página final comemorativa
-  if (total > 0 && currentSpread === Math.ceil(total / CARDS_PER_SPREAD) - 1 && total === wrestlers.length) {
-    // Álbum completo — adicionar celebração na última página direita se houver espaço
-  }
+ if(animate){
+  grid.classList.remove('turning');
+  void grid.offsetWidth;
+  grid.classList.add('turning');
+  setTimeout(()=>grid.classList.remove('turning'), 800);
+ }
 
-  if (animate) {
-    const spread = $('albumSpread');
-    spread.classList.remove('flip-next', 'flip-prev');
-    void spread.offsetWidth;
-    spread.classList.add(animate === 'prev' ? 'flip-prev' : 'flip-next');
-    setTimeout(() => spread.classList.remove('flip-next', 'flip-prev'), 650);
-    playPageFlipSound();
-  }
-}
-
-function buildDots(totalSpreads){
-  const dots = $('pageDots');
-  dots.innerHTML = '';
-  if (totalSpreads <= 1) return;
-  for (let i = 0; i < totalSpreads; i++) {
-    const d = document.createElement('button');
-    d.className = 'page-dot' + (i === currentSpread ? ' active' : '');
-    d.setAttribute('aria-label', `Ir para a página ${i + 1}`);
-    d.addEventListener('click', () => {
-      const dir = i > currentSpread ? 'next' : 'prev';
-      currentSpread = i;
-      renderSpread(dir);
-      buildDots(totalSpreads);
-    });
-    dots.appendChild(d);
-  }
-}
-
-function goNextPage(){
-  const totalSpreads = Math.ceil(filteredList.length / CARDS_PER_SPREAD);
-  if (currentSpread < totalSpreads - 1) {
-    currentSpread++;
-    renderSpread('next');
-    buildDots(totalSpreads);
-  }
-}
-function goPrevPage(){
-  if (currentSpread > 0) {
-    currentSpread--;
-    renderSpread('prev');
-    buildDots(Math.ceil(filteredList.length / CARDS_PER_SPREAD));
-  }
+ updateStats();
 }
 
 function clearFilters(){
@@ -1517,7 +1868,6 @@ function clearFilters(){
  $('genderFilter').value='all';
  $('rarityFilter').value='all';
  $('ownership').value='all';
- currentSpread = 0;
  render(true);
 }
 
@@ -1626,18 +1976,10 @@ function openDetail(id){
 
  const finalImage = w.image + '?v=' + IMG_V;
 
- if (has && w.image) {
-   photoWrap.innerHTML = `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();">`;
- } else if (!has) {
-   photoWrap.innerHTML = `
-     <div class="slot" style="inset:0;border-radius:12px;border:2px dashed #c9b78a;background:repeating-linear-gradient(45deg, #f5ebd2 0 10px, #fdf6e3 10px 20px);">
-       <div class="slot-num" style="font-size:64px;">${String(w.id).padStart(3,'0')}</div>
-       <div class="slot-brand" style="font-size:12px;margin-top:12px;">${w.brand}</div>
-       <div class="slot-q" style="font-size:38px;">?</div>
-     </div>`;
- } else {
-   photoWrap.innerHTML = '';
- }
+ const art = (has&&w.image)
+  ? `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();">`
+  : '';
+ photoWrap.innerHTML = art;
 
  $('detailName').textContent = has ? w.name : '???';
 
@@ -2616,17 +2958,15 @@ function setupKeyboard(){
 }
 
 function init(){
- $('search').addEventListener('input',()=>{ currentSpread=0; render(true); });
- $('category').addEventListener('change',()=>{ currentSpread=0; render(true); });
- $('genderFilter').addEventListener('change',()=>{ currentSpread=0; render(true); });
- $('rarityFilter').addEventListener('change',()=>{ currentSpread=0; render(true); });
- $('ownership').addEventListener('change',()=>{ currentSpread=0; render(true); });
+ $('search').addEventListener('input',()=>render(true));
+ $('category').addEventListener('change',()=>render(true));
+ $('genderFilter').addEventListener('change',()=>render(true));
+ $('rarityFilter').addEventListener('change',()=>render(true));
+ $('ownership').addEventListener('change',()=>render(true));
  $('openPack').addEventListener('click',openPack);
  $('claimPack').addEventListener('click',claim);
  $('closeModal').addEventListener('click',closeModal);
  $('detailClose').addEventListener('click',closeDetail);
- $('prevPage').addEventListener('click', goPrevPage);
- $('nextPage').addEventListener('click', goNextPage);
  setupCover();
  setupKeyboard();
  initAuth();
