@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WWE Card Vault</title>
+<style>
+:root {
+ --site-primary:#c8102e; --site-on-primary:#ffffff;
+ --site-secondary:#15171c; --site-on-secondary:#ffffff;
+ --site-background:#0c0d10; --site-on-background:#f5f5f6;
+ --site-font-body:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --site-font-heading:Impact,"Arial Narrow",ui-sans-serif,sans-serif;
+ --site-heading-scale:1; --site-spacing-scale:1; --site-radius-scale:1; --site-decoration-opacity:1;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at 50% 0%, #2b1c10 0%, #150d07 60%, #0a0604 100%),
+    repeating-linear-gradient(90deg, #0000 0 40px, #ffffff05 40px 41px);
+  color:var(--site-on-background);
+  font-family:var(--site-font-body);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+
+/* ============================================================
+   CAPA DO ÁLBUM
+   ============================================================ */
+#cover{
+  position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;
+  background:
+    radial-gradient(ellipse at 50% 40%, #3a2416 0%, #1a0f08 60%, #080402 100%),
+    repeating-linear-gradient(90deg,#0000 0 40px,#ffffff05 40px 41px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+#cover.hidden{ opacity:0;transform:scale(1.05);pointer-events:none; }
+.cover-book{
+  position:relative;width:min(460px, 92vw);aspect-ratio:3/4.2;
+  background:
+    radial-gradient(ellipse at 30% 20%, #c8102e 0%, #8f071d 45%, #4a0410 100%),
+    repeating-linear-gradient(135deg,#0000 0 18px,#ffffff08 18px 20px);
+  border-radius:6px 14px 14px 6px;
+  box-shadow:
+    0 30px 80px #000c, 0 10px 30px #0008,
+    inset 0 0 0 2px #00000060, inset 8px 0 20px #00000070, inset -4px 0 12px #00000040;
+  padding:34px 28px 28px;display:flex;flex-direction:column;align-items:center;
+  text-align:center;color:#fff;overflow:hidden;transform:rotate(-1.5deg);
+  transition:transform .4s ease;
+}
+.cover-book:hover{ transform:rotate(-1.5deg) translateY(-4px); }
+.cover-book::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:22px;
+  background:
+    linear-gradient(90deg,#00000090,#00000040 40%,transparent),
+    repeating-linear-gradient(0deg,#00000000 0 28px,#00000080 28px 30px);
+  border-right:1px solid #00000080;border-radius:6px 0 0 6px;z-index:2;
+}
+.cover-book::after{
+  content:'';position:absolute;top:-14px;right:24px;width:70px;height:26px;
+  background:linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;
+  box-shadow:0 2px 6px #0006;transform:rotate(6deg);z-index:3;
+}
+.cover-brand{
+  font-family:var(--site-font-heading);font-size:13px;letter-spacing:4px;
+  color:#ffd15b;margin-top:18px;text-shadow:0 2px 4px #0008;z-index:1;
+}
+.cover-title{
+  font-family:var(--site-font-heading);font-size:clamp(38px,9vw,58px);
+  line-height:.9;letter-spacing:1px;margin:14px 0 6px;
+  text-shadow:0 3px 0 #00000050, 0 6px 14px #00000090;z-index:1;
+}
+.cover-title span{ display:block;font-size:.62em;color:#ffd15b;letter-spacing:2px;margin-top:6px; }
+.cover-edition{
+  font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:#fff;
+  background:#00000055;border:1px solid #ffffff44;padding:6px 14px;border-radius:999px;
+  margin-top:10px;z-index:1;
+}
+.cover-logo{ margin:auto 0;width:60%;max-width:220px;z-index:1; }
+.cover-logo img{ width:100%;height:auto;display:block;filter:drop-shadow(0 4px 12px #000a); }
+.cover-footer{ width:100%;border-top:1px solid #ffffff33;padding-top:14px;margin-top:auto;z-index:1; }
+.cover-footer p{ margin:0 0 12px;font-size:11px;color:#e7dfe2;line-height:1.5; }
+.cover-btn{
+  width:100%;border:0;border-radius:10px;padding:14px 18px;background:#ffd15b;color:#1a0f08;
+  font:inherit;font-weight:900;font-size:15px;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;box-shadow:0 6px 0 #8a6a1a, 0 8px 20px #0008;
+  transition:transform .12s ease, box-shadow .12s ease;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.cover-btn:hover{ transform:translateY(-2px);box-shadow:0 8px 0 #8a6a1a, 0 10px 24px #000a; }
+.cover-btn:active{ transform:translateY(2px);box-shadow:0 2px 0 #8a6a1a, 0 4px 12px #0008; }
+.cover-btn.twitch-btn{ background:#9146FF;color:#fff;box-shadow:0 6px 0 #4a1f8a, 0 8px 20px #0008; }
+.cover-btn.twitch-btn:hover{ box-shadow:0 8px 0 #4a1f8a, 0 10px 24px #000a; }
+.cover-btn.twitch-btn:active{ box-shadow:0 2px 0 #4a1f8a, 0 4px 12px #0008; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);padding:22px clamp(18px,5vw,64px) 25px;border-bottom:1px solid #ffffff22}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--site-font-heading);font-size:calc(25px * var(--site-heading-scale));letter-spacing:1.8px}
+.brand span{color:#ffd15b}
+.hero{max-width:1200px;margin:35px auto 4px}
+.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#ffcf62;font-weight:900}
+.hero h1{font-family:var(--site-font-heading);font-size:clamp(40px,7vw,76px);line-height:.96;margin:12px 0;letter-spacing:1px}
+.hero p{max-width:600px;color:#e7dfe2;line-height:1.6;margin:0}
+
+.user-info{display:flex;align-items:center;gap:12px;background:#00000055;padding:6px 14px;border-radius:999px;border:1px solid #ffffff22}
+.user-info img{width:28px;height:28px;border-radius:50%;border:1px solid #fff}
+.user-info span{font-size:13px;font-weight:800;color:#fff}
+
+/* ============================================================
+   SHELL
+   ============================================================ */
+.shell{max-width:1200px;margin:auto;padding:26px clamp(16px,4vw,40px) 60px;}
+main.shell{
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),
+    radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);
+  border: 1px solid #b8a070;
+  border-left: 14px solid #6b4a2b;
+  border-radius: 8px 14px 14px 8px;
+  box-shadow:
+    0 20px 60px #000c,
+    inset 0 0 80px #a07c4a40,
+    inset 6px 0 12px #00000060;
+  position: relative;
+  color: #2b1d0e;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  padding: 32px clamp(18px, 4vw, 48px) 48px;
+  max-width: 1180px;
+}
+main.shell::before{
+  content:'';position:absolute;left:-11px;top:30px;bottom:30px;width:8px;
+  background-image: radial-gradient(circle, #2b1d0e 0 3px, transparent 3.5px);
+  background-size: 8px 38px;background-repeat: repeat-y;background-position: center top;
+  opacity:.8;pointer-events:none;z-index:2;
+}
+main.shell::after{
+  content:'★ ÁLBUM OFICIAL ★';
+  position:absolute;top:-14px;right:22px;
+  background:#c8102e;color:#fff;
+  font-family:var(--site-font-heading);
+  font-size:12px;letter-spacing:2px;
+  padding:6px 14px;border-radius:6px;
+  box-shadow:0 4px 10px #0008;
+  transform:rotate(2deg);
+  z-index:3;
+}
+main.shell .corner-wear{
+  position:absolute;width:60px;height:60px;pointer-events:none;z-index:4;opacity:.7;
+  background:radial-gradient(circle at 50% 50%, transparent 40%, #00000040 70%, transparent 100%);
+}
+main.shell .corner-wear.tl{ top:0;left:0; }
+main.shell .corner-wear.tr{ top:0;right:0; }
+main.shell .corner-wear.bl{ bottom:0;left:0; }
+main.shell .corner-wear.br{ bottom:0;right:0; }
+
+/* ============================================================
+   PÁGINA DE INSTRUÇÕES
+   ============================================================ */
+.instructions-page{
+  background:#fffaf0;border:2px dashed #b8a070;border-radius:8px;
+  padding:22px clamp(18px,4vw,32px);margin:0 0 20px;color:#5a4020;
+  box-shadow:inset 0 0 20px #c9b78a40, 2px 2px 0 #c9b78a40;
+  position:relative;
+}
+.instructions-page::before{
+  content:'📖 COMO COLAR OS TEUS CROMOS';
+  position:absolute;top:-12px;left:22px;background:#8a0f20;color:#fff;
+  font-family:var(--site-font-heading);font-size:11px;letter-spacing:1.5px;
+  padding:4px 12px;border-radius:4px;box-shadow:0 2px 6px #0006;
+}
+.instructions-page ol{ margin:8px 0 0;padding-left:22px;font-size:13px;line-height:1.7; }
+.instructions-page ol li{ margin-bottom:4px; }
+.instructions-page ol li b{ color:#8a0f20; }
+
+/* ============================================================
+   SOBRE — cromos por colar
+   ============================================================ */
+#envelope{
+  display:none;
+  background:
+    repeating-linear-gradient(45deg, #fffaf0 0 20px, #f5ebd2 20px 40px);
+  border:3px solid #b8a070;
+  border-radius:12px;
+  padding:18px clamp(14px,3vw,26px);
+  margin:0 0 26px;
+  box-shadow:0 8px 20px #0006, inset 0 0 20px #c9b78a40;
+  position:relative;
+}
+#envelope.has-cards{ display:block; }
+#envelope::before{
+  content:'📬 SOBRE — CROMOS POR COLAR';
+  position:absolute;top:-14px;left:22px;background:#c8102e;color:#fff;
+  font-family:var(--site-font-heading);font-size:12px;letter-spacing:2px;
+  padding:6px 14px;border-radius:4px;box-shadow:0 3px 8px #0006;
+}
+.envelope-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;flex-wrap:wrap;margin-bottom:14px;padding-top:4px;
+}
+.envelope-count{ font-size:12px;color:#7a5a2b;font-weight:800; }
+.envelope-count b{ color:#8a0f20;font-size:15px; }
+.envelope-actions{ display:flex;gap:8px;flex-wrap:wrap; }
+.envelope-actions .btn{ padding:8px 14px;font-size:12px; }
+
+.envelope-cards{
+  display:flex;flex-wrap:wrap;gap:14px;
+  min-height:120px;
+  padding:6px 4px;
+}
+.envelope-card{
+  width:96px;
+  position:relative;
+  cursor:grab;
+  animation:dropIn .6s cubic-bezier(.2,.9,.25,1.25) both;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.envelope-card:active{ cursor:grabbing; }
+.envelope-card:hover{ transform:translateY(-4px); }
+.envelope-card.dragging{ opacity:.4; transform:scale(.95) rotate(4deg); }
+@keyframes dropIn{
+  0%{opacity:0;transform:translateY(-30px) rotate(-8deg) scale(.6);}
+  60%{opacity:1;transform:translateY(6px) rotate(3deg) scale(1.05);}
+  100%{opacity:1;transform:translateY(0) rotate(0) scale(1);}
+}
+.envelope-card-inner{
+  aspect-ratio:3/4.15;
+  background:#fffaf0;
+  border:3px solid #fffaf0;
+  border-radius:3px;
+  padding:3px 3px 22px;
+  box-shadow:
+    0 4px 10px #0006,
+    0 0 0 1px var(--rarity-color),
+    0 0 20px color-mix(in srgb, var(--rarity-color) 50%, transparent);
+  position:relative;overflow:hidden;
+}
+.envelope-card-inner img{
+  width:100%;height:100%;object-fit:cover;object-position:top center;
+  border-radius:1px;display:block;
+}
+.envelope-card-inner .mini-art-fallback{
+  width:100%;height:100%;
+  background:radial-gradient(ellipse at 50% 30%, var(--rarity-color), #15161c 75%);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:var(--site-font-heading);font-size:16px;
+  border-radius:1px;
+}
+.envelope-card-name{
+  position:absolute;bottom:3px;left:3px;right:3px;
+  font-family:var(--site-font-heading);font-size:9px;
+  text-align:center;color:var(--rarity-color);
+  text-transform:uppercase;letter-spacing:.5px;font-weight:900;
+  background:#fffaf0;padding:2px 0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.envelope-card-badge{
+  position:absolute;top:-6px;left:-6px;
+  background:#22c55e;color:#fff;
+  font-family:var(--site-font-heading);font-size:9px;
+  padding:3px 7px;border-radius:4px;
+  box-shadow:0 2px 6px #0008;z-index:5;
+  letter-spacing:.5px;
+  animation:pop .5s ease;
+}
+.envelope-card-badge.dup{ background:#8a0f20; }
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+.envelope-empty{
+  text-align:center;color:#7a5a2b;font-size:12px;
+  padding:20px;font-style:italic;
+}
+
+/* ============================================================
+   SEPARADORES DE SECÇÃO
+   ============================================================ */
+.section-divider{
+  display:flex;align-items:center;gap:14px;margin:22px 0 4px;
+  padding:0 4px;position:relative;grid-column:1/-1;
+}
+.section-divider::before{
+  content:'';flex:1;height:2px;border-radius:99px;
+  background:linear-gradient(90deg, transparent, #b8a070 20%, #b8a070 80%, transparent);
+}
+.section-divider::after{
+  content:'';flex:1;height:2px;border-radius:99px;
+  background:linear-gradient(90deg, transparent, #b8a070 20%, #b8a070 80%, transparent);
+}
+.section-divider-tag{
+  font-family:var(--site-font-heading);font-size:16px;letter-spacing:2px;
+  text-transform:uppercase;padding:6px 16px;border-radius:6px 6px 0 0;color:#fff;
+  box-shadow:0 3px 8px #0004, inset 0 0 0 1px #ffffff30;
+  position:relative;white-space:nowrap;
+}
+.section-divider-tag::after{
+  content:'';position:absolute;bottom:-6px;left:50%;
+  transform:translateX(-50%) rotate(45deg);width:12px;height:12px;
+  background:inherit;box-shadow:2px 2px 0 #00000030;z-index:-1;
+}
+.section-divider-tag[data-brand="RAW"]{ background:linear-gradient(180deg,#c8102e,#8f071d); }
+.section-divider-tag[data-brand="SmackDown"]{ background:linear-gradient(180deg,#1e40af,#1e3a8a); }
+.section-divider-tag[data-brand="Legends"]{ background:linear-gradient(180deg,#b8860b,#8a6a1a); }
+.section-divider-tag[data-brand="Free Agent"]{ background:linear-gradient(180deg,#4b5563,#374151); }
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+.panini-footer{
+  margin-top:40px;padding:18px 0 6px;border-top:2px solid #b8a070;
+  text-align:center;font-size:10px;color:#7a5a2b;line-height:1.6;
+  letter-spacing:.5px;position:relative;
+}
+.panini-footer::before{
+  content:'— WWE CARD VAULT · EDIÇÃO 2026 —';
+  display:block;font-family:var(--site-font-heading);font-size:11px;
+  letter-spacing:2px;color:#8a0f20;margin-bottom:6px;
+}
+.panini-footer strong{ color:#8a0f20; }
+.panini-footer .page-num{
+  display:inline-block;margin-top:8px;background:#e8d9b8;border:1px solid #b8a070;
+  padding:3px 12px;border-radius:999px;font-family:var(--site-font-heading);
+  font-size:11px;letter-spacing:1.5px;color:#5a4020;
+}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.stat{background:#fffaf0;border:1px solid #c9b78a;border-radius:6px;box-shadow:2px 2px 0 #c9b78a80;color:#2b1d0e;position:relative;padding:17px;}
+.stat::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-2deg);width:60px;height:16px;background:#f4d77a80;border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;opacity:.9;}
+.stat label{display:block;color:#7a5a2b;font-size:11px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800}
+.stat strong{display:block;font-size:26px;margin-top:7px;color:#2b1d0e;}
+.stat small{font-size:13px;color:#7a5a2b;}
+.stat-sub{display:block;margin-top:5px;font-size:12px;font-weight:800;letter-spacing:.3px;color:#7a5a2b;}
+.stat-sub b{color:#8a0f20;font-size:14px;font-weight:900;}
+.progress-track{height:5px;background:#e2d3b1;border-radius:99px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#8a0f20,#c8102e,#e0a010);transition:width .35s ease}
+
+/* ============================================================
+   TOOLBAR
+   ============================================================ */
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0}
+.search{flex:1;min-width:180px;background:#fffaf0;border:1px solid #b8a070;color:#2b1d0e;padding:12px 14px;border-radius:9px;font:inherit;box-shadow:inset 1px 1px 2px #00000010;}
+.search::placeholder{ color:#9b8a6a; }
+.search:focus,.filter:focus{outline:2px solid #c8102e;outline-offset:1px;}
+.filter{background:#fffaf0;color:#2b1d0e;border:1px solid #b8a070;padding:12px;border-radius:9px;font:inherit;min-width:150px;box-shadow:inset 1px 1px 2px #00000010;}
+.btn{border:0;border-radius:9px;padding:12px 16px;background:var(--site-primary);color:white;cursor:pointer;font:inherit;font-weight:800;transition:transform .15s,filter .15s;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid #ffd15b;outline-offset:2px}
+.btn:active{transform:translateY(0)}
+.btn.secondary{background:#282b33;border:1px solid #444751}
+.btn.ghost{background:transparent;border:1px solid #444751;color:#c3c5cc}
+.btn.pulse{animation:pulse 2.4s infinite}
+.btn.twitch{background:#9146FF;color:white;}
+.btn.twitch:hover{background:#772ce8;}
+.btn.disabled{background:#343740;color:#828691;cursor:not-allowed;transform:none}
+.btn.disabled:hover{filter:none;transform:none}
+.btn.trade-btn{background:#f59e0b;color:#18130b;}
+.btn.trade-btn:hover{background:#fbbf24;}
+.btn.battle-btn{background:#8b5cf6;color:white;}
+.btn.battle-btn:hover{background:#7c3aed;}
+
+#openPack{min-width:210px;white-space:nowrap;justify-content:center;}
+#openPack.disabled{min-width:210px;}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #c8102e66}50%{box-shadow:0 0 0 8px #c8102e00}}
+
+/* ============================================================
+   SECTION HEAD
+   ============================================================ */
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
+.section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;color:#5a1a12;text-shadow:1px 1px 0 #e8d9b8;letter-spacing:1.5px;}
+.section-head p{color:#7a5a2b;font-size:12px;margin:5px 0 0}
+
+/* ============================================================
+   GRID
+   ============================================================ */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px 18px;padding-top:8px;perspective:1600px;position:relative;}
+
+/* ============================================================
+   CARTAS — PANINI
+   ============================================================ */
+.card{
+  position:relative;aspect-ratio:3/4.15;border-radius:3px;overflow:visible;
+  border:3px solid #fffaf0;background:#fffaf0;cursor:pointer;text-align:left;color:white;
+  padding:5px 5px 44px;min-width:0;
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 1px #c9b78a,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0;
+  transition:transform .18s ease, box-shadow .18s ease, outline .15s ease;
+  font:inherit;display:block;
+}
+.card:hover{
+  transform: translateY(-3px) rotate(-.6deg);
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 1px #c9b78a,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    0 0 15px var(--rarity-color);
+}
+.card:focus-visible{outline:2px solid var(--rarity-color);outline-offset:3px}
+.card.paste-target{
+  outline:3px dashed #22c55e;
+  outline-offset:3px;
+  animation:slotPulse 1.4s ease-in-out infinite;
+}
+.card.paste-ready{
+  cursor:copy;
+}
+@keyframes slotPulse{
+  0%,100%{ outline-color:#22c55e; }
+  50%{ outline-color:#86efac; }
+}
+.card.pasted-flash{
+  animation:pastedFlash .9s ease;
+}
+@keyframes pastedFlash{
+  0%{ box-shadow:0 0 0 0 #22c55e; transform:scale(1); }
+  30%{ box-shadow:0 0 30px 10px #22c55e; transform:scale(1.08); }
+  100%{ box-shadow:0 2px 4px #00000030; transform:scale(1); }
+}
+
+.card.new-badge:before{
+  content:'NOVO!';
+  position:absolute;top:9px;left:8px;
+  background:#e0a010;color:#2b1d0e;border-radius:4px;
+  font-family:var(--site-font-heading);font-size:9px;font-weight:1000;
+  padding:5px 7px;letter-spacing:.5px;z-index:11;
+  animation:pop .5s ease;
+}
+
+.card-art{
+  position:relative;height:100%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 34%,#3a3e47 0%,#1c1e25 42%,#0c0d10 76%);
+  overflow:hidden;border-radius:1px;border:1px solid #d8c8a0;
+  box-shadow:
+    inset 0 0 0 2px var(--rarity-color),
+    inset 0 0 22px color-mix(in srgb, var(--rarity-color) 35%, transparent);
+}
+.card-art:before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#ffffff24,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff05 18px 20px);z-index:1}
+.card:hover .card-art:before{background:linear-gradient(160deg,#ffffff40,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px)}
+.card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:2;filter:contrast(1.05) saturate(1.05);transition:transform .35s ease;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);mask-image: linear-gradient(to bottom, black 70%, transparent 100%)}
+.card:hover .card-photo{transform:scale(1.04)}
+.card-art:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 40%,#07080bf2 100%);z-index:3;pointer-events:none}
+
+.card::before{
+  content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-3deg);
+  width:62px;height:18px;
+  background: linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;
+  box-shadow:0 1px 3px #0004;z-index:10;pointer-events:none;
+  transition: transform .18s ease;
+}
+.card:hover::before{ transform:translateX(-50%) rotate(1deg); }
+
+.card-bottom{
+  position:absolute;left:5px;right:5px;bottom:5px;padding:8px 8px 6px;
+  background:#fffaf0;border-top:1px dashed #b8a070;color:#2b1d0e;
+  z-index:4;
+}
+.card-number{font-size:9px;color:#8a6a2b;letter-spacing:1.7px;font-weight:900}
+.card-name{font-family:var(--site-font-heading);font-size:clamp(16px,2vw,22px);line-height:1.05;margin-top:5px;color:#2b1d0e;}
+.card-meta{display:flex;justify-content:space-between;align-items:center;gap:4px;margin-top:8px;font-size:9px;text-transform:uppercase;color:#7a5a2b}
+.rarity{font-weight:900;color:var(--rarity-color);text-shadow:0 1px 0 #0006;}
+.gender-badge{font-size:9px;font-weight:900;color:#7a5a2b;letter-spacing:.5px}
+.card .card-number{color:var(--rarity-color);text-shadow:0 1px 0 #0006;}
+.card .card-meta .rarity{color:var(--rarity-color);text-shadow:0 1px 0 #0006;}
+
+.dup-badge{
+  position:absolute;bottom:52px;right:8px;background:#8a0f20;color:#fff;
+  font-size:11px;font-weight:900;border:2px solid #2b2f36;border-radius:50%;
+  width:32px;height:32px;display:grid;place-items:center;
+  box-shadow: 0 2px 6px #0006;z-index:12;
+}
+.brand-img {height: 18px; width: auto; object-fit: contain; vertical-align: middle; margin-right: 6px; margin-bottom: 2px;}
+
+/* CROMOS EM FALTA */
+.card.missing{
+  --rarity-color:#2b2f36;
+  background:#2b2f36 !important;border-color:#2b2f36 !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #3a3f47,
+    inset 0 0 0 5px #2b2f36,
+    inset 0 0 0 1px #4a5058 !important;
+}
+.card.missing::before{
+  background:linear-gradient(180deg,#c8ccd2ee,#8a8f98cc) !important;
+  border-left:1px dashed #e2e5ea !important;border-right:1px dashed #e2e5ea !important;
+}
+.card.missing .card-art{
+  background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;
+  border-color:#3a3f47 !important;
+  box-shadow:inset 0 0 0 2px #3a3f47,inset 0 0 22px #00000080 !important;
+}
+.card.missing .card-bottom{
+  background:linear-gradient(180deg,#2b2f36 0%,#181a1f 100%) !important;
+  border-top:1px dashed #3a3f47 !important;color:#ffffff !important;
+}
+.card.missing .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;}
+.card.missing .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;}
+.card.missing .card-meta{color:#c8ccd2 !important}
+.card.missing .card-meta .rarity{color:#ffffff !important;}
+.card.missing .gender-badge{color:#c8ccd2 !important}
+.card.missing::after{display:none !important}
+
+.missing-stage{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.card.missing .wwe-logo{position:relative !important;inset:auto !important;z-index:2;width:62%;display:block;opacity:.95;}
+.card.missing .wwe-logo img{width:100% !important;height:auto !important;filter:none !important;}
+
+/* RARIDADES */
+.card[data-rarity="Comum"]{
+  background:#052e16 !important;border-color:#22c55e !important;
+  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #22c55e,inset 0 0 0 5px #052e16,inset 0 0 0 1px #22c55e88,0 0 18px #22c55e44 !important;
+}
+.card[data-rarity="Comum"]::before{background:linear-gradient(180deg,#22c55eee,#15803dcc) !important;border-left:1px dashed #86efac !important;border-right:1px dashed #86efac !important;}
+.card[data-rarity="Comum"] .card-art{background:radial-gradient(ellipse at 50% 30%, #22c55e55, transparent 60%),radial-gradient(ellipse at 50% 34%, #14532d 0%, #052e16 42%, #021a0b 100%) !important;border-color:#22c55e !important;box-shadow:inset 0 0 0 2px #22c55e,inset 0 0 26px #22c55e66 !important;}
+.card[data-rarity="Comum"] .card-art::after{background:linear-gradient(180deg,#0000 35%,#021a0bee 100%) !important;}
+.card[data-rarity="Comum"] .card-bottom{background:linear-gradient(180deg,#052e16 0%,#021a0b 100%) !important;border-top:1px dashed #22c55e !important;color:#fff !important;}
+.card[data-rarity="Comum"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;}
+.card[data-rarity="Comum"] .card-meta{color:#86efac !important}
+.card[data-rarity="Comum"] .card-meta .rarity,.card[data-rarity="Comum"] .card-number{color:#fff !important;}
+.card[data-rarity="Comum"] .gender-badge{color:#86efac !important}
+
+.card[data-rarity="Raro"]{
+  background:#042f2e !important;border-color:#2dd4bf !important;
+  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #2dd4bf,inset 0 0 0 5px #042f2e,inset 0 0 0 1px #2dd4bf88,0 0 18px #2dd4bf55 !important;
+}
+.card[data-rarity="Raro"]::before{background:linear-gradient(180deg,#2dd4bfee,#0f766ecc);border-left:1px dashed #99f6e4;border-right:1px dashed #99f6e4;}
+.card[data-rarity="Raro"] .card-art{background:radial-gradient(ellipse at 50% 30%, #2dd4bf55, transparent 60%),radial-gradient(ellipse at 50% 34%, #115e59 0%, #042f2e 42%, #021615 100%) !important;border-color:#2dd4bf !important;box-shadow:inset 0 0 0 2px #2dd4bf,inset 0 0 26px #2dd4bf66 !important;}
+.card[data-rarity="Raro"] .card-art::after{background:linear-gradient(180deg,#0000 35%,#021615ee 100%) !important;}
+.card[data-rarity="Raro"] .card-bottom{background:linear-gradient(180deg,#042f2e 0%,#021615 100%) !important;border-top:1px dashed #2dd4bf !important;color:#fff !important;}
+.card[data-rarity="Raro"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Raro"] .card-meta{color:#99f6e4 !important}
+.card[data-rarity="Raro"] .card-meta .rarity,.card[data-rarity="Raro"] .card-number{color:#fff !important;}
+.card[data-rarity="Raro"] .gender-badge{color:#99f6e4 !important}
+
+.card[data-rarity="Épico"]{
+  background:#1a0f26 !important;border-color:#d99aff !important;
+  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #d99aff,inset 0 0 0 5px #1a0f26,inset 0 0 0 1px #d99aff88,0 0 18px #d99aff55 !important;
+}
+.card[data-rarity="Épico"]::before{background:linear-gradient(180deg,#d99affee,#8a4fbfcc);border-left:1px dashed #eccaff;border-right:1px dashed #eccaff;}
+.card[data-rarity="Épico"] .card-art{background:radial-gradient(ellipse at 50% 30%, #d99aff55, transparent 60%),radial-gradient(ellipse at 50% 34%, #2a1640 0%, #1a0f26 42%, #0a0510 100%) !important;border-color:#d99aff !important;box-shadow:inset 0 0 0 2px #d99aff,inset 0 0 26px #d99aff66 !important;}
+.card[data-rarity="Épico"] .card-art::after{background:linear-gradient(180deg,#0000 35%,#0a0510ee 100%) !important;}
+.card[data-rarity="Épico"] .card-bottom{background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important;border-top:1px dashed #d99aff !important;color:#fff !important;}
+.card[data-rarity="Épico"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Épico"] .card-meta{color:#e8ccff !important}
+.card[data-rarity="Épico"] .card-meta .rarity,.card[data-rarity="Épico"] .card-number{color:#fff !important;}
+.card[data-rarity="Épico"] .gender-badge{color:#e8ccff !important}
+.card[data-rarity="Épico"]::after{
+  content:'' !important;display:block !important;position:absolute !important;inset:5px !important;
+  border-radius:1px !important;
+  background-image:linear-gradient(110deg,transparent 42%,#d99aff00 44%,#f0e0ff88 50%,#d99aff00 56%,transparent 58%) !important;
+  background-size:300% 100% !important;background-repeat:no-repeat !important;background-position:100% 0;
+  mix-blend-mode:screen !important;pointer-events:none !important;z-index:5 !important;
+  animation:shineEpic 6s ease-in-out infinite !important;animation-delay:2s !important;
+}
+@keyframes shineEpic{0%,70%{background-position:100% 0}100%{background-position:0% 0}}
+
+.card[data-rarity="Lendário"]{
+  background:#1f1603 !important;border-color:#e8a800 !important;
+  box-shadow:0 2px 4px #00000060,0 8px 16px #00000050,inset 0 0 0 3px #e8a800,inset 0 0 0 5px #1f1603,inset 0 0 0 1px #e8a80088,0 0 20px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"]::before{background:linear-gradient(180deg,#e8a800ee,#a06f00cc);border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a;}
+.card[data-rarity="Lendário"] .card-art{background:radial-gradient(ellipse at 50% 30%, #e8a80066, transparent 60%),radial-gradient(ellipse at 50% 34%, #3a2a05 0%, #1f1603 42%, #0c0801 100%) !important;border-color:#e8a800 !important;box-shadow:inset 0 0 0 2px #e8a800,inset 0 0 28px #e8a80077 !important;}
+.card[data-rarity="Lendário"] .card-art::after{background:linear-gradient(180deg,#0000 35%,#0c0801ee 100%) !important;}
+.card[data-rarity="Lendário"] .card-bottom{background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important;border-top:1px dashed #e8a800 !important;color:#fff !important;z-index:11;}
+.card[data-rarity="Lendário"] .card-name{color:#ffffff !important;}
+.card[data-rarity="Lendário"] .card-meta{color:#ffe2a0 !important}
+.card[data-rarity="Lendário"] .card-meta .rarity,.card[data-rarity="Lendário"] .card-number{color:#fff !important;}
+.card[data-rarity="Lendário"] .gender-badge{color:#ffe2a0 !important}
+.card[data-rarity="Lendário"]::after{
+  content:'' !important;display:block !important;position:absolute !important;inset:5px !important;
+  border-radius:1px !important;
+  background-image:linear-gradient(110deg,transparent 42%,#fff0b000 44%,#fff8d8b3 50%,#fff0b000 56%,transparent 58%) !important;
+  background-size:300% 100% !important;background-repeat:no-repeat !important;background-position:100% 0;
+  mix-blend-mode:overlay !important;pointer-events:none !important;z-index:5 !important;
+  animation:shineGold 5s ease-in-out infinite !important;animation-delay:1s !important;
+}
+@keyframes shineGold{0%,65%{background-position:100% 0}100%{background-position:0% 0}}
+
+/* LEGENDA */
+.rarity-legend{
+  display:flex;flex-wrap:wrap;gap:14px;margin:6px 0 18px;
+  font-size:11px;font-style:italic;color:#7a5a2b;
+}
+.rarity-legend span{display:inline-flex;align-items:center;gap:6px;}
+.rarity-legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid #fffaf0;}
+.rarity-legend i.r-comum{ background:#22c55e; box-shadow: inset 0 0 0 2px #22c55e; }
+.rarity-legend i.r-raro{ background:#2dd4bf; box-shadow: inset 0 0 0 2px #2dd4bf; }
+.rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
+.rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
+
+/* EMPTY */
+.empty{padding:45px 25px;text-align:center;color:#7a5a2b;border:1px dashed #b8a070;border-radius:12px;grid-column:1/-1;background:#fffaf088;}
+.empty strong{display:block;color:#5a1a12;font-size:16px;margin:10px 0 6px;font-family:var(--site-font-heading);letter-spacing:.5px;}
+.empty .empty-icon{font-size:38px;display:block;margin-bottom:6px;opacity:.7;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#ffd15b;color:#18130b;padding:12px 18px;border-radius:9px;font-size:13px;font-weight:900;box-shadow:0 8px 30px #0008;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ============================================================
+   MODAIS
+   ============================================================ */
+.modal-backdrop{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:18px;z-index:40;backdrop-filter:blur(3px)}
+.modal-backdrop.show{display:grid;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{max-width:500px;width:100%;background:#fffaf0;border:2px solid #b8a070;border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 80px #000b,inset 0 0 40px #c9b78a40,0 0 0 6px #fffaf0,0 0 0 7px #b8a070;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);overflow:hidden;position:relative;color:#2b1d0e;}
+@keyframes slideUp{from{transform:translateY(20px) scale(.95);opacity:0}to{transform:none;opacity:1}}
+.modal::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 42%,var(--pack-glow,#ffd15b66) 0%,transparent 62%);
+  opacity:0;transition:opacity .6s ease;
+}
+.modal-backdrop.show .modal::before{opacity:1;animation:backdropPulse 2.6s ease-in-out infinite}
+@keyframes backdropPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+.modal > *{position:relative;z-index:1}
+.modal h3{font-family:var(--site-font-heading);font-size:30px;margin:0 0 8px;color:#8a0f20;}
+.modal p{color:#5a4020;font-size:13px;line-height:1.5}
+.modal-actions{display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.toast-hint{font-size:11px;color:#7a5a2b;margin-top:14px}
+
+.pack-cards{display:flex;justify-content:center;align-items:center;gap:8px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
+.mini{
+  flex:1 1 0;min-width:0;max-width:82px;aspect-ratio:3/4;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--site-font-heading);font-size:24px;font-style:italic;
+  border:2px solid var(--rarity-color);
+  box-shadow:0 4px 12px #0008,0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);
+  position:relative;overflow:visible;
+  opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);
+  filter:brightness(.25) blur(4px);
+}
+.mini .mini-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;border-radius:7px;overflow:hidden}
+.mini::after{content:'';position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2;pointer-events:none}
+.mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
+.mini.revealed{animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
+@keyframes cardBurst{
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);}
+  55%{opacity:1;transform:translateY(-10px) scale(1.14) rotate(3deg);filter:brightness(1.4) blur(0);box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(1) blur(0);}
+}
+.mini.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,var(--rarity-color),transparent 70%);opacity:.5;animation:cardGlow 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
+@keyframes cardGlow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.85;transform:scale(1.18)}}
+.mini.duplicate{border-color:#6b7280 !important;}
+.mini.duplicate .dup-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-14deg) scale(0);font-family:var(--site-font-heading);font-size:11px;letter-spacing:1.5px;font-weight:900;color:#fff;background:#374151;border:2px solid #9ca3af;padding:3px 7px;border-radius:5px;z-index:4;text-shadow:0 1px 2px #000;box-shadow:0 2px 8px #000a;opacity:0;pointer-events:none;}
+.mini.duplicate.revealed .dup-stamp{animation:stampDrop .45s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:calc(var(--burst-delay,0ms) + 700ms);}
+@keyframes stampDrop{0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.6)}60%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}100%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(1)}}
+.mini.duplicate .dup-veil{position:absolute;inset:0;border-radius:7px;background:#000a;z-index:3;opacity:0;transition:opacity .3s ease;pointer-events:none;}
+.mini.duplicate.revealed .dup-veil{opacity:1;transition-delay:calc(var(--burst-delay,0ms) + 500ms);}
+
+/* Detalhe */
+.detail-backdrop{position:fixed;inset:0;background:#000d;display:none;place-items:center;padding:18px;z-index:45;backdrop-filter:blur(4px)}
+.detail-backdrop.show{display:grid;animation:fadeIn .2s ease}
+.detail{max-width:720px;width:100%;background:#fffaf0;border:2px solid #b8a070;border-radius:18px;padding:22px;display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:22px;box-shadow:0 20px 80px #000b,inset 0 0 40px #c9b78a40,0 0 0 6px #fffaf0,0 0 0 7px #b8a070;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative;color:#2b1d0e;transition:box-shadow .3s ease;}
+.detail-photo-wrap{position:relative;border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 30%,var(--rarity-color,#bd1936),#15161c 75%);aspect-ratio:3/4.15;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff22}
+.detail-photo-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);mask-image: linear-gradient(to bottom, black 70%, transparent 100%);}
+.detail-info h3{font-family:var(--site-font-body);font-size:32px;margin:0 0 4px;letter-spacing:-.2px;line-height:1;font-weight:900;color:var(--rarity-color, #4b5563) !important;}
+.detail-info .detail-brand img{display:block;height:38px;width:auto;max-width:100%;object-fit:contain;object-position:left center}
+.detail-info .detail-brand{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:14px;display:block;color:#6b7280 !important;}
+.detail-info .detail-rarity{display:inline-block;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#fffaf0;color:var(--rarity-color,#2e2216) !important;border:1px solid var(--rarity-color,#2e2216) !important;margin-bottom:16px}
+.detail-info .detail-gender{display:inline-block;margin-left:6px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#e5e7eb !important;color:#4b5563 !important;border:1px solid #9ca3af !important;margin-bottom:16px}
+.detail-info .detail-status{font-size:14px;line-height:1.6;margin-bottom:18px;color:#6b7280 !important;}
+.attr-label{color:var(--rarity-color) !important;font-weight:900 !important;}
+.attr-value{color:#4b5563 !important;font-weight:900;}
+.detail-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end;margin-top:20px}
+.detail-close{position:absolute;top:10px;right:12px;background:transparent;border:0;color:#7a5a2b;font-size:22px;cursor:pointer;padding:6px 10px;border-radius:8px;line-height:1;z-index:10}
+.detail-close:hover{background:#00000010;color:#8a0f20}
+
+@media(max-width:600px){
+  .detail{grid-template-columns:1fr;padding:20px;gap:16px;text-align:center;}
+  .detail-photo-wrap{max-width:220px;width:100%;margin:0 auto;min-height:280px;}
+  .detail-info{display:flex;flex-direction:column;align-items:center;}
+  .detail-info h3#detailName{font-size:28px;margin:0 0 8px 0;}
+  .detail-info .detail-brand{display:flex;justify-content:center;margin-bottom:12px;}
+}
+
+@media(max-width:720px){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat{padding:12px}
+  .stat strong{font-size:22px}
+  .card-name{font-size:16px}
+  .card-meta{font-size:8px}
+  .envelope-card{width:80px;}
+}
+@media(max-width:470px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  main.shell{border-left-width:8px;padding:24px 12px 36px;}
+  main.shell::after{font-size:10px;padding:4px 10px;right:10px;}
+  .toolbar .btn{flex:1}
+  .filter{flex:1;min-width:120px}
+  .modal{padding:18px}
+  .mini{font-size:18px}
+  #openPack{min-width:0;width:100%}
+  .cover-book{padding:26px 18px 20px;}
+  .cover-title{font-size:38px;}
+  .envelope-card{width:70px;}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .envelope-card{animation:none!important;opacity:1}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body><div id="app">
+
+<!-- ========== CAPA DO ÁLBUM ========== -->
+<div id="cover">
+  <div class="cover-book">
+    <div class="cover-brand">WWE · OFICIAL</div>
+    <h2 class="cover-title">
+      CARD<br>VAULT
+      <span>Edição 2026</span>
+    </h2>
+    <div class="cover-edition">★ Álbum de Cromos ★</div>
+    <div class="cover-logo">
+      <img src="img/wwe.png" alt="WWE"
+           onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'font-family:Impact,sans-serif;font-size:48px;letter-spacing:4px;color:#fff;text-shadow:0 4px 0 #000;\'>WWE</div>'">
+    </div>
+    <div class="cover-footer">
+      <p id="coverSubtitle">Cola, completa e domina o teu álbum.</p>
+      <button class="cover-btn" id="coverOpenBtn">📖 Abrir Álbum</button>
+    </div>
+  </div>
+</div>
+
+<header>
+ <div class="topline">
+  <div class="brand">WWE <span>CARD VAULT</span></div>
+  <div id="auth-area">
+    <button class="btn twitch" id="loginBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 2L1 5.295v14.51h4.659V22h4.066l2.61-2.195h3.799L23 13.266V2H4.265zm16.32 10.263L16.95 16.01h-4.659l-2.42 2.195v-2.195H5.32V3.562h15.265v8.701zm-4.636-5.35v6.042h-1.515V6.913h1.515zm-4.154 0v6.042H10.28V6.913h1.515z"/></svg>
+      Entrar com Twitch
+    </button>
+    <div class="user-info" id="userProfile" style="display:none">
+      <img id="userAvatar" src="" alt="Avatar">
+      <span id="userName">A carregar...</span>
+      <button class="btn ghost" id="logoutBtn" style="padding:4px 8px;font-size:10px;margin-left:8px;">Sair</button>
+    </div>
+  </div>
+ </div>
+ <div class="hero">
+  <div class="eyebrow">Álbum de cromos · Edição 2026</div>
+  <h1>COLECIONA.<br>COMPLETA. DOMINA.</h1>
+  <p>Constrói o teu álbum de Superstars. Descobre cromos, cola-os no álbum e abre saquetas para encontrar raridades.</p>
+ </div>
+</header>
+
+<main class="shell" id="main-content" style="display:none">
+  <span class="corner-wear tl"></span>
+  <span class="corner-wear tr"></span>
+  <span class="corner-wear bl"></span>
+  <span class="corner-wear br"></span>
+
+ <section class="stats" aria-label="Estatísticas da coleção">
+  <div class="stat"><label>Cromos colados</label><strong id="ownedCount">0 <small>/ 137</small></strong><span class="stat-sub" id="dupCount">Repetidos: <b>0</b></span></div>
+  <div class="stat"><label>Álbum completo</label><strong id="percent">0%</strong><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
+  <div class="stat"><label>Saquetas abertas</label><strong id="packsOpened">0</strong></div>
+  <div class="stat"><label>Raridades</label><strong id="rarityBreakdown" style="font-size:14px;line-height:1.5">—</strong></div>
+ </section>
+
+ <div class="instructions-page">
+  <ol>
+    <li><b>Abre saquetas</b> (tens 3 por dia) para descobrir novas Superstars.</li>
+    <li>Os cromos novos caem no <b>Sobre</b> 📬 — arrasta-os (ou clica) para o slot certo da caderneta.</li>
+    <li><b>Completa</b> o álbum para desbloquear <b>trocas</b> e <b>batalhas</b> com amigos.</li>
+    <li>Cromos <b>repetidos</b> ficam no Sobre com etiqueta vermelha — usa-os em trocas ou duelos.</li>
+    <li>Os cromos <b>Épicos</b> brilham. Os <b>Lendários</b> brilham ainda mais forte. 👀</li>
+  </ol>
+ </div>
+
+ <!-- SOBRE -->
+ <section id="envelope">
+   <div class="envelope-head">
+     <div class="envelope-count">
+       <b id="envelopeNewCount">0</b> novo(s) + <b id="envelopeDupCount">0</b> repetido(s) por colar
+     </div>
+     <div class="envelope-actions">
+       <button class="btn" id="pasteAllBtn" style="background:#22c55e;color:#fff;">📌 Colar todos os novos</button>
+     </div>
+   </div>
+   <div class="envelope-cards" id="envelopeCards"></div>
+ </section>
+
+ <div class="toolbar">
+  <input class="search" id="search" placeholder="🔎  Procurar Superstar..." aria-label="Procurar Superstar">
+  <select class="filter" id="category" aria-label="Filtrar por categoria">
+   <option value="all">Todas as categorias</option>
+   <option value="RAW">RAW</option>
+   <option value="SmackDown">SmackDown</option>
+   <option value="Legends">Legends</option>
+   <option value="Free Agent">Free Agent</option>
+  </select>
+  <select class="filter" id="genderFilter" aria-label="Filtrar por género">
+   <option value="all">Todos os géneros</option>
+   <option value="Male">Masculino</option>
+   <option value="Female">Feminino</option>
+  </select>
+  <select class="filter" id="rarityFilter" aria-label="Filtrar por raridade">
+   <option value="all">Todas as raridades</option>
+   <option value="Comum">Comum</option>
+   <option value="Raro">Raro</option>
+   <option value="Épico">Épico</option>
+   <option value="Lendário">Lendário</option>
+  </select>
+  <select class="filter" id="ownership" aria-label="Filtrar cromos">
+    <option value="all">Todos os cromos</option>
+    <option value="owned">Colados</option>
+    <option value="missing">Em falta</option>
+    <option value="duplicates">Apenas repetidos</option>
+  </select>
+  <button class="btn pulse" id="openPack">✦ Abrir saqueta (3)</button>
+  <button class="btn trade-btn" id="openTradeBtn" style="display:none">🔄 Trocas</button>
+  <button class="btn battle-btn" id="openBattleBtn" style="display:none">⚔️ Batalhas</button>
+ </div>
+
+ <div class="section-head">
+  <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres colado.</p></div>
+  <span id="visibleCount" style="color:#7a5a2b;font-size:12px;font-style:italic">137 cromos</span>
+ </div>
+
+ <div class="rarity-legend" aria-label="Legenda de raridades">
+  <span><i class="r-comum"></i> Comum</span>
+  <span><i class="r-raro"></i> Raro</span>
+  <span><i class="r-epico"></i> Épico</span>
+  <span><i class="r-lendario"></i> Lendário</span>
+ </div>
+
+ <div class="grid" id="cards" aria-live="polite"></div>
+
+ <footer class="panini-footer">
+  <strong>WWE Card Vault · Edição de Fã 2026</strong><br>
+  Protótipo não oficial. Sem afiliação com WWE ou Panini. O progresso está guardado na nuvem.<br>
+  <span class="page-num">★ PÁGINA 1 DE 1 ★</span>
+ </footer>
+</main>
+
+<div id="welcome-screen" class="shell" style="text-align:center;padding-top:60px;display:none">
+  <h2 style="font-family:var(--site-font-heading);font-size:36px;margin-bottom:10px;color:#8a0f20;">BEM-VINDO À ARENA</h2>
+  <p style="color:#7a5a2b;margin-bottom:24px">Faz login com a tua conta Twitch para começares a colecionar e guardares o teu progresso na nuvem.</p>
+</div>
+
+<!-- Modal saqueta -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+ <div class="modal" id="modalBox">
+  <h3 id="modalTitle">SAQUETA ABERTA!</h3>
+  <p id="modalText">Encontraste novos cromos.</p>
+  <div class="pack-cards" id="packCards"></div>
+  <div class="modal-actions">
+   <button class="btn" id="claimPack" style="background:#22c55e;color:#fff;">Receber no Sobre</button>
+   <button class="btn secondary" id="closeModal">Fechar</button>
+  </div>
+  <div class="toast-hint">Os cromos vão para o Sobre. Depois arrasta-os para o álbum.</div>
+ </div>
+</div>
+
+<!-- Modal detalhe -->
+<div class="detail-backdrop" id="detailBackdrop" role="dialog" aria-modal="true">
+ <div class="detail" id="detailBox">
+  <button class="detail-close" id="detailClose" aria-label="Fechar detalhes">✕</button>
+  <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
+  <div class="detail-info">
+   <h3 id="detailName">—</h3>
+   <span class="detail-brand" id="detailBrand">—</span>
+   <span class="detail-rarity" id="detailRarity">—</span>
+   <span class="detail-gender" id="detailGender">—</span>
+   <p class="detail-status" id="detailStatus">—</p>
+  </div>
+ </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ================= CONFIGURAÇÃO SUPABASE ================= */
+const SUPABASE_URL = 'https://zrrrpikpmfimmccmbqyo.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ================= DADOS ================= */
+const wrestlers = [
+ {id:1,   name:'John Cena',                  initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/john-cena.png', forca: 92, agilidade: 78, carisma: 99},
+ {id:2,   name:'The Rock',                   initials:'ROCK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/the-rock.png', forca: 90, agilidade: 80, carisma: 99},
+ {id:3,   name:'Hulk Hogan',                 initials:'HOGAN',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/hulk-hogan.png', forca: 94, agilidade: 55, carisma: 96},
+ {id:4,   name:'Ric Flair',                  initials:'FLAIR',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/ric-flair.png', forca: 70, agilidade: 75, carisma: 95},
+ {id:5,   name:'André the Giant',            initials:'ANDRÉ',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/andre-giant.png', forca: 99, agilidade: 30, carisma: 85},
+ {id:6,  name:'Randy Savage',                initials:'SAVAGE',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/randy-savage.png', forca: 82, agilidade: 89, carisma: 92},
+ {id:7,   name:'Stone Cold Steve Austin',    initials:'SCSA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/stone-cold.png', forca: 88, agilidade: 72, carisma: 97},
+ {id:8,  name:'Eddie Guerrero',              initials:'EDDIE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/eddie-guerrero.png', forca: 75, agilidade: 92, carisma: 90},
+ {id:9,  name:'Mick Foley',                  initials:'FOLEY',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/mick-foley.png', forca: 82, agilidade: 60, carisma: 92},
+ {id:10,  name:'Bret Hart',                  initials:'BRET',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/bret-hart.png', forca: 80, agilidade: 88, carisma: 87},
+ {id:11,  name:'Big Show',                   initials:'SHOW',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/big-show.png', forca: 98, agilidade: 40, carisma: 75},
+ {id:12,  name:'Booker T',                   initials:'BOOK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/booker-t.png', forca: 82, agilidade: 75, carisma: 86},
+ {id:13,   name:'The Undertaker',            initials:'TAKER',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/undertaker.png', forca: 95, agilidade: 65, carisma: 98},
+ {id:14,   name:'Kane',                      initials:'KANE',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kane.png', forca: 96, agilidade: 55, carisma: 80},
+ {id:15,  name:'CM Punk',            		 initials:'PUNK',   brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/cm-punk.png', forca: 78, agilidade: 82, carisma: 95},
+ {id:16,  name:'Edge',                       initials:'EDGE',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/edge.png', forca: 80, agilidade: 85, carisma: 88},
+ {id:17,   name:'Shawn Michaels',             initials:'HBK',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/shawn-michaels.png', forca: 78, agilidade: 95, carisma: 93},
+ {id:18,   name:'Triple H',                   initials:'HHH',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/triple-h.png', forca: 89, agilidade: 70, carisma: 90},
+ {id:19,  name:'Batista',                    initials:'ANIMAL',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/batista.png', forca: 95, agilidade: 65, carisma: 85},
+ {id:20,  name:'Randy Orton',        		 initials:'RKO',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/randy-orton.png', forca: 88, agilidade: 82, carisma: 87},
+ {id:21,  name:'Kurt Angle',                 initials:'ANGLE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kurt-angle.png', forca: 85, agilidade: 88, carisma: 82},
+ {id:22,  name:'Rey Mysterio',       		 initials:'REY',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/rey-mysterio.png', forca: 60, agilidade: 98, carisma: 90},
+ {id:23,  name:'Roman Reigns',       		 initials:'OTC',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/roman-reigns.png', forca: 94, agilidade: 78, carisma: 90},
+ {id:24,  name:'Seth Rollins',       		 initials:'SETH',   brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/seth-rollins.png', forca: 85, agilidade: 92, carisma: 89},
+ {id:25,  name:'Goldberg',                   initials:'BILL',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/goldberg.png', forca: 97, agilidade: 62, carisma: 84},
+ {id:26,  name:'Chyna',                      initials:'CHYNA',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/chyna.png', forca: 92, agilidade: 70, carisma: 84},
+ {id:27,  name:'Trish Stratus',              initials:'TRISH',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/trish-stratus.png', forca: 65, agilidade: 85, carisma: 90},
+ {id:28,  name:'Lita',                       initials:'LITA',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/lita.png', forca: 60, agilidade: 92, carisma: 88},
+ {id:29,  name:'Beth Phoenix',               initials:'BETH',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/beth-phoenix.png', forca: 90, agilidade: 65, carisma: 78},
+ {id:30,  name:'Mickie James',               initials:'MICKIE',  brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/mickie-james.png', forca: 68, agilidade: 80, carisma: 85},
+ {id:31,  name:'Charlotte Flair',    		 initials:'QUEEN',  brand:'SmackDown', rarity:'Lendário', gender:'Female', image:'img/charlotte-flair.png', forca: 78, agilidade: 88, carisma: 89},
+ {id:32,  name:'Becky Lynch',        		 initials:'BECKY',  brand:'RAW',       rarity:'Lendário', gender:'Female', image:'img/becky-lynch.png', forca: 75, agilidade: 85, carisma: 92},
+ {id:33,  name:'Cody Rhodes',        initials:'CODY',   brand:'SmackDown',  rarity:'Épico', gender:'Male',   image:'img/cody-rhodes.png', forca: 85, agilidade: 88, carisma: 93},
+ {id:34,  name:'Rhea Ripley',        initials:'MAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/rhea-ripley.png', forca: 88, agilidade: 82, carisma: 90},
+ {id:35,  name:'Liv Morgan',         initials:'LIV',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/liv-morgan.png', forca: 70, agilidade: 85, carisma: 88},
+ {id:36,  name:'Sami Zayn',          initials:'SAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/sami-zayn.png', forca: 75, agilidade: 88, carisma: 92},
+ {id:37,  name:'Jacob Fatu',         initials:'FATU',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/jacob-fatu.png', forca: 94, agilidade: 78, carisma: 80},
+ {id:38,  name:'Bayley',             initials:'BAY',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/bayley.png', forca: 72, agilidade: 86, carisma: 89},
+ {id:39,  name:'Stephanie Vaquer',   initials:'STEPH',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/stephanie-vaquer.png', forca: 80, agilidade: 90, carisma: 85},
+ {id:40,  name:'Paige',              initials:'PAIGE',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/paige.png', forca: 65, agilidade: 82, carisma: 84},
+ {id:41,  name:'Bron Breakker',      initials:'BRON',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/bron-breakker.png', forca: 93, agilidade: 85, carisma: 78},
+ {id:42,  name:'Dominik Mysterio',   initials:'DOM',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/dominik-mysterio.png', forca: 65, agilidade: 84, carisma: 86},
+ {id:43,  name:'Jey Uso',            initials:'YEET',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/jey-uso.png', forca: 80, agilidade: 86, carisma: 91},
+ {id:44,  name:'Jimmy Uso',          initials:'JIMMY',  brand:'RAW',       rarity:'Épico',     gender:'Male',   image:'img/jimmy-uso.png', forca: 78, agilidade: 85, carisma: 82},
+ {id:45,  name:'Chad Gable',         initials:'GABLE',  brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/chad-gable.png', forca: 78, agilidade: 92, carisma: 75},
+ {id:46,  name:'Oba Femi',           initials:'OBA',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/oba-femi.png', forca: 92, agilidade: 75, carisma: 80},
+ {id:47,  name:'Solo Sikoa',         initials:'SOLO',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/solo-sikoa.png', forca: 88, agilidade: 72, carisma: 78},
+ {id:48,  name:'Alexa Bliss',        initials:'ALEXA',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/alexa-bliss.png', forca: 60, agilidade: 78, carisma: 90},
+ {id:49,  name:'Iyo Sky',            initials:'SKY',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/iyo-sky.png', forca: 65, agilidade: 96, carisma: 82},
+ {id:50,  name:'LA Knight',          initials:'YEAH',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/la-knight.png', forca: 78, agilidade: 80, carisma: 94},
+ {id:51,  name:'Tiffany Stratton',   initials:'TIFFY',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/tiffany-stratton.png', forca: 70, agilidade: 88, carisma: 87},
+ {id:52,  name:'Asuka',              initials:'ASUKA',  brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/asuka.png', forca: 72, agilidade: 93, carisma: 85},
+ {id:53,  name:'Raquel Rodriguez',   initials:'RAQ',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/raquel-rodriguez.png', forca: 90, agilidade: 65, carisma: 75},
+ {id:54,  name:'Jade Cargill',       initials:'JADE',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jade-cargill.png', forca: 88, agilidade: 80, carisma: 82},
+ {id:55,  name:'Bianca Belair',      initials:'EST',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/bianca-belair.png', forca: 85, agilidade: 90, carisma: 88},
+ {id:56,  name:'Chelsea Green',      initials:'GREEN',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/chelsea-green.png', forca: 55, agilidade: 75, carisma: 86},
+ {id:57,  name:'Damian Priest',      initials:'PRIEST', brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/damian-priest.png', forca: 90, agilidade: 78, carisma: 83},
+ {id:58,  name:'Drew McIntyre',      initials:'DREW',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/drew-mcintyre.png', forca: 92, agilidade: 80, carisma: 85},
+ {id:59,  name:'Finn Bálor',         initials:'BALOR',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/finn-balor.png', forca: 78, agilidade: 92, carisma: 86},
+ {id:60,  name:'Gunther',            initials:'GUNTR',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/gunther.png', forca: 95, agilidade: 75, carisma: 88},
+ {id:61,  name:'Jacy Jayne',         initials:'JACY',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jacy-jayne.png', forca: 65, agilidade: 80, carisma: 78},
+ {id:62,  name:'Kevin Owens',        initials:'KO',     brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/kevin-owens.png', forca: 85, agilidade: 78, carisma: 90},
+ {id:63,  name:'Trick Williams',     initials:'TRICK',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/trick-williams.png', forca: 82, agilidade: 84, carisma: 86},
+ {id:64,  name:'AJ Lee',             initials:'AJ',     brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/aj-lee.png', forca: 58, agilidade: 82, carisma: 91},
+ {id:65,  name:'Brie Bella',         initials:'BRIE',   brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/brie-bella.png', forca: 62, agilidade: 75, carisma: 80},
+ {id:66,  name:'Nikki Bella',        initials:'NIKKI',  brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/nikki-bella.png', forca: 70, agilidade: 78, carisma: 85},
+ {id:67,  name:'Logan Paul',         initials:'LOGAN',  brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/logan-paul.png', forca: 82, agilidade: 90, carisma: 92},
+ {id:68,  name:'The Miz',            initials:'MIZ',    brand:'SmackDown', rarity:'Épico',     gender:'Male',   image:'img/the-miz.png', forca: 68, agilidade: 76, carisma: 94},
+ {id:69,  name:'Naomi',              initials:'GLOW',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/naomi.png', forca: 72, agilidade: 90, carisma: 86},
+ {id:70,  name:'Montez Ford',        initials:'FORD',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/montez-ford.png', forca: 80, agilidade: 92, carisma: 84},
+ {id:71,  name:'Rusev',              initials:'RUSEV',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rusev.png', forca: 92, agilidade: 70, carisma: 78},
+ {id:72,  name:'Dragon Lee',         initials:'LEE',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/dragon-lee.png', forca: 65, agilidade: 95, carisma: 75},
+ {id:73,  name:'Shinsuke Nakamura',  initials:'SHIN',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/shinsuke-nakamura.png', forca: 80, agilidade: 88, carisma: 85},
+ {id:74,  name:'Austin Theory',      initials:'THEORY', brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/austin-theory.png', forca: 75, agilidade: 85, carisma: 82},
+ {id:75,  name:'Bronson Reed',       initials:'REED',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/bronson-reed.png', forca: 96, agilidade: 60, carisma: 70},
+ {id:76,  name:'Ethan Page',         initials:'EGO',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/ethan-page.png', forca: 78, agilidade: 76, carisma: 83},
+ {id:77,  name:'Je\'Von Evans',      initials:'JEVON',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jevon-evans.png', forca: 60, agilidade: 94, carisma: 78},
+ {id:78,  name:'JD McDonagh',        initials:'JD',     brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jd-mcdonagh.png', forca: 65, agilidade: 86, carisma: 72},
+ {id:79,  name:'Angelo Dawkins',     initials:'ANGELO', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/angelo-dawkins.png', forca: 82, agilidade: 80, carisma: 75},
+ {id:80,  name:'Otis',               initials:'OTIS',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/otis.png', forca: 90, agilidade: 55, carisma: 78},
+ {id:81,  name:'Blake Monroe',       initials:'BLAKE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/blake-monroe.png', forca: 70, agilidade: 78, carisma: 80},
+ {id:82,  name:'Giulia',             initials:'GIULIA', brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/giulia.png', forca: 72, agilidade: 88, carisma: 86},
+ {id:83,  name:'Penta',              initials:'PENTA',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/penta.png', forca: 80, agilidade: 90, carisma: 85},
+ {id:84,  name:'Roxanne Perez',      initials:'ROXY',   brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/roxanne-perez.png', forca: 62, agilidade: 88, carisma: 82},
+ {id:85,  name:'Lyra Valkyria',      initials:'LYRA',   brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/lyra-valkyria.png', forca: 68, agilidade: 86, carisma: 78},
+ {id:86,  name:'Tatum Paxley',       initials:'TATUM',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/tatum-paxley.png', forca: 60, agilidade: 82, carisma: 80},
+ {id:87,  name:'Carmelo Hayes',      initials:'HAYES',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/carmelo-hayes.png', forca: 72, agilidade: 92, carisma: 85},
+ {id:88,  name:'Pete Dunne',         initials:'DUNNE',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/pete-dunne.png', forca: 78, agilidade: 86, carisma: 75},
+ {id:89,  name:'Candice LeRae',      initials:'LERAE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/candice-lerae.png', forca: 58, agilidade: 84, carisma: 78},
+ {id:90,  name:'Johnny Gargano',     initials:'JOHNNY', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/johnny-gargano.png', forca: 70, agilidade: 90, carisma: 84},
+ {id:91,  name:'Jordynne Grace',     initials:'GRACE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/jordynne-grace.png', forca: 90, agilidade: 75, carisma: 80},
+ {id:92,  name:'Lash Legend',        initials:'LASH',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/lash-legend.png', forca: 88, agilidade: 68, carisma: 78},
+ {id:93,  name:'Michin',             initials:'MICHIN', brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/michin.png', forca: 75, agilidade: 85, carisma: 76},
+ {id:94,  name:'Nathan Frazer',      initials:'FRAZER', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/nathan-frazer.png', forca: 65, agilidade: 98, carisma: 78},
+ {id:95,  name:'Nia Jax',            initials:'NIA',    brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/nia-jax.png', forca: 95, agilidade: 55, carisma: 72},
+ {id:96,  name:'Piper Niven',        initials:'PIPER',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/piper-niven.png', forca: 88, agilidade: 62, carisma: 70},
+ {id:97,  name:'R-Truth',            initials:'TRUTH',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/r-truth.png', forca: 62, agilidade: 75, carisma: 88},
+ {id:98,  name:'Rey Fenix',          initials:'FENIX',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rey-fenix.png', forca: 68, agilidade: 96, carisma: 80},
+ {id:99,  name:'Ricky Saints',       initials:'SAINTS', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/ricky-saints.png', forca: 74, agilidade: 86, carisma: 82},
+ {id:100, name:'Talla Tonga',        initials:'TALLA',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/talla-tonga.png', forca: 90, agilidade: 60, carisma: 70},
+ {id:101, name:'Tama Tonga',         initials:'TAMA',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/tama-tonga.png', forca: 88, agilidade: 70, carisma: 72},
+ {id:102, name:'Joe Hendry',         initials:'HENDRY', brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/joe-hendry.png', forca: 75, agilidade: 78, carisma: 90},
+ {id:103, name:'Omos',               initials:'OMOS',   brand:'Free Agent',rarity:'Comum',     gender:'Male',   image:'img/omos.png', forca: 97, agilidade: 35, carisma: 60},
+ {id:104, name:'Maxxine Dupri',      initials:'DUPRI',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/maxxine-dupri.png', forca: 55, agilidade: 75, carisma: 78},
+ {id:105, name:'Jaida Parker',       initials:'JAIDA',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/jaida-parker.png', forca: 80, agilidade: 72, carisma: 74},
+ {id:106, name:'Ivy Nile',           initials:'IVY',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/ivy-nile.png', forca: 85, agilidade: 70, carisma: 70},
+ {id:107, name:'Royce Keys',         initials:'KEYS',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/royce-keys.png', forca: 78, agilidade: 76, carisma: 72},
+ {id:108, name:'Joaquin Wilde',      initials:'WILDE',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/joaquin-wilde.png', forca: 65, agilidade: 88, carisma: 74},
+ {id:109, name:'Cruz Del Toro',      initials:'CRUZ',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/cruz-del-toro.png', forca: 68, agilidade: 86, carisma: 72},
+ {id:110, name:'Rayo Americano',     initials:'RAYO',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/rayo-americano.png', forca: 70, agilidade: 84, carisma: 75},
+ {id:111, name:'El Grande Americano',initials:'EGA',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/el-grande-americano.png', forca: 82, agilidade: 65, carisma: 70},
+ {id:112, name:'Akira Tozawa',       initials:'TOZAWA', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/akira-tozawa.png', forca: 60, agilidade: 85, carisma: 74},
+ {id:113, name:'Big Cass',           initials:'CASS',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/big-cass.png', forca: 92, agilidade: 50, carisma: 68},
+ {id:114, name:'Bronco Nima',        initials:'NIMA',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bronco-nima.png', forca: 85, agilidade: 62, carisma: 65},
+ {id:115, name:'Lucien Price',       initials:'PRICE',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/lucien-price.png', forca: 82, agilidade: 68, carisma: 66},
+ {id:116, name:'Lola Vice',          initials:'LOLA',   brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/lola-vice.png', forca: 62, agilidade: 80, carisma: 76},
+ {id:117, name:'Sol Ruca',           initials:'SOL',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/sol-ruca.png', forca: 60, agilidade: 88, carisma: 78},
+ {id:118, name:'Tyler Bate',         initials:'BATE',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/tyler-bate.png', forca: 82, agilidade: 80, carisma: 72},
+ {id:119, name:'Ludwig Kaiser',      initials:'KAISER', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/ludwig-kaiser.png', forca: 78, agilidade: 78, carisma: 80},
+ {id:120, name:'Brutus Creed',       initials:'BRUTUS', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/brutus-creed.png', forca: 90, agilidade: 65, carisma: 68},
+ {id:121, name:'Julius Creed',       initials:'JULIUS', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/julius-creed.png', forca: 88, agilidade: 68, carisma: 68},
+ {id:122, name:'Bravo Americano',    initials:'BRAVO',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bravo-americano.png', forca: 80, agilidade: 70, carisma: 72},
+ {id:123, name:'Nattie',             initials:'NATTIE', brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/nattie.png', forca: 75, agilidade: 72, carisma: 70},
+ {id:124, name:'Angel',              initials:'ANGEL',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/angel.png', forca: 78, agilidade: 74, carisma: 70},
+ {id:125, name:'Axiom',              initials:'AXIOM',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/axiom.png', forca: 65, agilidade: 90, carisma: 72},
+ {id:126, name:'B-Fab',              initials:'BFAB',   brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/b-fab.png', forca: 70, agilidade: 75, carisma: 68},
+ {id:127, name:'Baron Corbin',       initials:'CORBIN', brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/baron-corbin.png', forca: 85, agilidade: 68, carisma: 74},
+ {id:128, name:'Berto',              initials:'BERTO',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/berto.png', forca: 72, agilidade: 82, carisma: 70},
+ {id:129, name:'Elton Prince',       initials:'ELTON',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/elton-prince.png', forca: 68, agilidade: 78, carisma: 76},
+ {id:130, name:'Erik',               initials:'ERIK',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/erik.png', forca: 88, agilidade: 62, carisma: 66},
+ {id:131, name:'Fallon Henley',      initials:'FALLON', brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/fallon-henley.png', forca: 65, agilidade: 78, carisma: 74},
+ {id:132, name:'Ivar',               initials:'IVAR',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/ivar.png', forca: 92, agilidade: 55, carisma: 70},
+ {id:133, name:'Kiana James',        initials:'KIANA',  brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/kiana-james.png', forca: 62, agilidade: 76, carisma: 72},
+ {id:134, name:'Kit Wilson',         initials:'KIT',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/kit-wilson.png', forca: 66, agilidade: 80, carisma: 76},
+ {id:135, name:'Lainey Reid',        initials:'LAINEY', brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/lainey-reid.png', forca: 60, agilidade: 78, carisma: 72},
+ {id:136, name:'Matt Cardona',       initials:'MATT',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/matt-cardona.png', forca: 74, agilidade: 76, carisma: 82},
+ {id:137, name:'Danhausen',          initials:'DANH',   brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/danhausen.png', forca: 55, agilidade: 72, carisma: 85}
+];
+
+const rarityColors={'Comum':'#22c55e','Raro':'#2dd4bf','Épico':'#d99aff','Lendário':'#e8a800'};
+const rarityWeights={'Comum':67,'Raro':27,'Épico':5,'Lendário':1};
+const RARITIES=Object.keys(rarityWeights);
+const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
+const PACK_SIZE=5;
+const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
+const genderLabels={Male:'Masculino',Female:'Feminino'};
+const MAX_PACKS_PER_DAY = 3;
+const IMG_V = 1;
+
+/* ================= ESTADO =================
+ * ownedCounts: id -> { total, pasted, unpacked }
+ *  - total: quantas tens ao todo
+ *  - pasted: quantas coladas no álbum
+ *  - unpacked: quantas no Sobre (total - pasted)
+ */
+let state = { ownedCounts: {}, packs: 0, recent: new Set() };
+let currentUser=null;
+let pending=[];
+let detailId=null;
+let selectedEnvelopeCard=null; // para modo clique-clique
+let lastUserId;
+
+/* ================= CAPA ================= */
+const COVER_SEEN_KEY = 'wwe_card_vault_cover_seen_v1';
+function showCover(){ const c=document.getElementById('cover'); if(c) c.classList.remove('hidden'); }
+function hideCover(){ const c=document.getElementById('cover'); if(c){ c.classList.add('hidden'); try{localStorage.setItem(COVER_SEEN_KEY,'1');}catch(_){} } }
+
+function setupCover(){
+  const btn = document.getElementById('coverOpenBtn');
+  const cover = document.getElementById('cover');
+  if (!btn || !cover) return;
+  let alreadySeen = false;
+  try { alreadySeen = localStorage.getItem(COVER_SEEN_KEY) === '1'; } catch(_) {}
+  btn.addEventListener('click', () => {
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn && loginBtn.style.display !== 'none') {
+      hideCover();
+      document.getElementById('welcome-screen').style.display = 'block';
+      document.getElementById('main-content').style.display = 'none';
+    } else {
+      hideCover();
+    }
+  });
+  if (alreadySeen) hideCover(); else showCover();
+}
+
+/* ================= AUTH ================= */
+function onUser(user){
+  const id = user?.id ?? null;
+  if (id === lastUserId) return;
+  lastUserId = id;
+  handleUser(user);
+}
+
+async function initAuth() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  onUser(session?.user);
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    setTimeout(() => onUser(session?.user), 0);
+  });
+}
+
+async function handleUser(user) {
+  currentUser = user;
+  if (user) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    document.getElementById('openTradeBtn').style.display = 'inline-flex';
+    document.getElementById('openBattleBtn').style.display = 'inline-flex';
+    const profile = document.getElementById('userProfile');
+    profile.style.display = 'flex';
+    const twitchName = user.user_metadata.custom_claims?.global_name || user.user_metadata.name || 'Twitch User';
+    document.getElementById('userName').textContent = twitchName;
+    if (user.user_metadata.avatar_url) document.getElementById('userAvatar').src = user.user_metadata.avatar_url;
+    try { await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() }); } catch(_) {}
+    await loadState();
+  } else {
+    document.getElementById('loginBtn').style.display = 'flex';
+    document.getElementById('userProfile').style.display = 'none';
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('welcome-screen').style.display = 'block';
+    document.getElementById('openTradeBtn').style.display = 'none';
+    document.getElementById('openBattleBtn').style.display = 'none';
+    state.ownedCounts = {};
+    state.packs = 0;
+    render();
+  }
+  // Atualiza botão da capa
+  const coverBtn = document.getElementById('coverOpenBtn');
+  const coverSub = document.getElementById('coverSubtitle');
+  if (coverBtn && coverSub) {
+    if (user) {
+      coverBtn.textContent = '📖 Abrir Álbum';
+      coverBtn.classList.remove('twitch-btn');
+      coverSub.textContent = 'Cola, completa e domina o teu álbum.';
+    } else {
+      coverBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 2L1 5.295v14.51h4.659V22h4.066l2.61-2.195h3.799L23 13.266V2H4.265zm16.32 10.263L16.95 16.01h-4.659l-2.42 2.195v-2.195H5.32V3.562h15.265v8.701zm-4.636-5.35v6.042h-1.515V6.913h1.515zm-4.154 0v6.042H10.28V6.913h1.515z"/></svg> Entrar com Twitch';
+      coverBtn.classList.add('twitch-btn');
+      coverSub.textContent = 'Faz login para começares a colecionar.';
+    }
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signInWithOAuth({
+    provider: 'twitch',
+    options: { redirectTo: window.location.origin + window.location.pathname }
+  });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signOut();
+});
+
+/* ================= CARREGAR ESTADO ================= */
+async function loadState() {
+  if (!currentUser) return;
+  try {
+    // Tenta ler com 'pasted'; se falhar (coluna inexistente), faz fallback
+    let cardsData = null, cardsError = null;
+    try {
+      const res = await supabaseClient.from('collections').select('card_id, pasted').eq('user_id', currentUser.id);
+      if (res.error) throw res.error;
+      cardsData = res.data;
+    } catch (e) {
+      // Fallback: sem coluna pasted → assume tudo colado
+      const res = await supabaseClient.from('collections').select('card_id').eq('user_id', currentUser.id);
+      if (res.error) throw res.error;
+      cardsData = (res.data || []).map(d => ({ card_id: d.card_id, pasted: true }));
+    }
+
+    // Agrupar por card_id
+    const byCard = {};
+    (cardsData || []).forEach(d => {
+      const id = Number(d.card_id);
+      if (!byCard[id]) byCard[id] = { total: 0, pasted: 0 };
+      byCard[id].total += 1;
+      if (d.pasted !== false) byCard[id].pasted += 1;
+    });
+    state.ownedCounts = {};
+    Object.keys(byCard).forEach(id => {
+      const t = byCard[id].total;
+      const p = byCard[id].pasted;
+      state.ownedCounts[id] = { total: t, pasted: p, unpacked: t - p };
+    });
+
+    // Saquetas
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const { data: packData } = await supabaseClient
+      .from('daily_packs').select('count')
+      .eq('user_id', currentUser.id).eq('date', today).maybeSingle();
+    state.packs = packData ? (Number(packData.count) || 0) : 0;
+
+    render();
+  } catch (e) {
+    console.error('Erro ao carregar estado:', e);
+    toast('Erro ao carregar. Verifica a consola.');
+  }
+}
+
+/* ================= HELPERS ================= */
+const $=id=>document.getElementById(id);
+const rand=n=>Math.floor(Math.random()*n);
+const norm=s=>String(s||'').trim().toLowerCase();
+
+function weightedPick(pool){
+ const byRarity={};
+ pool.forEach(w=>{(byRarity[w.rarity]=byRarity[w.rarity]||[]).push(w);});
+ const available=RARITIES.filter(r=>byRarity[r]&&byRarity[r].length);
+ if(!available.length)return null;
+ const total=available.reduce((s,r)=>s+rarityWeights[r],0);
+ let roll=Math.random()*total;
+ for(const r of available){
+  roll-=rarityWeights[r];
+  if(roll<=0){const arr=byRarity[r];return arr[rand(arr.length)];}
+ }
+ return byRarity[available[available.length-1]][0];
+}
+
+function pickPack(){
+ const picked = [];
+ let guard = 0;
+ while (picked.length < PACK_SIZE && guard < 500) {
+   const w = weightedPick(wrestlers);
+   if (!w) break;
+   if (!picked.some(p => p.id === w.id)) picked.push(w);
+   guard++;
+ }
+ return picked;
+}
+
+let toastTimer;
+function toast(msg){
+ const t=$('toast');
+ t.textContent=msg;
+ t.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ================= TOTAIS ================= */
+function getTotals(){
+  let pastedUnique = 0;
+  let unpackedTotal = 0;
+  let dupPasted = 0;
+  let dupUnpacked = 0;
+  Object.keys(state.ownedCounts).forEach(id => {
+    const c = state.ownedCounts[id];
+    if (!c || c.total <= 0) return;
+    if (c.pasted > 0) {
+      pastedUnique++;
+      if (c.pasted > 1) dupPasted += c.pasted - 1;
+    }
+    unpackedTotal += c.unpacked || 0;
+    if (c.unpacked > 1) dupUnpacked += c.unpacked - 1;
+  });
+  return { pastedUnique, unpackedTotal, dupPasted, dupUnpacked };
+}
+
+/* ================= STATS ================= */
+function updateStats(){
+ const total=wrestlers.length;
+ const t = getTotals();
+ $('ownedCount').innerHTML=`${t.pastedUnique} <small>/ ${total}</small>`;
+ $('dupCount').innerHTML = `Repetidos: <b>${t.dupPasted}</b>`;
+ const pct=total?Math.round(t.pastedUnique/total*100):0;
+ $('percent').textContent=pct+'%';
+ $('progress').style.width=pct+'%';
+ const packsSafe = Number(state.packs) || 0;
+ $('packsOpened').innerHTML = `${packsSafe} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
+ const counts={};
+ RARITIES.forEach(r=>counts[r]=0);
+ Object.keys(state.ownedCounts).forEach(id=>{
+     const w=WRESTLER_MAP.get(Number(id));
+     if(w && state.ownedCounts[id].pasted > 0) counts[w.rarity]++;
+ });
+ const totalByRarity={};
+ wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
+ $('rarityBreakdown').innerHTML = RARITIES.map(r => {
+    const got = counts[r], tot = totalByRarity[r] || 0;
+    if(!tot) return '';
+    return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#7a5a2b">${got}/${tot}</span></div>`;
+ }).join('');
+ updatePackButton();
+ updateEnvelope();
+}
+
+function updatePackButton() {
+  const btn = $('openPack');
+  const packsSafe = Number(state.packs) || 0;
+  const remaining = MAX_PACKS_PER_DAY - packsSafe;
+  if (remaining > 0) {
+    btn.innerHTML = `✦ Abrir saqueta (${remaining})`;
+    btn.classList.remove('disabled');
+    btn.disabled = false;
+  } else {
+    btn.innerHTML = `Esgotadas por hoje`;
+    btn.classList.add('disabled');
+    btn.disabled = true;
+  }
+}
+
+/* ================= SOBRE ================= */
+function updateEnvelope(){
+  const envelope = document.getElementById('envelope');
+  const list = document.getElementById('envelopeCards');
+  if (!envelope || !list) return;
+
+  const items = [];
+  Object.keys(state.ownedCounts).forEach(id => {
+    const c = state.ownedCounts[id];
+    if (!c) return;
+    if (c.unpacked > 0) {
+      const w = WRESTLER_MAP.get(Number(id));
+      if (w) items.push({ w, count: c.unpacked, isDup: c.pasted > 0 });
+    }
+  });
+
+  // Ordenar: novos primeiro, depois por raridade
+  items.sort((a,b) => {
+    if (a.isDup !== b.isDup) return a.isDup ? 1 : -1;
+    return (rarityOrder[a.w.rarity] || 99) - (rarityOrder[b.w.rarity] || 99);
+  });
+
+  const newCount = items.filter(i => !i.isDup).reduce((s,i) => s + i.count, 0);
+  const dupCount = items.filter(i => i.isDup).reduce((s,i) => s + i.count, 0);
+
+  document.getElementById('envelopeNewCount').textContent = newCount;
+  document.getElementById('envelopeDupCount').textContent = dupCount;
+
+  if (items.length === 0) {
+    envelope.classList.remove('has-cards');
+    list.innerHTML = '';
+    return;
+  }
+  envelope.classList.add('has-cards');
+
+  list.innerHTML = items.map((it, idx) => {
+    const w = it.w;
+    const finalImage = w.image + '?v=' + IMG_V;
+    const inner = w.image
+      ? `<img src="${finalImage}" alt="${w.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'mini-art-fallback\\'>${w.initials}</div>'">`
+      : `<div class="mini-art-fallback">${w.initials}</div>`;
+    const badge = it.isDup
+      ? `<span class="envelope-card-badge dup">REPETIDO${it.count>1?' x'+it.count:''}</span>`
+      : `<span class="envelope-card-badge">NOVO</span>`;
+    return `<div class="envelope-card" data-id="${w.id}" data-dup="${it.isDup?1:0}" draggable="true" title="${w.name} — ${it.count} no Sobre" style="--rarity-color:${rarityColors[w.rarity]}; animation-delay:${idx*40}ms">
+      ${badge}
+      <div class="envelope-card-inner" style="--rarity-color:${rarityColors[w.rarity]}">
+        ${inner}
+        <div class="envelope-card-name">${w.name}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Eventos: drag & click
+  list.querySelectorAll('.envelope-card').forEach(el => {
+    el.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', el.dataset.id);
+      e.dataTransfer.effectAllowed = 'move';
+      el.classList.add('dragging');
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    el.addEventListener('click', () => {
+      if (selectedEnvelopeCard === Number(el.dataset.id)) {
+        selectedEnvelopeCard = null;
+        clearPasteTargets();
+        document.querySelectorAll('.envelope-card').forEach(c=>c.style.outline='');
+      } else {
+        selectedEnvelopeCard = Number(el.dataset.id);
+        document.querySelectorAll('.envelope-card').forEach(c=>c.style.outline='');
+        el.style.outline = '3px solid #22c55e';
+        el.style.outlineOffset = '2px';
+        highlightPasteTargets(selectedEnvelopeCard);
+        toast(`Clica no cromo "${WRESTLER_MAP.get(selectedEnvelopeCard).name}" na caderneta para colar.`);
+      }
+    });
+  });
+
+  // Botão colar todos
+  const pasteAllBtn = document.getElementById('pasteAllBtn');
+  if (pasteAllBtn) {
+    pasteAllBtn.onclick = pasteAll;
+    pasteAllBtn.style.display = newCount > 0 ? 'inline-flex' : 'none';
+  }
+}
+
+/* ================= HIGHLIGHT DOS TARGETS ================= */
+function highlightPasteTargets(cardId){
+  clearPasteTargets();
+  const target = document.querySelector(`.card[data-id="${cardId}"]`);
+  if (target) {
+    target.classList.add('paste-target');
+    target.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+function clearPasteTargets(){
+  document.querySelectorAll('.card.paste-target').forEach(el => el.classList.remove('paste-target'));
+}
+
+/* ================= AÇÃO: COLAR ================= */
+async function pasteCard(cardId, opts={}){
+  const c = state.ownedCounts[cardId];
+  if (!c || c.unpacked <= 0) {
+    if (!opts.silent) toast('Não tens este cromo no Sobre.');
+    return false;
+  }
+  // Atualizar no estado
+  c.pasted += 1;
+  c.unpacked -= 1;
+  if (c.unpacked === 0) {
+    // Manter o registo com total e pasted
+    state.ownedCounts[cardId] = { total: c.total, pasted: c.pasted, unpacked: 0 };
+  }
+  selectedEnvelopeCard = null;
+  clearPasteTargets();
+  document.querySelectorAll('.envelope-card').forEach(c=>c.style.outline='');
+
+  // Atualizar UI
+  render();
+  // Flash no slot
+  const slot = document.querySelector(`.card[data-id="${cardId}"]`);
+  if (slot) {
+    slot.classList.add('pasted-flash');
+    setTimeout(()=>slot.classList.remove('pasted-flash'), 1000);
+    slot.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  // Guardar na nuvem
+  if (currentUser) {
+    try {
+      // Encontrar uma cópia unpacked e marcar pasted=true
+      const { data: rows, error: selErr } = await supabaseClient
+        .from('collections').select('id')
+        .eq('user_id', currentUser.id).eq('card_id', cardId)
+        .or('pasted.is.null,pasted.eq.false')
+        .limit(1);
+      if (selErr) throw selErr;
+      if (rows && rows[0]) {
+        const { error: updErr } = await supabaseClient
+          .from('collections').update({ pasted: true }).eq('id', rows[0].id);
+        if (updErr) throw updErr;
+      } else {
+        // Fallback: não há coluna pasted → inserir novo registo com pasted
+        await supabaseClient.from('collections').insert([{ user_id: currentUser.id, card_id: cardId }]);
+        await supabaseClient.from('collections').delete().eq('user_id', currentUser.id).eq('card_id', cardId).limit(1);
+      }
+    } catch(e) {
+      console.warn('Aviso ao guardar colagem (pode ser falta de coluna pasted):', e);
+    }
+  }
+
+  if (!opts.silent) {
+    const w = WRESTLER_MAP.get(cardId);
+    toast(`📌 ${w.name} colado no álbum!`);
+  }
+  return true;
+}
+
+async function pasteAll(){
+  const toPaste = [];
+  Object.keys(state.ownedCounts).forEach(id => {
+    const c = state.ownedCounts[id];
+    if (c && c.unpacked > 0) {
+      // Colar todas as unpacked exceto se forem duplicados extra
+      // Regra: cola 1 de cada novo; deixa duplicados no Sobre
+      const alreadyPasted = c.pasted > 0;
+      if (alreadyPasted) {
+        // É duplicado — não colar automaticamente (fica para trocas)
+      } else {
+        toPaste.push(Number(id));
+      }
+    }
+  });
+  if (toPaste.length === 0) {
+    toast('Não há cromos novos para colar. Os repetidos ficam no Sobre para trocas.');
+    return;
+  }
+  toast(`A colar ${toPaste.length} cromos...`);
+  for (const id of toPaste) {
+    await pasteCard(id, { silent: true });
+  }
+  toast(`✅ ${toPaste.length} cromo(s) colados no álbum!`);
+}
+
+/* ================= RENDER ================= */
+function renderCard(w){
+ const c = state.ownedCounts[w.id] || { total:0, pasted:0, unpacked:0 };
+ const hasPasted = c.pasted > 0;
+ const hasUnpacked = c.unpacked > 0;
+ const hasAny = hasPasted || hasUnpacked;
+
+ const classes=['card'];
+ if (hasPasted) classes.push('owned');
+ else if (hasUnpacked) classes.push('unpacked');
+ else classes.push('missing');
+
+ const finalImage = w.image + '?v=' + IMG_V;
+
+ let art;
+ if (hasPasted && w.image){
+   art = `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
+        onerror="this.style.display='none';">`;
+ } else if (!hasPasted && hasUnpacked) {
+   // Tem no sobre mas ainda não colado — mostra logo WWE cinza
+   art = `<div class="missing-stage">
+            <div class="wwe-logo"><img src="img/wwe.png" alt="WWE"></div>
+          </div>`;
+ } else if (!hasAny){
+   art = `<div class="missing-stage">
+            <div class="wwe-logo"><img src="img/wwe.png" alt="WWE"></div>
+          </div>`;
+ } else {
+   art = '';
+ }
+
+ const dupBadge = c.pasted > 1 ? `<div class="dup-badge">x${c.pasted}</div>` : '';
+ const brandImage = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ const displayName = hasPasted ? w.name : '???';
+ const displayNumber = hasPasted ? String(w.id).padStart(3,'0') : '—';
+
+ // Badge "no sobre"
+ const unpackedBadge = (!hasPasted && hasUnpacked)
+   ? `<span style="position:absolute;top:8px;right:8px;background:#22c55e;color:#fff;font-family:var(--site-font-heading);font-size:9px;padding:3px 6px;border-radius:4px;z-index:12;box-shadow:0 2px 4px #0008;">📬 NO SOBRE</span>`
+   : '';
+
+ return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" data-rarity="${hasPasted ? w.rarity : 'missing'}" data-pasted="${hasPasted?1:0}" data-unpacked="${hasUnpacked?1:0}">
+  <div class="card-art">
+   ${art}
+  </div>
+  ${dupBadge}
+  ${unpackedBadge}
+  <div class="card-bottom">
+   <div class="card-number">WWE · ${displayNumber}</div>
+   <div class="card-name">${displayName}</div>
+   <div class="card-meta">
+    <span>
+      ${hasPasted ? `<img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'">` : ''}
+      <span class="gender-badge">${hasPasted ? (w.gender==='Female'?'♀':'♂') : '·'}</span>
+    </span>
+    <span class="rarity">${hasPasted ? w.rarity : '—'}</span>
+   </div>
+  </div>
+ </button>`;
+}
+
+function render(animate=false){
+ const q=norm($('search').value);
+ const cat=norm($('category').value);
+ const gen=$('genderFilter').value;
+ const rar=$('rarityFilter').value;
+ const own=$('ownership').value;
+
+const list = wrestlers.filter(w => {
+  if (q) {
+    const hay = norm(w.name) + ' ' + norm(w.brand);
+    if (!hay.includes(q)) return false;
+  }
+  if (cat !== 'all' && norm(w.brand) !== cat) return false;
+  if (gen !== 'all' && w.gender !== gen) return false;
+  if (rar !== 'all' && norm(w.rarity) !== norm(rar)) return false;
+
+  const c = state.ownedCounts[w.id] || { total:0, pasted:0, unpacked:0 };
+  if (own === 'owned' && c.pasted === 0) return false;
+  if (own === 'missing' && c.pasted > 0) return false;
+  if (own === 'duplicates' && c.pasted <= 1) return false;
+  return true;
+});
+
+ list.sort((a, b) => {
+   const brandOrder = { RAW: 1, SmackDown: 2, Legends: 3, 'Free Agent': 4 };
+   const bA = brandOrder[a.brand] || 99;
+   const bB = brandOrder[b.brand] || 99;
+   if (bA !== bB) return bA - bB;
+   const rarA = rarityOrder[norm(a.rarity)] || 99;
+   const rarB = rarityOrder[norm(b.rarity)] || 99;
+   const rarDiff = rarA - rarB;
+   if (rarDiff !== 0) return rarDiff;
+   return a.id - b.id;
+ });
+
+ $('visibleCount').textContent=`${list.length} ${list.length===1?'cromo':'cromos'}`;
+
+ const grid = $('cards');
+
+ if(list.length===0){
+  grid.innerHTML=`<div class="empty">
+   <span class="empty-icon">🃏</span>
+   <strong>Nenhum cromo encontrado</strong>
+   Tenta ajustar os filtros ou limpar a pesquisa.
+   <div style="margin-top:14px"><button class="btn secondary" id="clearFilters">Limpar filtros</button></div>
+  </div>`;
+  const cf=$('clearFilters');
+  if(cf)cf.addEventListener('click',clearFilters);
+ }else{
+  // Agrupar por marca
+  const byBrand = {};
+  list.forEach(w => { (byBrand[w.brand] = byBrand[w.brand] || []).push(w); });
+  const brandOrder = ['RAW','SmackDown','Legends','Free Agent'];
+
+  let html = '';
+  let globalIdx = 0;
+  brandOrder.forEach(brand => {
+    if (!byBrand[brand] || byBrand[brand].length === 0) return;
+    html += `<div class="section-divider" style="grid-column:1/-1">
+      <span class="section-divider-tag" data-brand="${brand}">${brand}</span>
+    </div>`;
+    byBrand[brand].forEach(w => {
+      html += renderCard(w);
+      globalIdx++;
+    });
+  });
+
+  grid.innerHTML = html;
+
+  // Eventos de cada cromo
+  grid.querySelectorAll('.card').forEach(b=>{
+    const id = Number(b.dataset.id);
+    // Clique normal → detalhe (ou colar se houver target)
+    b.addEventListener('click', (ev) => {
+      if (selectedEnvelopeCard === id) {
+        ev.preventDefault();
+        pasteCard(id);
+        return;
+      }
+      openDetail(id);
+    });
+
+    // Drag over
+    b.addEventListener('dragover', (e) => {
+      const c = state.ownedCounts[id];
+      if (c && c.unpacked > 0) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        b.classList.add('paste-target');
+      }
+    });
+    b.addEventListener('dragleave', () => {
+      b.classList.remove('paste-target');
+    });
+    b.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      b.classList.remove('paste-target');
+      const droppedId = Number(e.dataTransfer.getData('text/plain'));
+      if (droppedId === id) {
+        await pasteCard(id);
+      } else {
+        toast('❌ Este cromo não pertence a este slot!');
+      }
+    });
+  });
+ }
+
+ if(animate){
+  grid.classList.remove('turning');
+  void grid.offsetWidth;
+  grid.classList.add('turning');
+  setTimeout(()=>grid.classList.remove('turning'), 800);
+ }
+
+ updateStats();
+}
+
+function clearFilters(){
+ $('search').value='';
+ $('category').value='all';
+ $('genderFilter').value='all';
+ $('rarityFilter').value='all';
+ $('ownership').value='all';
+ render(true);
+}
+
+/* ================= ABRIR SAQUETA ================= */
+function openPack(){
+ const packsSafe = Number(state.packs) || 0;
+ if(packsSafe >= MAX_PACKS_PER_DAY) {
+   toast('Já abriste as 3 saquetas de hoje. Volta amanhã!');
+   return;
+ }
+
+ pending=pickPack();
+ state.packs = packsSafe + 1;
+
+ const now = new Date();
+ const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+ supabaseClient.from('daily_packs').upsert(
+   { user_id: currentUser.id, date: today, count: state.packs },
+   { onConflict: 'user_id,date' }
+ ).then(({error}) => { if(error) console.error(error); });
+
+ const seenInPack = new Set();
+ const dupMap = pending.map(w => {
+   const c = state.ownedCounts[w.id] || { total:0, pasted:0, unpacked:0 };
+   const isDup = (c.pasted > 0) || seenInPack.has(w.id);
+   seenInPack.add(w.id);
+   return isDup;
+ });
+
+ const totalDup = dupMap.filter(Boolean).length;
+ const totalNew = pending.length - totalDup;
+ $('modalText').textContent = totalDup === pending.length
+  ? `Todos os ${pending.length} cromos são duplicados.`
+  : totalDup === 0
+    ? `A tua saqueta contém ${pending.length} cromos novos!`
+    : `${totalNew} novo${totalNew===1?'':'s'} + ${totalDup} duplicado${totalDup===1?'':'s'}.`;
+
+ const bestRarity = pending.reduce((best,w)=>{
+   return (rarityOrder[w.rarity] || 99) < (rarityOrder[best] || 99) ? w.rarity : best;
+ }, 'Comum');
+ $('modalBox').style.setProperty('--pack-glow', (rarityColors[bestRarity] || '#e8a800') + '66');
+
+ $('packCards').innerHTML=pending.map((w,i)=>{
+  const finalImage = w.image + '?v=' + IMG_V;
+  const isDup = dupMap[i];
+  const mc = rarityColors[w.rarity];
+  const inner = w.image
+   ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();">`
+   : '';
+  return `<div class="mini ${isDup?'duplicate':''}" data-rarity="${w.rarity}" style="--rarity-color:${mc}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${mc},#15161c 75%)">
+   ${inner}
+   <span class="mini-rarity" style="color:${mc}">${w.rarity}</span>
+   ${isDup?'<div class="dup-veil"></div><div class="dup-stamp">DUPLICADO</div>':''}
+  </div>`;
+ }).join('');
+
+ $('modalBackdrop').classList.add('show');
+ $('claimPack').focus();
+
+ requestAnimationFrame(()=>{
+  $('packCards').querySelectorAll('.mini').forEach((el,i)=>{
+   setTimeout(()=>el.classList.add('revealed'), 220 + i*260);
+  });
+ });
+ updateStats();
+}
+
+/* ================= RECEBER PARA O SOBRE ================= */
+async function claim(){
+  // Guardar cada cromo na nuvem com pasted=false (vai para o Sobre)
+  const counts = {};
+  pending.forEach(w => { counts[w.id] = (counts[w.id] || 0) + 1; });
+
+  for (const w of pending) {
+    try {
+      await supabaseClient.from('collections').insert([
+        { user_id: currentUser.id, card_id: w.id, pasted: false }
+      ]);
+    } catch(e) {
+      // Fallback sem coluna pasted: insere normalmente
+      try { await supabaseClient.from('collections').insert([{ user_id: currentUser.id, card_id: w.id }]); } catch(_) {}
+    }
+  }
+
+  // Atualizar estado local (tudo unpacked)
+  pending.forEach(w => {
+    const c = state.ownedCounts[w.id] || { total:0, pasted:0, unpacked:0 };
+    c.total += 1;
+    c.unpacked += 1;
+    state.ownedCounts[w.id] = c;
+    state.recent.add(w.id);
+  });
+
+  const totalNew = pending.filter(w => {
+    const c = state.ownedCounts[w.id];
+    return c && c.pasted === 0 && c.unpacked > 0;
+  }).length;
+
+  closeModal();
+  render();
+  toast(`📬 ${pending.length} cromo(s) no Sobre. Cola-os no álbum!`);
+  setTimeout(()=>{state.recent.clear();render();},5000);
+}
+
+function closeModal(){
+ $('modalBackdrop').classList.remove('show');
+ $('packCards').querySelectorAll('.mini').forEach(el=>el.classList.remove('revealed'));
+ $('modalBox').style.removeProperty('--pack-glow');
+ pending=[];
+}
+
+/* ================= DETALHE ================= */
+function openDetail(id){
+ const w=WRESTLER_MAP.get(id);
+ if(!w)return;
+ detailId=id;
+ const c = state.ownedCounts[w.id] || { total:0, pasted:0, unpacked:0 };
+ const hasPasted = c.pasted > 0;
+ const hasUnpacked = c.unpacked > 0;
+
+ const photoWrap=$('detailPhotoWrap');
+ photoWrap.style.setProperty('--rarity-color', hasPasted ? rarityColors[w.rarity] : '#b8a070');
+
+ const finalImage = w.image + '?v=' + IMG_V;
+
+ const art = (hasPasted&&w.image)
+  ? `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();">`
+  : '';
+ photoWrap.innerHTML = art;
+
+ $('detailName').textContent = hasPasted ? w.name : '???';
+
+ const brandImg = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ $('detailBrand').innerHTML = hasPasted 
+   ? `<img src="${brandImg}" alt="${w.brand}"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="brand-fallback" style="display:none">${w.brand}</span>`
+   : '';
+
+ const rar=$('detailRarity');
+ rar.textContent = hasPasted ? w.rarity : (hasUnpacked ? 'Por colar' : 'Em falta');
+ rar.style.setProperty('--rarity-color', hasPasted ? rarityColors[w.rarity] : '#b8a070');
+
+ $('detailGender').textContent = hasPasted ? ((w.gender==='Female'?'♀ ':'♂ ')+genderLabels[w.gender]) : '???';
+
+ $('detailStatus').innerHTML =
+   `<div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+      <span class="attr-label">Força:</span> <span class="attr-value">${hasPasted ? w.forca : '???'}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+      <span class="attr-label">Agilidade:</span> <span class="attr-value">${hasPasted ? w.agilidade : '???'}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+      <span class="attr-label">Carisma:</span> <span class="attr-value">${hasPasted ? w.carisma : '???'}</span>
+    </div>
+    <hr style="border:0; border-top:1px dashed #b8a070; margin: 10px 0;">
+    ${hasPasted
+      ? `Tens <strong>${c.pasted} colado(s)</strong>${c.unpacked > 0 ? ` + <strong>${c.unpacked} no Sobre</strong>` : ''}.`
+      : hasUnpacked
+        ? `<strong>Está no Sobre!</strong> Clica no cromo na caderneta para o colar.`
+        : `Ainda <strong>não tens</strong> este cromo. Tenta a tua sorte numa saqueta!`
+    }`;
+
+ $('detailBox').style.setProperty('--rarity-color', hasPasted ? rarityColors[w.rarity] : '#6b7280');
+ $('detailBox').setAttribute('data-rarity', hasPasted ? w.rarity : 'missing');
+
+ $('detailBackdrop').classList.add('show');
+ $('detailClose').focus();
+}
+
+function closeDetail(){
+ $('detailBackdrop').classList.remove('show');
+ detailId=null;
+}
+
+/* ================= EVENTOS ================= */
+function setupKeyboard(){
+ document.addEventListener('keydown',e=>{
+  const packOpen=$('modalBackdrop').classList.contains('show');
+  const detailOpen=$('detailBackdrop').classList.contains('show');
+  if(e.key==='Escape'){
+   if(packOpen){e.preventDefault();closeModal();}
+   else if(detailOpen){e.preventDefault();closeDetail();}
+   if (selectedEnvelopeCard) {
+     selectedEnvelopeCard = null;
+     clearPasteTargets();
+     document.querySelectorAll('.envelope-card').forEach(c=>c.style.outline='');
+   }
+  }
+  if(e.key==='Enter'&&packOpen){
+   e.preventDefault();
+   claim();
+  }
+ });
+ $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeModal();});
+ $('detailBackdrop').addEventListener('click',e=>{if(e.target===$('detailBackdrop'))closeDetail();});
+}
+
+function init(){
+ $('search').addEventListener('input',()=>render(true));
+ $('category').addEventListener('change',()=>render(true));
+ $('genderFilter').addEventListener('change',()=>render(true));
+ $('rarityFilter').addEventListener('change',()=>render(true));
+ $('ownership').addEventListener('change',()=>render(true));
+ $('openPack').addEventListener('click',openPack);
+ $('claimPack').addEventListener('click',claim);
+ $('closeModal').addEventListener('click',closeModal);
+ $('detailClose').addEventListener('click',closeDetail);
+ setupCover();
+ setupKeyboard();
+ initAuth();
+}
+init();
+</script>
+</body></html>
