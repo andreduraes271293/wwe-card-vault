@@ -1088,6 +1088,18 @@ main.shell::after{
 @media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* Estado de autenticação inicial: esconde cabeçalho/álbum até sabermos se há sessão */
+(function(){var r=document.documentElement;r.classList.add('auth-pending');
+try{if(localStorage.getItem('wwe_card_vault_was_logged_in')==='1')r.classList.add('hint-in');}catch(e){}})();
+</script>
+<style>
+/* Nunca mostrar a página "pública" (hero + botão Entrar) — só a capa */
+html.auth-pending header, html.auth-pending main,
+html.logged-out header, html.logged-out main{visibility:hidden}
+/* Utilizador que costuma estar logado: sem capa a piscar enquanto a sessão carrega */
+html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
+</style>
 </head>
 <body><div id="app">
 
@@ -1332,28 +1344,38 @@ const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= CAPA DO ÁLBUM ================= */
-const COVER_SEEN_KEY = 'wwe_card_vault_cover_seen_v2';
-function showCover(){ const c=document.getElementById('cover'); if(c) c.classList.remove('hidden'); }
-function hideCover(){ const c=document.getElementById('cover'); if(c){ c.classList.add('hidden'); try{localStorage.setItem(COVER_SEEN_KEY,'1');}catch(_){} } }
+const AUTH_HINT_KEY = 'wwe_card_vault_was_logged_in';
+function showCover(instant){
+  const c=document.getElementById('cover'); if(!c) return;
+  if (instant){ c.style.transition='none'; }
+  c.classList.remove('hidden');
+  if (instant){ void c.offsetWidth; c.style.transition=''; }
+}
+function hideCover(){ const c=document.getElementById('cover'); if(c) c.classList.add('hidden'); }
+function setAuthState(loggedIn){
+  const r=document.documentElement;
+  r.classList.remove('auth-pending','hint-in');
+  r.classList.toggle('logged-out', !loggedIn);
+}
 function setupCover(){
   const btn = document.getElementById('coverOpenBtn');
   if (!btn) return;
-  let seen = false; try { seen = localStorage.getItem(COVER_SEEN_KEY) === '1'; } catch(_) {}
   btn.addEventListener('click', async () => {
-    const loginBtn = document.getElementById('loginBtn');
-    // Se não está logado → abre logo o OAuth da Twitch
-    if (loginBtn && loginBtn.style.display !== 'none') {
-      hideCover();
+    // Ainda a verificar a sessão → ignora o clique
+    if (document.documentElement.classList.contains('auth-pending')) return;
+    if (!currentUser) {
+      // Não logado: a capa FICA visível até a Twitch redirecionar
+      btn.disabled = true;
+      btn.textContent = 'A abrir a Twitch…';
       await supabaseClient.auth.signInWithOAuth({
         provider: 'twitch',
         options: { redirectTo: window.location.origin + window.location.pathname }
       });
       return;
     }
-    // Já logado → abre o álbum
     hideCover();
   });
-  if (seen) hideCover(); else showCover();
+  // A capa começa visível (HTML); só é escondida quando há sessão (handleUser)
 }
 
 /* ================= DADOS E ATRIBUTOS ================= */
@@ -1522,7 +1544,9 @@ function onUser(user){
 }
 
 async function initAuth() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  let session = null;
+  try { ({ data: { session } } = await supabaseClient.auth.getSession()); }
+  catch (e) { console.error('getSession falhou', e); }
   onUser(session?.user);
   supabaseClient.auth.onAuthStateChange((_event, session) => {
     setTimeout(() => onUser(session?.user), 0);
@@ -1541,9 +1565,13 @@ async function handleUser(user) {
     const twitchName = user.user_metadata.custom_claims?.global_name || user.user_metadata.name || 'Twitch User';
     document.getElementById('userName').textContent = twitchName;
     if (user.user_metadata.avatar_url) document.getElementById('userAvatar').src = user.user_metadata.avatar_url;
-    await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() });
-    hideCover();  // Se voltou do OAuth, esconde a capa
-    await loadState();
+    try {
+      await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() });
+      await loadState();
+    } catch (e) { console.error(e); }
+    try { localStorage.setItem(AUTH_HINT_KEY,'1'); } catch(_) {}
+    setAuthState(true);   // só agora mostra o álbum (já com dados carregados)
+    hideCover();
     startBattleNotifications();
   } else {
     document.getElementById('loginBtn').style.display = 'flex';
@@ -1555,7 +1583,9 @@ async function handleUser(user) {
     state.ownedCounts = {};
     state.packs = 0;
     render();
-    showCover();  // Se não está logado, mostra a capa
+    try { localStorage.removeItem(AUTH_HINT_KEY); } catch(_) {}
+    setAuthState(false);  // esconde cabeçalho/hero de imediato
+    showCover(true);      // capa aparece instantaneamente, sem mostrar a página por trás
   }
   // Atualiza o botão da capa conforme login
   const coverBtn = document.getElementById('coverOpenBtn');
@@ -1568,6 +1598,7 @@ async function handleUser(user) {
     } else {
       coverBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 2L1 5.295v14.51h4.659V22h4.066l2.61-2.195h3.799L23 13.266V2H4.265zm16.32 10.263L16.95 16.01h-4.659l-2.42 2.195v-2.195H5.32V3.562h15.265v8.701zm-4.636-5.35v6.042h-1.515V6.913h1.515zm-4.154 0v6.042H10.28V6.913h1.515z"/></svg> Entrar com Twitch';
       coverBtn.classList.add('twitch-btn');
+      coverBtn.disabled = false;
       coverSub.textContent = 'Faz login para começares a colecionar.';
     }
   }
