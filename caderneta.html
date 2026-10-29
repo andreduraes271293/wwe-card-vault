@@ -152,6 +152,56 @@ header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);pad
 .user-info img{width:28px;height:28px;border-radius:50%;border:1px solid #fff}
 .user-info span{font-size:13px;font-weight:800;color:#fff}
 
+/* Finisher no modal de detalhe */
+.finisher-block{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 12px 0 6px;
+  padding: 10px 12px;
+  background: #fffaf0;
+  border: 1px dashed var(--rarity-color, #b8a070);
+  border-radius: 8px;
+  color: #2b1d0e;
+}
+.finisher-block .finisher-icon{
+  font-size: 20px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 0 #fff);
+}
+.finisher-block .finisher-label{
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 900;
+  color: var(--rarity-color, #8a0f20);
+  min-width: 74px;
+}
+.finisher-block .finisher-name{
+  font-family: 'Bodoni', Georgia, serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2b1d0e;
+  letter-spacing: 0.3px;
+}
+
+/* Estado em falta — finisher esbatido */
+.detail[data-rarity="missing"] .finisher-block{
+  background: #f0ead8;
+  border-color: #c9b78a;
+  opacity: 0.85;
+}
+.detail[data-rarity="missing"] .finisher-block .finisher-label{
+  color: #8a6a2b;
+}
+.detail[data-rarity="missing"] .finisher-block .finisher-name{
+  color: #8a6a2b;
+  font-style: italic;
+  letter-spacing: 3px;
+}
+
 /* --- MODAL BATALHAS --- */
 .battle-modal{max-width:800px;width:100%;background:#181a20;border:2px solid #8b5cf6;border-radius:18px;padding:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative}
 .battle-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #ffffff22;padding-bottom:15px}
@@ -955,6 +1005,14 @@ main.shell::after{
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .detail-info h3#detailName,
+  .detail-info .detail-brand,
+  .detail-info .detail-status,
+  .detail-info .finisher-block {
+    width: 100%;
   }
   .detail-info h3#detailName {
     font-size: 28px;
@@ -964,15 +1022,6 @@ main.shell::after{
     display: flex;
     justify-content: center;
     margin-bottom: 12px;
-  }
-  .detail-info {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .detail-info h3#detailName,
-  .detail-info .detail-brand,
-  .detail-info .detail-status {
-    width: 100%;
   }
   .detail-info .detail-rarity {
     margin-left: auto;
@@ -1311,143 +1360,143 @@ function setupCover(){
 
 /* ================= DADOS E ATRIBUTOS ================= */
 const wrestlers = [
- {id:1,   name:'John Cena',                  initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/john-cena.png', forca: 92, agilidade: 78, carisma: 99},
- {id:2,   name:'The Rock',                   initials:'ROCK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/the-rock.png', forca: 90, agilidade: 80, carisma: 99},
- {id:3,   name:'Hulk Hogan',                 initials:'HOGAN',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/hulk-hogan.png', forca: 94, agilidade: 55, carisma: 96},
- {id:4,   name:'Ric Flair',                  initials:'FLAIR',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/ric-flair.png', forca: 70, agilidade: 75, carisma: 95},
- {id:5,   name:'André the Giant',            initials:'ANDRÉ',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/andre-giant.png', forca: 99, agilidade: 30, carisma: 85},
- {id:6,  name:'Randy Savage',                initials:'SAVAGE',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/randy-savage.png', forca: 82, agilidade: 89, carisma: 92},
- {id:7,   name:'Stone Cold Steve Austin',    initials:'SCSA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/stone-cold.png', forca: 88, agilidade: 72, carisma: 97},
- {id:8,  name:'Eddie Guerrero',              initials:'EDDIE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/eddie-guerrero.png', forca: 75, agilidade: 92, carisma: 90},
- {id:9,  name:'Mick Foley',                  initials:'FOLEY',   brand:'Legends',   rarity:'Lendário',    gender:'Male',   image:'img/mick-foley.png', forca: 82, agilidade: 60, carisma: 92},
- {id:10,  name:'Bret Hart',                  initials:'BRET',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/bret-hart.png', forca: 80, agilidade: 88, carisma: 87},
- {id:11,  name:'Big Show',                   initials:'SHOW',    brand:'Legends',   rarity:'Lendário',    gender:'Male',   image:'img/big-show.png', forca: 98, agilidade: 40, carisma: 75},
- {id:12,  name:'Booker T',                   initials:'BOOK',    brand:'Legends',   rarity:'Lendário',    gender:'Male',   image:'img/booker-t.png', forca: 82, agilidade: 75, carisma: 86},
- {id:13,   name:'The Undertaker',            initials:'TAKER',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/undertaker.png', forca: 95, agilidade: 65, carisma: 98},
- {id:14,   name:'Kane',                      initials:'KANE',    brand:'Legends',   rarity:'Lendário',    gender:'Male',   image:'img/kane.png', forca: 96, agilidade: 55, carisma: 80},
- {id:15,  name:'CM Punk',            		 initials:'PUNK',   brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/cm-punk.png', forca: 78, agilidade: 82, carisma: 95},
- {id:16,  name:'Edge',                       initials:'EDGE',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/edge.png', forca: 80, agilidade: 85, carisma: 88},
- {id:17,   name:'Shawn Michaels',             initials:'HBK',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/shawn-michaels.png', forca: 78, agilidade: 95, carisma: 93},
- {id:18,   name:'Triple H',                   initials:'HHH',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/triple-h.png', forca: 89, agilidade: 70, carisma: 90},
- {id:19,  name:'Batista',                    initials:'ANIMAL',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/batista.png', forca: 95, agilidade: 65, carisma: 85},
- {id:20,  name:'Randy Orton',        		 initials:'RKO',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/randy-orton.png', forca: 88, agilidade: 82, carisma: 87},
- {id:21,  name:'Kurt Angle',                 initials:'ANGLE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kurt-angle.png', forca: 85, agilidade: 88, carisma: 82},
- {id:22,  name:'Rey Mysterio',       		 initials:'REY',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/rey-mysterio.png', forca: 60, agilidade: 98, carisma: 90},
- {id:23,  name:'Roman Reigns',       		 initials:'OTC',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/roman-reigns.png', forca: 94, agilidade: 78, carisma: 90},
- {id:24,  name:'Seth Rollins',       		 initials:'SETH',   brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/seth-rollins.png', forca: 85, agilidade: 92, carisma: 89},
- {id:25,  name:'Goldberg',                   initials:'BILL',     brand:'Legends',   rarity:'Lendário',    gender:'Male',   image:'img/goldberg.png', forca: 97, agilidade: 62, carisma: 84},
- {id:26,  name:'Chyna',                      initials:'CHYNA',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/chyna.png', forca: 92, agilidade: 70, carisma: 84},
- {id:27,  name:'Trish Stratus',              initials:'TRISH',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/trish-stratus.png', forca: 65, agilidade: 85, carisma: 90},
- {id:28,  name:'Lita',                       initials:'LITA',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/lita.png', forca: 60, agilidade: 92, carisma: 88},
- {id:29,  name:'Beth Phoenix',               initials:'BETH',    brand:'Legends',   rarity:'Lendário',    gender:'Female', image:'img/beth-phoenix.png', forca: 90, agilidade: 65, carisma: 78},
- {id:30,  name:'Mickie James',               initials:'MICKIE',  brand:'Legends',   rarity:'Lendário',    gender:'Female', image:'img/mickie-james.png', forca: 68, agilidade: 80, carisma: 85},
- {id:31,  name:'Charlotte Flair',    		 initials:'QUEEN',  brand:'SmackDown', rarity:'Lendário', gender:'Female', image:'img/charlotte-flair.png', forca: 78, agilidade: 88, carisma: 89},
- {id:32,  name:'Becky Lynch',        		 initials:'BECKY',  brand:'RAW',       rarity:'Lendário', gender:'Female', image:'img/becky-lynch.png', forca: 75, agilidade: 85, carisma: 92},
- {id:33,  name:'Cody Rhodes',        initials:'CODY',   brand:'SmackDown',  rarity:'Épico', gender:'Male',   image:'img/cody-rhodes.png', forca: 85, agilidade: 88, carisma: 93},
- {id:34,  name:'Rhea Ripley',        initials:'MAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/rhea-ripley.png', forca: 88, agilidade: 82, carisma: 90},
- {id:35,  name:'Liv Morgan',         initials:'LIV',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/liv-morgan.png', forca: 70, agilidade: 85, carisma: 88},
- {id:36,  name:'Sami Zayn',          initials:'SAMI',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/sami-zayn.png', forca: 75, agilidade: 88, carisma: 92},
- {id:37,  name:'Jacob Fatu',         initials:'FATU',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/jacob-fatu.png', forca: 94, agilidade: 78, carisma: 80},
- {id:38,  name:'Bayley',             initials:'BAY',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/bayley.png', forca: 72, agilidade: 86, carisma: 89},
- {id:39,  name:'Stephanie Vaquer',   initials:'STEPH',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/stephanie-vaquer.png', forca: 80, agilidade: 90, carisma: 85},
- {id:40,  name:'Paige',              initials:'PAIGE',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/paige.png', forca: 65, agilidade: 82, carisma: 84},
- {id:41,  name:'Bron Breakker',      initials:'BRON',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/bron-breakker.png', forca: 93, agilidade: 85, carisma: 78},
- {id:42,  name:'Dominik Mysterio',   initials:'DOM',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/dominik-mysterio.png', forca: 65, agilidade: 84, carisma: 86},
- {id:43,  name:'Jey Uso',            initials:'YEET',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/jey-uso.png', forca: 80, agilidade: 86, carisma: 91},
- {id:44,  name:'Jimmy Uso',          initials:'JIMMY',  brand:'RAW',       rarity:'Épico',     gender:'Male',   image:'img/jimmy-uso.png', forca: 78, agilidade: 85, carisma: 82},
- {id:45,  name:'Chad Gable',         initials:'GABLE',  brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/chad-gable.png', forca: 78, agilidade: 92, carisma: 75},
- {id:46,  name:'Oba Femi',           initials:'OBA',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/oba-femi.png', forca: 92, agilidade: 75, carisma: 80},
- {id:47,  name:'Solo Sikoa',         initials:'SOLO',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/solo-sikoa.png', forca: 88, agilidade: 72, carisma: 78},
- {id:48,  name:'Alexa Bliss',        initials:'ALEXA',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/alexa-bliss.png', forca: 60, agilidade: 78, carisma: 90},
- {id:49,  name:'Iyo Sky',            initials:'SKY',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/iyo-sky.png', forca: 65, agilidade: 96, carisma: 82},
- {id:50,  name:'LA Knight',          initials:'YEAH',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/la-knight.png', forca: 78, agilidade: 80, carisma: 94},
- {id:51,  name:'Tiffany Stratton',   initials:'TIFFY',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/tiffany-stratton.png', forca: 70, agilidade: 88, carisma: 87},
- {id:52,  name:'Asuka',              initials:'ASUKA',  brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/asuka.png', forca: 72, agilidade: 93, carisma: 85},
- {id:53,  name:'Raquel Rodriguez',   initials:'RAQ',    brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/raquel-rodriguez.png', forca: 90, agilidade: 65, carisma: 75},
- {id:54,  name:'Jade Cargill',       initials:'JADE',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jade-cargill.png', forca: 88, agilidade: 80, carisma: 82},
- {id:55,  name:'Bianca Belair',      initials:'EST',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/bianca-belair.png', forca: 85, agilidade: 90, carisma: 88},
- {id:56,  name:'Chelsea Green',      initials:'GREEN',  brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/chelsea-green.png', forca: 55, agilidade: 75, carisma: 86},
- {id:57,  name:'Damian Priest',      initials:'PRIEST', brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/damian-priest.png', forca: 90, agilidade: 78, carisma: 83},
- {id:58,  name:'Drew McIntyre',      initials:'DREW',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/drew-mcintyre.png', forca: 92, agilidade: 80, carisma: 85},
- {id:59,  name:'Finn Bálor',         initials:'BALOR',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/finn-balor.png', forca: 78, agilidade: 92, carisma: 86},
- {id:60,  name:'Gunther',            initials:'GUNTR',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/gunther.png', forca: 95, agilidade: 75, carisma: 88},
- {id:61,  name:'Jacy Jayne',         initials:'JACY',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jacy-jayne.png', forca: 65, agilidade: 80, carisma: 78},
- {id:62,  name:'Kevin Owens',        initials:'KO',     brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/kevin-owens.png', forca: 85, agilidade: 78, carisma: 90},
- {id:63,  name:'Trick Williams',     initials:'TRICK',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/trick-williams.png', forca: 82, agilidade: 84, carisma: 86},
- {id:64,  name:'AJ Lee',             initials:'AJ',     brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/aj-lee.png', forca: 58, agilidade: 82, carisma: 91},
- {id:65,  name:'Brie Bella',         initials:'BRIE',   brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/brie-bella.png', forca: 62, agilidade: 75, carisma: 80},
- {id:66,  name:'Nikki Bella',        initials:'NIKKI',  brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/nikki-bella.png', forca: 70, agilidade: 78, carisma: 85},
- {id:67,  name:'Logan Paul',         initials:'LOGAN',  brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/logan-paul.png', forca: 82, agilidade: 90, carisma: 92},
- {id:68,  name:'The Miz',            initials:'MIZ',    brand:'SmackDown', rarity:'Épico',     gender:'Male',   image:'img/the-miz.png', forca: 68, agilidade: 76, carisma: 94},
- {id:69,  name:'Naomi',              initials:'GLOW',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/naomi.png', forca: 72, agilidade: 90, carisma: 86},
- {id:70,  name:'Montez Ford',        initials:'FORD',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/montez-ford.png', forca: 80, agilidade: 92, carisma: 84},
- {id:71,  name:'Rusev',              initials:'RUSEV',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rusev.png', forca: 92, agilidade: 70, carisma: 78},
- {id:72,  name:'Dragon Lee',         initials:'LEE',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/dragon-lee.png', forca: 65, agilidade: 95, carisma: 75},
- {id:73,  name:'Shinsuke Nakamura',  initials:'SHIN',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/shinsuke-nakamura.png', forca: 80, agilidade: 88, carisma: 85},
- {id:74,  name:'Austin Theory',      initials:'THEORY', brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/austin-theory.png', forca: 75, agilidade: 85, carisma: 82},
- {id:75,  name:'Bronson Reed',       initials:'REED',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/bronson-reed.png', forca: 96, agilidade: 60, carisma: 70},
- {id:76,  name:'Ethan Page',         initials:'EGO',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/ethan-page.png', forca: 78, agilidade: 76, carisma: 83},
- {id:77,  name:'Je\'Von Evans',      initials:'JEVON',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jevon-evans.png', forca: 60, agilidade: 94, carisma: 78},
- {id:78,  name:'JD McDonagh',        initials:'JD',     brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jd-mcdonagh.png', forca: 65, agilidade: 86, carisma: 72},
- {id:79,  name:'Angelo Dawkins',     initials:'ANGELO', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/angelo-dawkins.png', forca: 82, agilidade: 80, carisma: 75},
- {id:80,  name:'Otis',               initials:'OTIS',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/otis.png', forca: 90, agilidade: 55, carisma: 78},
- {id:81,  name:'Blake Monroe',       initials:'BLAKE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/blake-monroe.png', forca: 70, agilidade: 78, carisma: 80},
- {id:82,  name:'Giulia',             initials:'GIULIA', brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/giulia.png', forca: 72, agilidade: 88, carisma: 86},
- {id:83,  name:'Penta',              initials:'PENTA',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/penta.png', forca: 80, agilidade: 90, carisma: 85},
- {id:84,  name:'Roxanne Perez',      initials:'ROXY',   brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/roxanne-perez.png', forca: 62, agilidade: 88, carisma: 82},
- {id:85,  name:'Lyra Valkyria',      initials:'LYRA',   brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/lyra-valkyria.png', forca: 68, agilidade: 86, carisma: 78},
- {id:86,  name:'Tatum Paxley',       initials:'TATUM',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/tatum-paxley.png', forca: 60, agilidade: 82, carisma: 80},
- {id:87,  name:'Carmelo Hayes',      initials:'HAYES',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/carmelo-hayes.png', forca: 72, agilidade: 92, carisma: 85},
- {id:88,  name:'Pete Dunne',         initials:'DUNNE',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/pete-dunne.png', forca: 78, agilidade: 86, carisma: 75},
- {id:89,  name:'Candice LeRae',      initials:'LERAE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/candice-lerae.png', forca: 58, agilidade: 84, carisma: 78},
- {id:90,  name:'Johnny Gargano',     initials:'JOHNNY', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/johnny-gargano.png', forca: 70, agilidade: 90, carisma: 84},
- {id:91,  name:'Jordynne Grace',     initials:'GRACE',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/jordynne-grace.png', forca: 90, agilidade: 75, carisma: 80},
- {id:92,  name:'Lash Legend',        initials:'LASH',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/lash-legend.png', forca: 88, agilidade: 68, carisma: 78},
- {id:93,  name:'Michin',             initials:'MICHIN', brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/michin.png', forca: 75, agilidade: 85, carisma: 76},
- {id:94,  name:'Nathan Frazer',      initials:'FRAZER', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/nathan-frazer.png', forca: 65, agilidade: 98, carisma: 78},
- {id:95,  name:'Nia Jax',            initials:'NIA',    brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/nia-jax.png', forca: 95, agilidade: 55, carisma: 72},
- {id:96,  name:'Piper Niven',        initials:'PIPER',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/piper-niven.png', forca: 88, agilidade: 62, carisma: 70},
- {id:97,  name:'R-Truth',            initials:'TRUTH',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/r-truth.png', forca: 62, agilidade: 75, carisma: 88},
- {id:98,  name:'Rey Fenix',          initials:'FENIX',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rey-fenix.png', forca: 68, agilidade: 96, carisma: 80},
- {id:99,  name:'Ricky Saints',       initials:'SAINTS', brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/ricky-saints.png', forca: 74, agilidade: 86, carisma: 82},
- {id:100, name:'Talla Tonga',        initials:'TALLA',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/talla-tonga.png', forca: 90, agilidade: 60, carisma: 70},
- {id:101, name:'Tama Tonga',         initials:'TAMA',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/tama-tonga.png', forca: 88, agilidade: 70, carisma: 72},
- {id:102, name:'Joe Hendry',         initials:'HENDRY', brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/joe-hendry.png', forca: 75, agilidade: 78, carisma: 90},
- {id:103, name:'Omos',               initials:'OMOS',   brand:'Free Agent',rarity:'Comum',     gender:'Male',   image:'img/omos.png', forca: 97, agilidade: 35, carisma: 60},
- {id:104, name:'Maxxine Dupri',      initials:'DUPRI',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/maxxine-dupri.png', forca: 55, agilidade: 75, carisma: 78},
- {id:105, name:'Jaida Parker',       initials:'JAIDA',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/jaida-parker.png', forca: 80, agilidade: 72, carisma: 74},
- {id:106, name:'Ivy Nile',           initials:'IVY',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/ivy-nile.png', forca: 85, agilidade: 70, carisma: 70},
- {id:107, name:'Royce Keys',         initials:'KEYS',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/royce-keys.png', forca: 78, agilidade: 76, carisma: 72},
- {id:108, name:'Joaquin Wilde',      initials:'WILDE',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/joaquin-wilde.png', forca: 65, agilidade: 88, carisma: 74},
- {id:109, name:'Cruz Del Toro',      initials:'CRUZ',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/cruz-del-toro.png', forca: 68, agilidade: 86, carisma: 72},
- {id:110, name:'Rayo Americano',     initials:'RAYO',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/rayo-americano.png', forca: 70, agilidade: 84, carisma: 75},
- {id:111, name:'El Grande Americano',initials:'EGA',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/el-grande-americano.png', forca: 82, agilidade: 65, carisma: 70},
- {id:112, name:'Akira Tozawa',       initials:'TOZAWA', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/akira-tozawa.png', forca: 60, agilidade: 85, carisma: 74},
- {id:113, name:'Big Cass',           initials:'CASS',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/big-cass.png', forca: 92, agilidade: 50, carisma: 68},
- {id:114, name:'Bronco Nima',        initials:'NIMA',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bronco-nima.png', forca: 85, agilidade: 62, carisma: 65},
- {id:115, name:'Lucien Price',       initials:'PRICE',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/lucien-price.png', forca: 82, agilidade: 68, carisma: 66},
- {id:116, name:'Lola Vice',          initials:'LOLA',   brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/lola-vice.png', forca: 62, agilidade: 80, carisma: 76},
- {id:117, name:'Sol Ruca',           initials:'SOL',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/sol-ruca.png', forca: 60, agilidade: 88, carisma: 78},
- {id:118, name:'Tyler Bate',         initials:'BATE',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/tyler-bate.png', forca: 82, agilidade: 80, carisma: 72},
- {id:119, name:'Ludwig Kaiser',      initials:'KAISER', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/ludwig-kaiser.png', forca: 78, agilidade: 78, carisma: 80},
- {id:120, name:'Brutus Creed',       initials:'BRUTUS', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/brutus-creed.png', forca: 90, agilidade: 65, carisma: 68},
- {id:121, name:'Julius Creed',       initials:'JULIUS', brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/julius-creed.png', forca: 88, agilidade: 68, carisma: 68},
- {id:122, name:'Bravo Americano',    initials:'BRAVO',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bravo-americano.png', forca: 80, agilidade: 70, carisma: 72},
- {id:123, name:'Nattie',             initials:'NATTIE', brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/nattie.png', forca: 75, agilidade: 72, carisma: 70},
- {id:124, name:'Angel',              initials:'ANGEL',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/angel.png', forca: 78, agilidade: 74, carisma: 70},
- {id:125, name:'Axiom',              initials:'AXIOM',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/axiom.png', forca: 65, agilidade: 90, carisma: 72},
- {id:126, name:'B-Fab',              initials:'BFAB',   brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/b-fab.png', forca: 70, agilidade: 75, carisma: 68},
- {id:127, name:'Baron Corbin',       initials:'CORBIN', brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/baron-corbin.png', forca: 85, agilidade: 68, carisma: 74},
- {id:128, name:'Berto',              initials:'BERTO',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/berto.png', forca: 72, agilidade: 82, carisma: 70},
- {id:129, name:'Elton Prince',       initials:'ELTON',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/elton-prince.png', forca: 68, agilidade: 78, carisma: 76},
- {id:130, name:'Erik',               initials:'ERIK',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/erik.png', forca: 88, agilidade: 62, carisma: 66},
- {id:131, name:'Fallon Henley',      initials:'FALLON', brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/fallon-henley.png', forca: 65, agilidade: 78, carisma: 74},
- {id:132, name:'Ivar',               initials:'IVAR',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/ivar.png', forca: 92, agilidade: 55, carisma: 70},
- {id:133, name:'Kiana James',        initials:'KIANA',  brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/kiana-james.png', forca: 62, agilidade: 76, carisma: 72},
- {id:134, name:'Kit Wilson',         initials:'KIT',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/kit-wilson.png', forca: 66, agilidade: 80, carisma: 76},
- {id:135, name:'Lainey Reid',        initials:'LAINEY', brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/lainey-reid.png', forca: 60, agilidade: 78, carisma: 72},
- {id:136, name:'Matt Cardona',       initials:'MATT',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/matt-cardona.png', forca: 74, agilidade: 76, carisma: 82},
- {id:137, name:'Danhausen',          initials:'DANH',   brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/danhausen.png', forca: 55, agilidade: 72, carisma: 85}
+ {id:1,   name:'John Cena',                  initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/john-cena.png', forca: 92, agilidade: 78, carisma: 99, finisher:'Attitude Adjustment'},
+ {id:2,   name:'The Rock',                   initials:'ROCK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/the-rock.png', forca: 90, agilidade: 80, carisma: 99, finisher:'Rock Bottom'},
+ {id:3,   name:'Hulk Hogan',                 initials:'HOGAN',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/hulk-hogan.png', forca: 94, agilidade: 55, carisma: 96, finisher:'Atomic Leg Drop'},
+ {id:4,   name:'Ric Flair',                  initials:'FLAIR',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/ric-flair.png', forca: 70, agilidade: 75, carisma: 95, finisher:'Figure-Four Leglock'},
+ {id:5,   name:'André the Giant',            initials:'ANDRÉ',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/andre-giant.png', forca: 99, agilidade: 30, carisma: 85, finisher:'Double Underhook Suplex'},
+ {id:6,   name:'Randy Savage',               initials:'SAVAGE',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/randy-savage.png', forca: 82, agilidade: 89, carisma: 92, finisher:'Flying Elbow Drop'},
+ {id:7,   name:'Stone Cold Steve Austin',    initials:'SCSA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/stone-cold.png', forca: 88, agilidade: 72, carisma: 97, finisher:'Stone Cold Stunner'},
+ {id:8,   name:'Eddie Guerrero',             initials:'EDDIE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/eddie-guerrero.png', forca: 75, agilidade: 92, carisma: 90, finisher:'Frog Splash'},
+ {id:9,   name:'Mick Foley',                 initials:'FOLEY',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/mick-foley.png', forca: 82, agilidade: 60, carisma: 92, finisher:'Double Arm DDT'},
+ {id:10,  name:'Bret Hart',                  initials:'BRET',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/bret-hart.png', forca: 80, agilidade: 88, carisma: 87, finisher:'Sharpshooter'},
+ {id:11,  name:'Big Show',                   initials:'SHOW',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/big-show.png', forca: 98, agilidade: 40, carisma: 75, finisher:'Chokeslam'},
+ {id:12,  name:'Booker T',                   initials:'BOOK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/booker-t.png', forca: 82, agilidade: 75, carisma: 86, finisher:'Scissors Kick'},
+ {id:13,  name:'The Undertaker',             initials:'TAKER',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/undertaker.png', forca: 95, agilidade: 65, carisma: 98, finisher:'Tombstone Piledriver'},
+ {id:14,  name:'Kane',                       initials:'KANE',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kane.png', forca: 96, agilidade: 55, carisma: 80, finisher:'Chokeslam from Hell'},
+ {id:15,  name:'CM Punk',                    initials:'PUNK',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/cm-punk.png', forca: 78, agilidade: 82, carisma: 95, finisher:'GTS (Go To Sleep)'},
+ {id:16,  name:'Edge',                       initials:'EDGE',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/edge.png', forca: 80, agilidade: 85, carisma: 88, finisher:'Spear'},
+ {id:17,  name:'Shawn Michaels',             initials:'HBK',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/shawn-michaels.png', forca: 78, agilidade: 95, carisma: 93, finisher:'Sweet Chin Music'},
+ {id:18,  name:'Triple H',                   initials:'HHH',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/triple-h.png', forca: 89, agilidade: 70, carisma: 90, finisher:'Pedigree'},
+ {id:19,  name:'Batista',                    initials:'ANIMAL',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/batista.png', forca: 95, agilidade: 65, carisma: 85, finisher:'Batista Bomb'},
+ {id:20,  name:'Randy Orton',                initials:'RKO',     brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/randy-orton.png', forca: 88, agilidade: 82, carisma: 87, finisher:'RKO'},
+ {id:21,  name:'Kurt Angle',                 initials:'ANGLE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kurt-angle.png', forca: 85, agilidade: 88, carisma: 82, finisher:'Angle Slam'},
+ {id:22,  name:'Rey Mysterio',               initials:'REY',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/rey-mysterio.png', forca: 60, agilidade: 98, carisma: 90, finisher:'619'},
+ {id:23,  name:'Roman Reigns',               initials:'OTC',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/roman-reigns.png', forca: 94, agilidade: 78, carisma: 90, finisher:'Spear'},
+ {id:24,  name:'Seth Rollins',               initials:'SETH',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/seth-rollins.png', forca: 85, agilidade: 92, carisma: 89, finisher:'Curb Stomp'},
+ {id:25,  name:'Goldberg',                   initials:'BILL',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/goldberg.png', forca: 97, agilidade: 62, carisma: 84, finisher:'Jackhammer'},
+ {id:26,  name:'Chyna',                      initials:'CHYNA',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/chyna.png', forca: 92, agilidade: 70, carisma: 84, finisher:'Military Press Slam'},
+ {id:27,  name:'Trish Stratus',              initials:'TRISH',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/trish-stratus.png', forca: 65, agilidade: 85, carisma: 90, finisher:'Stratusfaction'},
+ {id:28,  name:'Lita',                       initials:'LITA',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/lita.png', forca: 60, agilidade: 92, carisma: 88, finisher:'Litasault'},
+ {id:29,  name:'Beth Phoenix',               initials:'BETH',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/beth-phoenix.png', forca: 90, agilidade: 65, carisma: 78, finisher:'Glam Slam'},
+ {id:30,  name:'Mickie James',               initials:'MICKIE',  brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/mickie-james.png', forca: 68, agilidade: 80, carisma: 85, finisher:'Mickie-DT'},
+ {id:31,  name:'Charlotte Flair',            initials:'QUEEN',   brand:'SmackDown', rarity:'Lendário', gender:'Female', image:'img/charlotte-flair.png', forca: 78, agilidade: 88, carisma: 89, finisher:'Figure-Eight Leglock'},
+ {id:32,  name:'Becky Lynch',                initials:'BECKY',   brand:'RAW',       rarity:'Lendário', gender:'Female', image:'img/becky-lynch.png', forca: 75, agilidade: 85, carisma: 92, finisher:'Dis-Arm-Her'},
+ {id:33,  name:'Cody Rhodes',                initials:'CODY',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/cody-rhodes.png', forca: 85, agilidade: 88, carisma: 93, finisher:'Cross Rhodes'},
+ {id:34,  name:'Rhea Ripley',                initials:'MAMI',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/rhea-ripley.png', forca: 88, agilidade: 82, carisma: 90, finisher:'Riptide'},
+ {id:35,  name:'Liv Morgan',                 initials:'LIV',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/liv-morgan.png', forca: 70, agilidade: 85, carisma: 88, finisher:'Oblivion'},
+ {id:36,  name:'Sami Zayn',                  initials:'SAMI',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/sami-zayn.png', forca: 75, agilidade: 88, carisma: 92, finisher:'Helluva Kick'},
+ {id:37,  name:'Jacob Fatu',                 initials:'FATU',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/jacob-fatu.png', forca: 94, agilidade: 78, carisma: 80, finisher:'Moonsault'},
+ {id:38,  name:'Bayley',                     initials:'BAY',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/bayley.png', forca: 72, agilidade: 86, carisma: 89, finisher:'Rose Plant'},
+ {id:39,  name:'Stephanie Vaquer',           initials:'STEPH',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/stephanie-vaquer.png', forca: 80, agilidade: 90, carisma: 85, finisher:'La Metralleta'},
+ {id:40,  name:'Paige',                      initials:'PAIGE',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/paige.png', forca: 65, agilidade: 82, carisma: 84, finisher:'PTO'},
+ {id:41,  name:'Bron Breakker',              initials:'BRON',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/bron-breakker.png', forca: 93, agilidade: 85, carisma: 78, finisher:'Spear'},
+ {id:42,  name:'Dominik Mysterio',           initials:'DOM',     brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/dominik-mysterio.png', forca: 65, agilidade: 84, carisma: 86, finisher:'Frog Splash'},
+ {id:43,  name:'Jey Uso',                    initials:'YEET',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/jey-uso.png', forca: 80, agilidade: 86, carisma: 91, finisher:'Uso Splash'},
+ {id:44,  name:'Jimmy Uso',                  initials:'JIMMY',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/jimmy-uso.png', forca: 78, agilidade: 85, carisma: 82, finisher:'Uso Splash'},
+ {id:45,  name:'Chad Gable',                 initials:'GABLE',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/chad-gable.png', forca: 78, agilidade: 92, carisma: 75, finisher:'Ankle Lock'},
+ {id:46,  name:'Oba Femi',                   initials:'OBA',     brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/oba-femi.png', forca: 92, agilidade: 75, carisma: 80, finisher:'Falling Powerbomb'},
+ {id:47,  name:'Solo Sikoa',                 initials:'SOLO',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/solo-sikoa.png', forca: 88, agilidade: 72, carisma: 78, finisher:'Samoan Spike'},
+ {id:48,  name:'Alexa Bliss',                initials:'ALEXA',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/alexa-bliss.png', forca: 60, agilidade: 78, carisma: 90, finisher:'Twisted Bliss'},
+ {id:49,  name:'Iyo Sky',                    initials:'SKY',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/iyo-sky.png', forca: 65, agilidade: 96, carisma: 82, finisher:'Over the Moonsault'},
+ {id:50,  name:'LA Knight',                  initials:'YEAH',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/la-knight.png', forca: 78, agilidade: 80, carisma: 94, finisher:'BFT (Blunt Force Trauma)'},
+ {id:51,  name:'Tiffany Stratton',           initials:'TIFFY',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/tiffany-stratton.png', forca: 70, agilidade: 88, carisma: 87, finisher:'Precious Drop (PME)'},
+ {id:52,  name:'Asuka',                      initials:'ASUKA',   brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/asuka.png', forca: 72, agilidade: 93, carisma: 85, finisher:'Asuka Lock'},
+ {id:53,  name:'Raquel Rodriguez',           initials:'RAQ',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/raquel-rodriguez.png', forca: 90, agilidade: 65, carisma: 75, finisher:'Texana Bomb'},
+ {id:54,  name:'Jade Cargill',               initials:'JADE',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jade-cargill.png', forca: 88, agilidade: 80, carisma: 82, finisher:'Jaded (DDT)'},
+ {id:55,  name:'Bianca Belair',              initials:'EST',     brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/bianca-belair.png', forca: 85, agilidade: 90, carisma: 88, finisher:'KOD (Kiss of Death)'},
+ {id:56,  name:'Chelsea Green',              initials:'GREEN',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/chelsea-green.png', forca: 55, agilidade: 75, carisma: 86, finisher:'Unprettier'},
+ {id:57,  name:'Damian Priest',              initials:'PRIEST',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/damian-priest.png', forca: 90, agilidade: 78, carisma: 83, finisher:'South of Heaven'},
+ {id:58,  name:'Drew McIntyre',              initials:'DREW',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/drew-mcintyre.png', forca: 92, agilidade: 80, carisma: 85, finisher:'Claymore'},
+ {id:59,  name:'Finn Bálor',                 initials:'BALOR',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/finn-balor.png', forca: 78, agilidade: 92, carisma: 86, finisher:'Coup de Grâce'},
+ {id:60,  name:'Gunther',                    initials:'GUNTR',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/gunther.png', forca: 95, agilidade: 75, carisma: 88, finisher:'Powerbomb'},
+ {id:61,  name:'Jacy Jayne',                 initials:'JACY',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jacy-jayne.png', forca: 65, agilidade: 80, carisma: 78, finisher:'Discus Elbow'},
+ {id:62,  name:'Kevin Owens',                initials:'KO',      brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/kevin-owens.png', forca: 85, agilidade: 78, carisma: 90, finisher:'Stunner'},
+ {id:63,  name:'Trick Williams',             initials:'TRICK',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/trick-williams.png', forca: 82, agilidade: 84, carisma: 86, finisher:'Trick Shot'},
+ {id:64,  name:'AJ Lee',                     initials:'AJ',      brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/aj-lee.png', forca: 58, agilidade: 82, carisma: 91, finisher:'Black Widow'},
+ {id:65,  name:'Brie Bella',                 initials:'BRIE',    brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/brie-bella.png', forca: 62, agilidade: 75, carisma: 80, finisher:'Brie Mode'},
+ {id:66,  name:'Nikki Bella',                initials:'NIKKI',   brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/nikki-bella.png', forca: 70, agilidade: 78, carisma: 85, finisher:'Rack Attack'},
+ {id:67,  name:'Logan Paul',                 initials:'LOGAN',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/logan-paul.png', forca: 82, agilidade: 90, carisma: 92, finisher:'KO Punch'},
+ {id:68,  name:'The Miz',                    initials:'MIZ',     brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/the-miz.png', forca: 68, agilidade: 76, carisma: 94, finisher:'Skull-Crushing Finale'},
+ {id:69,  name:'Naomi',                      initials:'GLOW',    brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/naomi.png', forca: 72, agilidade: 90, carisma: 86, finisher:'Rear View'},
+ {id:70,  name:'Montez Ford',                initials:'FORD',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/montez-ford.png', forca: 80, agilidade: 92, carisma: 84, finisher:'From the Heavens'},
+ {id:71,  name:'Rusev',                      initials:'RUSEV',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rusev.png', forca: 92, agilidade: 70, carisma: 78, finisher:'The Accolade'},
+ {id:72,  name:'Dragon Lee',                 initials:'LEE',     brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/dragon-lee.png', forca: 65, agilidade: 95, carisma: 75, finisher:'Operation Dragon'},
+ {id:73,  name:'Shinsuke Nakamura',          initials:'SHIN',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/shinsuke-nakamura.png', forca: 80, agilidade: 88, carisma: 85, finisher:'Kinshasa'},
+ {id:74,  name:'Austin Theory',              initials:'THEORY',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/austin-theory.png', forca: 75, agilidade: 85, carisma: 82, finisher:'A-Town Down'},
+ {id:75,  name:'Bronson Reed',               initials:'REED',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/bronson-reed.png', forca: 96, agilidade: 60, carisma: 70, finisher:'Tsunami'},
+ {id:76,  name:'Ethan Page',                 initials:'EGO',     brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/ethan-page.png', forca: 78, agilidade: 76, carisma: 83, finisher:'Ego\'s Edge'},
+ {id:77,  name:'Je\'Von Evans',              initials:'JEVON',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jevon-evans.png', forca: 60, agilidade: 94, carisma: 78, finisher:'Corkscrew Moonsault'},
+ {id:78,  name:'JD McDonagh',                initials:'JD',      brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jd-mcdonagh.png', forca: 65, agilidade: 86, carisma: 72, finisher:'Devil Inside'},
+ {id:79,  name:'Angelo Dawkins',             initials:'ANGELO',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/angelo-dawkins.png', forca: 82, agilidade: 80, carisma: 75, finisher:'Spinebuster'},
+ {id:80,  name:'Otis',                       initials:'OTIS',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/otis.png', forca: 90, agilidade: 55, carisma: 78, finisher:'Caterpillar Elbow'},
+ {id:81,  name:'Blake Monroe',               initials:'BLAKE',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/blake-monroe.png', forca: 70, agilidade: 78, carisma: 80, finisher:'Monroe Driver'},
+ {id:82,  name:'Giulia',                     initials:'GIULIA',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/giulia.png', forca: 72, agilidade: 88, carisma: 86, finisher:'Northern Lights Bomb'},
+ {id:83,  name:'Penta',                      initials:'PENTA',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/penta.png', forca: 80, agilidade: 90, carisma: 85, finisher:'Penta Driver'},
+ {id:84,  name:'Roxanne Perez',              initials:'ROXY',    brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/roxanne-perez.png', forca: 62, agilidade: 88, carisma: 82, finisher:'Pop Rox'},
+ {id:85,  name:'Lyra Valkyria',              initials:'LYRA',    brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/lyra-valkyria.png', forca: 68, agilidade: 86, carisma: 78, finisher:'Nightwing'},
+ {id:86,  name:'Tatum Paxley',               initials:'TATUM',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/tatum-paxley.png', forca: 60, agilidade: 82, carisma: 80, finisher:'Paxley Cutter'},
+ {id:87,  name:'Carmelo Hayes',              initials:'HAYES',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/carmelo-hayes.png', forca: 72, agilidade: 92, carisma: 85, finisher:'Nothing But Net'},
+ {id:88,  name:'Pete Dunne',                 initials:'DUNNE',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/pete-dunne.png', forca: 78, agilidade: 86, carisma: 75, finisher:'Bitter End'},
+ {id:89,  name:'Candice LeRae',              initials:'LERAE',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/candice-lerae.png', forca: 58, agilidade: 84, carisma: 78, finisher:'Wicked Stepsister'},
+ {id:90,  name:'Johnny Gargano',             initials:'JOHNNY',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/johnny-gargano.png', forca: 70, agilidade: 90, carisma: 84, finisher:'One Final Beat'},
+ {id:91,  name:'Jordynne Grace',             initials:'GRACE',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/jordynne-grace.png', forca: 90, agilidade: 75, carisma: 80, finisher:'Grace Driver'},
+ {id:92,  name:'Lash Legend',                initials:'LASH',    brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/lash-legend.png', forca: 88, agilidade: 68, carisma: 78, finisher:'Lash Extension'},
+ {id:93,  name:'Michin',                     initials:'MICHIN',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/michin.png', forca: 75, agilidade: 85, carisma: 76, finisher:'Eat Defeat'},
+ {id:94,  name:'Nathan Frazer',              initials:'FRAZER',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/nathan-frazer.png', forca: 65, agilidade: 98, carisma: 78, finisher:'Phoenix Splash'},
+ {id:95,  name:'Nia Jax',                    initials:'NIA',     brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/nia-jax.png', forca: 95, agilidade: 55, carisma: 72, finisher:'Annihilator'},
+ {id:96,  name:'Piper Niven',                initials:'PIPER',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/piper-niven.png', forca: 88, agilidade: 62, carisma: 70, finisher:'Piper Driver'},
+ {id:97,  name:'R-Truth',                    initials:'TRUTH',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/r-truth.png', forca: 62, agilidade: 75, carisma: 88, finisher:'Truth or Consequences'},
+ {id:98,  name:'Rey Fenix',                  initials:'FENIX',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rey-fenix.png', forca: 68, agilidade: 96, carisma: 80, finisher:'Black Fire Driver'},
+ {id:99,  name:'Ricky Saints',               initials:'SAINTS',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/ricky-saints.png', forca: 74, agilidade: 86, carisma: 82, finisher:'Saints Cutter'},
+ {id:100, name:'Talla Tonga',                initials:'TALLA',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/talla-tonga.png', forca: 90, agilidade: 60, carisma: 70, finisher:'Tongan Splash'},
+ {id:101, name:'Tama Tonga',                 initials:'TAMA',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/tama-tonga.png', forca: 88, agilidade: 70, carisma: 72, finisher:'Gun Stun'},
+ {id:102, name:'Joe Hendry',                 initials:'HENDRY',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/joe-hendry.png', forca: 75, agilidade: 78, carisma: 90, finisher:'Standing Ovation'},
+ {id:103, name:'Omos',                       initials:'OMOS',    brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/omos.png', forca: 97, agilidade: 35, carisma: 60, finisher:'Two-Handed Chokeslam'},
+ {id:104, name:'Maxxine Dupri',              initials:'DUPRI',   brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/maxxine-dupri.png', forca: 55, agilidade: 75, carisma: 78, finisher:'Dupri Drop'},
+ {id:105, name:'Jaida Parker',               initials:'JAIDA',   brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/jaida-parker.png', forca: 80, agilidade: 72, carisma: 74, finisher:'Hip Check'},
+ {id:106, name:'Ivy Nile',                   initials:'IVY',     brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/ivy-nile.png', forca: 85, agilidade: 70, carisma: 70, finisher:'Diamond Mine'},
+ {id:107, name:'Royce Keys',                 initials:'KEYS',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/royce-keys.png', forca: 78, agilidade: 76, carisma: 72, finisher:'Keys Cutter'},
+ {id:108, name:'Joaquin Wilde',              initials:'WILDE',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/joaquin-wilde.png', forca: 65, agilidade: 88, carisma: 74, finisher:'Wilde Driver'},
+ {id:109, name:'Cruz Del Toro',              initials:'CRUZ',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/cruz-del-toro.png', forca: 68, agilidade: 86, carisma: 72, finisher:'Torpedo'},
+ {id:110, name:'Rayo Americano',             initials:'RAYO',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/rayo-americano.png', forca: 70, agilidade: 84, carisma: 75, finisher:'Rayo Cutter'},
+ {id:111, name:'El Grande Americano',        initials:'EGA',     brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/el-grande-americano.png', forca: 82, agilidade: 65, carisma: 70, finisher:'Grande Splash'},
+ {id:112, name:'Akira Tozawa',               initials:'TOZAWA',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/akira-tozawa.png', forca: 60, agilidade: 85, carisma: 74, finisher:'Diving Senton'},
+ {id:113, name:'Big Cass',                   initials:'CASS',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/big-cass.png', forca: 92, agilidade: 50, carisma: 68, finisher:'East River Crossing'},
+ {id:114, name:'Bronco Nima',                initials:'NIMA',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bronco-nima.png', forca: 85, agilidade: 62, carisma: 65, finisher:'Nima Driver'},
+ {id:115, name:'Lucien Price',               initials:'PRICE',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/lucien-price.png', forca: 82, agilidade: 68, carisma: 66, finisher:'Price Check'},
+ {id:116, name:'Lola Vice',                  initials:'LOLA',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/lola-vice.png', forca: 62, agilidade: 80, carisma: 76, finisher:'Vice Grip'},
+ {id:117, name:'Sol Ruca',                   initials:'SOL',     brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/sol-ruca.png', forca: 60, agilidade: 88, carisma: 78, finisher:'Sol Snatcher'},
+ {id:118, name:'Tyler Bate',                 initials:'BATE',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/tyler-bate.png', forca: 82, agilidade: 80, carisma: 72, finisher:'Tyler Driver 97'},
+ {id:119, name:'Ludwig Kaiser',              initials:'KAISER',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/ludwig-kaiser.png', forca: 78, agilidade: 78, carisma: 80, finisher:'Kaiser Roll'},
+ {id:120, name:'Brutus Creed',               initials:'BRUTUS',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/brutus-creed.png', forca: 90, agilidade: 65, carisma: 68, finisher:'Creed Driver'},
+ {id:121, name:'Julius Creed',               initials:'JULIUS',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/julius-creed.png', forca: 88, agilidade: 68, carisma: 68, finisher:'Creed Driver'},
+ {id:122, name:'Bravo Americano',            initials:'BRAVO',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bravo-americano.png', forca: 80, agilidade: 70, carisma: 72, finisher:'Bravo Bomb'},
+ {id:123, name:'Nattie',                     initials:'NATTIE',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/nattie.png', forca: 75, agilidade: 72, carisma: 70, finisher:'Sharpshooter'},
+ {id:124, name:'Angel',                      initials:'ANGEL',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/angel.png', forca: 78, agilidade: 74, carisma: 70, finisher:'Angel Wings'},
+ {id:125, name:'Axiom',                      initials:'AXIOM',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/axiom.png', forca: 65, agilidade: 90, carisma: 72, finisher:'Golden Ratio'},
+ {id:126, name:'B-Fab',                      initials:'BFAB',    brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/b-fab.png', forca: 70, agilidade: 75, carisma: 68, finisher:'B-Fab Kick'},
+ {id:127, name:'Baron Corbin',               initials:'CORBIN',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/baron-corbin.png', forca: 85, agilidade: 68, carisma: 74, finisher:'End of Days'},
+ {id:128, name:'Berto',                      initials:'BERTO',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/berto.png', forca: 72, agilidade: 82, carisma: 70, finisher:'Berto Bomb'},
+ {id:129, name:'Elton Prince',               initials:'ELTON',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/elton-prince.png', forca: 68, agilidade: 78, carisma: 76, finisher:'Pretty Deadly'},
+ {id:130, name:'Erik',                       initials:'ERIK',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/erik.png', forca: 88, agilidade: 62, carisma: 66, finisher:'Viking Experience'},
+ {id:131, name:'Fallon Henley',              initials:'FALLON',  brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/fallon-henley.png', forca: 65, agilidade: 78, carisma: 74, finisher:'Henley Cutter'},
+ {id:132, name:'Ivar',                       initials:'IVAR',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/ivar.png', forca: 92, agilidade: 55, carisma: 70, finisher:'Viking Experience'},
+ {id:133, name:'Kiana James',                initials:'KIANA',   brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/kiana-james.png', forca: 62, agilidade: 76, carisma: 72, finisher:'Kiana Kick'},
+ {id:134, name:'Kit Wilson',                 initials:'KIT',     brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/kit-wilson.png', forca: 66, agilidade: 80, carisma: 76, finisher:'Pretty Deadly'},
+ {id:135, name:'Lainey Reid',                initials:'LAINEY',  brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/lainey-reid.png', forca: 60, agilidade: 78, carisma: 72, finisher:'Reid Cutter'},
+ {id:136, name:'Matt Cardona',               initials:'MATT',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/matt-cardona.png', forca: 74, agilidade: 76, carisma: 82, finisher:'Radio Silence'},
+ {id:137, name:'Danhausen',                  initials:'DANH',    brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/danhausen.png', forca: 55, agilidade: 72, carisma: 85, finisher:'Very Nice, Very Evil'}
 ];
 
 const rarityColors={'Comum':'#22c55e','Raro':'#2dd4bf','Épico':'#d99aff','Lendário':'#e8a800'};
@@ -1934,6 +1983,13 @@ function openDetail(id){
     <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
       <span class="attr-label">Carisma:</span> <span class="attr-value">${has ? w.carisma : '???'}</span>
     </div>
+
+    <div class="finisher-block">
+      <span class="finisher-icon">💥</span>
+      <span class="finisher-label">Finisher</span>
+      <span class="finisher-name">${has && w.finisher ? w.finisher : '???'}</span>
+    </div>
+
     <hr style="border:0; border-top:1px dashed #b8a070; margin: 10px 0;">
     ${has
       ? `Tens <strong>${qty} unidade(s)</strong> deste cromo na tua coleção.`
@@ -2006,7 +2062,6 @@ function canBattle(myCard, theirCard) {
   if (myCard.id === theirCard.id) return false;
   const myRank = RARITY_RANK[myCard.rarity] || 0;
   const theirRank = RARITY_RANK[theirCard.rarity] || 0;
-  // A carta de resposta tem de ser da mesma raridade ou exatamente 1 rank abaixo
   return theirRank === myRank || theirRank === myRank - 1;
 }
 
