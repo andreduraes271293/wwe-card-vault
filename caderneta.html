@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WWE Card Vault</title>
+
+<!-- Pré-carregar a fonte personalizada (Bodoni) -->
+<link rel="preload" href="fonts/Bodoni.ttf" as="font" type="font/ttf" crossorigin>
+
+<style>
+/* ============================================================
+   FONTE PERSONALIZADA — BODONI (.ttf) — APLICADA A TUDO
+   ============================================================ */
+@font-face {
+  font-family: 'Bodoni';
+  src: url('fonts/Bodoni.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+ --site-primary:#c8102e; --site-on-primary:#ffffff;
+ --site-secondary:#15171c; --site-on-secondary:#ffffff;
+ --site-background:#0c0d10; --site-on-background:#f5f5f6;
+ --site-font-body:'Bodoni',Georgia,'Times New Roman',serif;
+ --site-font-heading:'Bodoni',Georgia,'Times New Roman',serif;
+ --site-heading-scale:1; --site-spacing-scale:1; --site-radius-scale:1; --site-decoration-opacity:1;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:light-dark(#f2f2f4,var(--site-background));color:light-dark(#18191d,var(--site-on-background));font-family:var(--site-font-body);-webkit-font-smoothing:antialiased}
+#app{min-height:100vh;background-color:var(--site-background);color:var(--site-on-background);border-radius:0}
+
+/* Forçar Bodoni em TODOS os elementos */
+*, *::before, *::after,
+button, input, select, textarea, optgroup, option {
+  font-family: 'Bodoni', Georgia, 'Times New Roman', serif;
+}
+
+header{background:linear-gradient(115deg,#c8102e 0%,#8f071d 58%,#17181d 58%);padding:22px clamp(18px,5vw,64px) 25px;border-bottom:1px solid #ffffff22}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--site-font-heading);font-size:calc(25px * var(--site-heading-scale));letter-spacing:1.8px}
+.brand span{color:#ffd15b}
+.top-pill{border:1px solid #ffffff66;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;letter-spacing:1px}
+.hero{max-width:1200px;margin:35px auto 4px}
+.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#ffcf62;font-weight:900}
+.hero h1{font-family:var(--site-font-heading);font-size:clamp(40px,7vw,76px);line-height:.96;margin:12px 0;letter-spacing:1px}
+.hero p{max-width:600px;color:#e7dfe2;line-height:1.6;margin:0}
+.shell{max-width:1200px;margin:auto;padding:26px clamp(16px,4vw,40px) 60px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.stat{background:#17191f;border:1px solid #ffffff14;border-radius:calc(14px * var(--site-radius-scale));padding:17px}
+.stat label{display:block;color:#a7aab3;font-size:11px;text-transform:uppercase;letter-spacing:1.4px;font-weight:800}
+.stat strong{display:block;font-size:26px;margin-top:7px}
+.stat small{font-size:13px;color:#a7aab3}
+.progress-track{height:5px;background:#34363e;border-radius:99px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#c8102e,#ffd15b);transition:width .35s ease}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0}
+.search{flex:1;min-width:180px;background:#17191f;border:1px solid #343740;color:#fff;padding:12px 14px;border-radius:9px;font:inherit}
+.search:focus,.filter:focus{outline:2px solid #ffd15b;outline-offset:2px}
+.filter{background:#17191f;color:#f7f7f8;border:1px solid #343740;padding:12px;border-radius:9px;font:inherit;min-width:150px}
+.btn{border:0;border-radius:9px;padding:12px 16px;background:var(--site-primary);color:white;cursor:pointer;font:inherit;font-weight:800;transition:transform .15s,filter .15s;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid #ffd15b;outline-offset:2px}
+.btn:active{transform:translateY(0)}
+.btn.secondary{background:#282b33;border:1px solid #444751}
+.btn.ghost{background:transparent;border:1px solid #444751;color:#c3c5cc}
+.btn.pulse{animation:pulse 2.4s infinite}
+.btn.twitch{background:#9146FF;color:white;}
+.btn.twitch:hover{background:#772ce8;}
+.btn.disabled{background:#343740;color:#828691;cursor:not-allowed;transform:none}
+.btn.disabled:hover{filter:none;transform:none}
+.btn.battle-btn{background:#8b5cf6;color:white;}
+.btn.battle-btn:hover{background:#7c3aed;}
+
+#openPack{min-width:210px;white-space:nowrap;justify-content:center;}
+#openPack.disabled{min-width:210px;}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #c8102e66}50%{box-shadow:0 0 0 8px #c8102e00}}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 15px;flex-wrap:wrap}
+.section-head h2{font-family:var(--site-font-heading);font-size:calc(28px * var(--site-heading-scale));margin:0;letter-spacing:.7px}
+.section-head p{color:#9da1ab;font-size:12px;margin:5px 0 0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;perspective:1600px;}
+
+/* --- CARTAS (base) --- */
+.card{position:relative;aspect-ratio:3/4.15;border-radius:calc(12px * var(--site-radius-scale));overflow:hidden;border:2px solid var(--rarity-color, #ffffff26);background:#1c1e25;cursor:pointer;text-align:left;color:white;padding:0;min-width:0;box-shadow:0 8px 20px #0004;transition:transform .18s,border-color .18s,box-shadow .18s;font:inherit}
+.card:hover{transform:translateY(-4px);border-color:var(--rarity-color, #ffffff);box-shadow:0 14px 30px #0006, 0 0 15px var(--rarity-color)}
+.card:focus-visible{outline:2px solid var(--rarity-color);outline-offset:3px}
+.card.owned{box-shadow:0 0 15px #0008, inset 0 0 0 1px var(--rarity-color)}
+.card.owned:after{content:none !important;display:none !important}
+
+.card.new-badge:before{
+  content:'NOVO!';
+  position:absolute;
+  top:9px;left:8px;
+  background:#e0a010;color:#2b1d0e;
+  border-radius:4px;
+  font-family:var(--site-font-heading);
+  font-size:9px;font-weight:1000;
+  padding:5px 7px;letter-spacing:.5px;
+  z-index:11;
+  animation:pop .5s ease;
+  transform:none;
+}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+.card-art{height:100%;display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 34%,#3a3e47 0%,#1c1e25 42%,#0c0d10 76%);overflow:hidden}
+.card-art:before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#ffffff24,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff05 18px 20px);z-index:1}
+.card:hover .card-art:before{background:linear-gradient(160deg,#ffffff40,transparent 30%,#0008 75%),repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px)}
+.card-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:2;filter:contrast(1.05) saturate(1.05);transition:transform .35s ease;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);mask-image: linear-gradient(to bottom, black 70%, transparent 100%)}
+.card:hover .card-photo{transform:scale(1.04)}
+.card-art:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0000 40%,#07080bf2 100%);z-index:3;pointer-events:none}
+.card-bottom{position:absolute;bottom:0;left:0;right:0;padding:42px 11px 12px;background:linear-gradient(transparent,#07080bf2 35%);z-index:4}
+.card-number{font-size:9px;color:var(--rarity-color);letter-spacing:1.7px;font-weight:900}
+.card-name{font-family:var(--site-font-heading);font-size:clamp(16px,2vw,22px);line-height:1.05;margin-top:5px}
+.card-meta{display:flex;justify-content:space-between;align-items:center;gap:4px;margin-top:8px;font-size:9px;text-transform:uppercase;color:#c3c5cc}
+.rarity{font-weight:900;color:var(--rarity-color,#dedede)}
+.gender-badge{font-size:9px;font-weight:900;color:#9da1ab;letter-spacing:.5px}
+.dup-badge{position:absolute;bottom:10px;right:10px;background:#c8102e;color:#fff;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;z-index:5;box-shadow:0 2px 5px #0008}
+.brand-img {height: 18px; width: auto; object-fit: contain; vertical-align: middle; margin-right: 6px; margin-bottom: 2px;}
+
+.empty{padding:45px 25px;text-align:center;color:#9da1ab;border:1px dashed #3b3e47;border-radius:12px;grid-column:1/-1}
+.empty strong{display:block;color:#f5f5f6;font-size:16px;margin:10px 0 6px;font-family:var(--site-font-heading);letter-spacing:.5px}
+.empty .empty-icon{font-size:38px;display:block;margin-bottom:6px;opacity:.7}
+.footer-note{margin-top:36px;color:#828691;font-size:11px;line-height:1.6;border-top:1px solid #ffffff15;padding-top:18px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#ffd15b;color:#18130b;padding:12px 18px;border-radius:9px;font-size:13px;font-weight:900;box-shadow:0 8px 30px #0008;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-backdrop{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:18px;z-index:40;backdrop-filter:blur(3px)}
+.modal-backdrop.show{display:grid;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{max-width:500px;width:100%;background:#181a20;border:1px solid #ffffff25;border-radius:16px;padding:24px;text-align:center;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes slideUp{from{transform:translateY(20px) scale(.95);opacity:0}to{transform:none;opacity:1}}
+.modal h3{font-family:var(--site-font-heading);font-size:30px;margin:0 0 8px}
+.modal p{color:#b8bbc4;font-size:13px;line-height:1.5}
+.modal-actions{display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.toast-hint{font-size:11px;color:#828691;margin-top:14px}
+.detail-backdrop{position:fixed;inset:0;background:#000d;display:none;place-items:center;padding:18px;z-index:45;backdrop-filter:blur(4px)}
+.detail-backdrop.show{display:grid;animation:fadeIn .2s ease}
+.detail{max-width:720px;width:100%;background:#181a20;border:2px solid var(--rarity-color);border-radius:18px;padding:22px;display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative;transition:box-shadow .3s ease, border-color .3s ease;}
+.detail-photo-wrap{position:relative;border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 30%,var(--rarity-color,#bd1936),#15161c 75%);aspect-ratio:3/4.15;display:flex;align-items:center;justify-content:center;border:1px solid #ffffff22}
+.detail-photo-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;-webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%); mask-image: linear-gradient(to bottom, black 70%, transparent 100%);}
+.detail-info h3{font-family:var(--site-font-body);font-size:32px;margin:0 0 4px;letter-spacing:-.2px;line-height:1;font-weight:900}
+.detail-info .detail-brand img{display:block;height:38px;width:auto;max-width:100%;object-fit:contain;object-position:left center}
+.detail-info .detail-brand{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:14px;display:block}
+.detail-info .detail-rarity{display:inline-block;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#00000055;color:var(--rarity-color,#dedede);border:1px solid var(--rarity-color,#dedede);margin-bottom:16px}
+.detail-info .detail-gender{display:inline-block;margin-left:6px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;background:#2a2d36;border:1px solid #444751;margin-bottom:16px}
+.detail-info .detail-status{font-size:14px;line-height:1.6;margin-bottom:18px}
+.detail-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end;margin-top:20px}
+.detail-close{position:absolute;top:10px;right:12px;background:transparent;border:0;color:#9da1ab;font-size:22px;cursor:pointer;padding:6px 10px;border-radius:8px;line-height:1;z-index:10}
+.detail-close:hover{background:#ffffff12;color:#fff}
+.user-info{display:flex;align-items:center;gap:12px;background:#00000055;padding:6px 14px;border-radius:999px;border:1px solid #ffffff22}
+.user-info img{width:28px;height:28px;border-radius:50%;border:1px solid #fff}
+.user-info span{font-size:13px;font-weight:800;color:#fff}
+
+/* Finisher no modal de detalhe */
+.finisher-block{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 12px 0 6px;
+  padding: 10px 12px;
+  background: #fffaf0;
+  border: 1px dashed var(--rarity-color, #b8a070);
+  border-radius: 8px;
+  color: #2b1d0e;
+}
+.finisher-block .finisher-icon{
+  font-size: 20px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 0 #fff);
+}
+.finisher-block .finisher-label{
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 900;
+  color: var(--rarity-color, #8a0f20);
+  min-width: 74px;
+}
+.finisher-block .finisher-name{
+  font-family: 'Bodoni', Georgia, serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2b1d0e;
+  letter-spacing: 0.3px;
+}
+
+/* Estado em falta — finisher esbatido */
+.detail[data-rarity="missing"] .finisher-block{
+  background: #f0ead8;
+  border-color: #c9b78a;
+  opacity: 0.85;
+}
+.detail[data-rarity="missing"] .finisher-block .finisher-label{
+  color: #8a6a2b;
+}
+.detail[data-rarity="missing"] .finisher-block .finisher-name{
+  color: #8a6a2b;
+  font-style: italic;
+  letter-spacing: 3px;
+}
+
+/* --- VÍDEO DO FINISHER --- */
+.detail-photo-wrap video.finisher-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 8;
+  background: #000;
+  display: none; /* escondido até clicar */
+}
+.detail-photo-wrap video.finisher-video.playing {
+  display: block;
+}
+.detail-photo-wrap .finisher-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000000aa;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #ffffff44;
+  z-index: 7;
+  pointer-events: none;
+  backdrop-filter: blur(3px);
+  transition: opacity .2s ease;
+  white-space: nowrap;
+}
+.detail-photo-wrap .finisher-hint.hidden {
+  opacity: 0;
+}
+
+/* --- MODAL BATALHAS --- */
+.battle-modal{max-width:800px;width:100%;background:#181a20;border:2px solid #8b5cf6;border-radius:18px;padding:22px;box-shadow:0 20px 80px #000b;animation:slideUp .3s cubic-bezier(.2,.9,.3,1.2);position:relative}
+.battle-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #ffffff22;padding-bottom:15px}
+.battle-header h3{font-family:var(--site-font-heading);font-size:30px;margin:0;color:#8b5cf6}
+.battle-tabs{display:flex;gap:10px;margin-bottom:20px}
+.battle-tab{flex:1;padding:10px;text-align:center;background:#282b33;border-radius:8px;cursor:pointer;font-weight:800;color:#c3c5cc;border:1px solid transparent}
+.battle-tab.active{background:#8b5cf6;color:#fff;border-color:#8b5cf6}
+.battle-content{display:none}
+.battle-content.active{display:block}
+.trade-select{width:100%;padding:12px;background:#17191f;border:1px solid #343740;color:#fff;border-radius:9px;font:inherit;margin-bottom:15px}
+.trade-input{width:100%;padding:12px;background:#17191f;border:1px solid #343740;color:#fff;border-radius:9px;font:inherit;margin-bottom:15px}
+.trade-list{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;padding-right:5px}
+.trade-item{background:#22252e;border:1px solid #ffffff14;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.trade-item-info{display:flex;flex-direction:column;gap:4px}
+.trade-item-title{font-weight:900;font-size:14px}
+.trade-item-sub{font-size:11px;color:#9da1ab;text-transform:uppercase}
+.trade-item-cards{display:flex;align-items:center;gap:10px;font-size:12px;color:#c3c5cc}
+.trade-arrow{color:#f59e0b;font-size:18px;font-weight:900}
+.trade-actions-sm{display:flex;gap:6px}
+.trade-actions-sm .btn{padding:6px 10px;font-size:11px}
+
+.trade-table-container {max-height: 300px;overflow-y: auto;border: 1px solid #c9b78a;border-radius: 8px;background: #fffaf0;}
+.trade-table {width: 100%;border-collapse: collapse;font-size: 12px;text-align: left;}
+.trade-table th {position: sticky;top: 0;background: #e8d9b8;color: #5a1a12;padding: 10px;font-weight: 800;border-bottom: 2px solid #c9b78a;z-index: 10;}
+.trade-table td {padding: 10px;border-bottom: 1px dashed #c9b78a;color: #2b1d0e;vertical-align: middle;}
+.trade-table tr:last-child td {border-bottom: none;}
+
+/* Arena de Combate Visual */
+.arena-visual { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; margin-top: 15px; }
+.combat-card-preview { background: #1c1e25; border: 2px solid #444; border-radius: 8px; padding: 10px; text-align: center; color: white; position: relative; }
+.combat-card-preview .name { font-family: var(--site-font-heading); font-size: 18px; margin-top: 5px; }
+.combat-card-preview .rarity { font-size: 9px; color: #ffd15b; text-transform: uppercase; }
+.vs-text { font-family: var(--site-font-heading); font-size: 28px; color: #8a0f20; font-style: italic; }
+
+.attr-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #22252e; color: white; border-radius: 8px; overflow: hidden; font-size: 12px; }
+.attr-table th, .attr-table td { padding: 8px 10px; text-align: center; border-bottom: 1px solid #333; }
+.attr-table th { text-align: left; font-weight: bold; color: #9da1ab; text-transform: uppercase; font-size: 10px;}
+.attr-table tr:last-child th, .attr-table tr:last-child td { border-bottom: none; }
+.attr-row.highlight { background: #3a2a05; }
+.attr-row.chosen { background: #e8a800; color: #000; font-weight: 900; transform: scale(1.02); box-shadow: 0 4px 10px #000a;}
+.attr-row.chosen th { color: #000; }
+.win-val { color: #4ade80; }
+.lose-val { color: #f87171; }
+
+.result-banner { position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; border-radius: 18px; }
+.result-banner.show { opacity: 1; pointer-events: auto; }
+.result-text { font-family: var(--site-font-heading); font-size: 60px; letter-spacing: 2px; text-transform: uppercase; transform: scale(0.5); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center;}
+.result-banner.show .result-text { transform: scale(1); }
+.text-win { color: #22c55e; text-shadow: 0 0 20px #22c55e; }
+.text-lose { color: #ef4444; text-shadow: 0 0 20px #ef4444; }
+.result-sub { font-size: 14px; color: #fff; margin-top: 15px; font-weight: bold; text-align: center; padding: 0 20px; line-height: 1.5; }
+
+/* --- ABERTURA DE SAQUETA --- */
+.modal{overflow:hidden;position:relative}
+.modal::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 42%,var(--pack-glow,#ffd15b66) 0%,transparent 62%);
+  opacity:0;transition:opacity .6s ease;
+}
+.modal-backdrop.show .modal::before{opacity:1;animation:backdropPulse 2.6s ease-in-out infinite}
+@keyframes backdropPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+.modal > *{position:relative;z-index:1}
+
+.pack-cards{display:flex;justify-content:center;align-items:center;gap:8px;margin:22px 0;perspective:900px;min-height:130px;position:relative}
+.mini{
+  flex:1 1 0;min-width:0;max-width:82px;aspect-ratio:3/4;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--site-font-heading);font-size:24px;font-style:italic;
+  border:2px solid var(--rarity-color);
+  box-shadow:0 4px 12px #0008;
+  position:relative;overflow:visible;
+  opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);
+  filter:brightness(.25) blur(4px);
+}
+.mini .mini-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;border-radius:7px;overflow:hidden}
+.mini .mini-initials{position:relative;z-index:1}
+.mini::after{content:'';position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#0000 55%,#000c 100%);z-index:2;pointer-events:none}
+.mini .mini-rarity{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;font-family:var(--site-font-body);font-style:normal;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#fff;text-shadow:0 1px 2px #000;z-index:3}
+.mini.revealed{animation:cardBurst .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
+@keyframes cardBurst{
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  55%{opacity:1;transform:translateY(-10px) scale(1.14) rotate(3deg);filter:brightness(1.4) blur(0);box-shadow:0 4px 12px #0008,0 0 26px var(--rarity-color),0 0 60px var(--rarity-color);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(1) blur(0);box-shadow:0 4px 12px #0008,0 0 14px var(--rarity-color),0 0 34px color-mix(in srgb,var(--rarity-color) 55%,transparent);}
+}
+.mini.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,var(--rarity-color),transparent 70%);opacity:.5;animation:cardGlow 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
+@keyframes cardGlow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.85;transform:scale(1.18)}}
+
+.mini.duplicate{border-color:#6b7280 !important;animation:cardBurstDup .78s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:var(--burst-delay,0ms);}
+@keyframes cardBurstDup{
+  0%{opacity:0;transform:translateY(60px) scale(.25) rotate(-8deg);filter:brightness(.25) blur(4px);box-shadow:0 4px 12px #0008;}
+  40%{opacity:1;transform:translateY(-14px) scale(1.18) rotate(-6deg);filter:brightness(1.2) blur(0);box-shadow:0 4px 12px #0008,0 0 22px #6b7280,0 0 50px #6b7280;}
+  55%{transform:translateY(-6px) scale(1.08) rotate(4deg);}
+  70%{transform:translateY(-10px) scale(1.12) rotate(-3deg);}
+  100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:brightness(.85) blur(0);box-shadow:0 4px 12px #0008,0 0 10px #6b7280;}
+}
+.mini.duplicate.revealed::before{content:'';position:absolute;inset:-6px;border-radius:12px;z-index:-1;background:radial-gradient(circle,#6b7280,transparent 70%);opacity:.4;animation:cardGlowDup 2.2s ease-in-out infinite;animation-delay:calc(var(--burst-delay,0ms) + 760ms);}
+@keyframes cardGlowDup{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
+.mini .dup-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-14deg) scale(0);font-family:var(--site-font-heading);font-size:11px;letter-spacing:1.5px;font-weight:900;color:#fff;background:#374151;border:2px solid #9ca3af;padding:3px 7px;border-radius:5px;z-index:4;text-shadow:0 1px 2px #000;box-shadow:0 2px 8px #000a;opacity:0;pointer-events:none;}
+.mini.duplicate.revealed .dup-stamp{animation:stampDrop .45s cubic-bezier(.2,.9,.25,1.25) forwards;animation-delay:calc(var(--burst-delay,0ms) + 700ms);}
+@keyframes stampDrop{0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.6)}60%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(.92)}100%{opacity:1;transform:translate(-50%,-50%) rotate(-14deg) scale(1)}}
+.mini.duplicate .dup-veil{position:absolute;inset:0;border-radius:7px;background:#000a;z-index:3;opacity:0;transition:opacity .3s ease;pointer-events:none;}
+.mini.duplicate.revealed .dup-veil{opacity:1;transition-delay:calc(var(--burst-delay,0ms) + 500ms);}
+
+/* ============================================================
+   TEMA CADERNETA
+   ============================================================ */
+body{
+  background:
+    radial-gradient(ellipse at 50% 0%, #2b1c10 0%, #150d07 60%, #0a0604 100%),
+    repeating-linear-gradient(90deg, #0000 0 40px, #ffffff05 40px 41px);
+}
+main.shell{
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, #00000010 27px 28px),
+    radial-gradient(circle at 20% 10%, #fdf6e3 0%, #f5ebd2 40%, #e8d9b8 100%);
+  border: 1px solid #b8a070;
+  border-left: 14px solid #6b4a2b;
+  border-radius: 8px 14px 14px 8px;
+  box-shadow:
+    0 20px 60px #000c,
+    inset 0 0 80px #a07c4a40,
+    inset 6px 0 12px #00000060;
+  position: relative;
+  color: #2b1d0e;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  padding: 32px clamp(18px, 4vw, 48px) 48px;
+  max-width: 1180px;
+}
+main.shell::before{
+  content:'';position:absolute;left:-11px;top:30px;bottom:30px;width:8px;
+  background-image: radial-gradient(circle, #2b1d0e 0 3px, transparent 3.5px);
+  background-size: 8px 38px;background-repeat: repeat-y;background-position: center top;
+  opacity:.8;pointer-events:none;
+}
+main.shell::after{
+  content:'★ ÁLBUM OFICIAL ★';
+  position:absolute;top:-14px;right:22px;
+  background:#c8102e;color:#fff;
+  font-family:var(--site-font-heading);
+  font-size:12px;letter-spacing:2px;
+  padding:6px 14px;border-radius:6px;
+  box-shadow:0 4px 10px #0008;
+  transform:rotate(2deg);
+}
+.stat{background:#fffaf0;border:1px solid #c9b78a;border-radius:6px;box-shadow:2px 2px 0 #c9b78a80;color:#2b1d0e;position:relative;}
+.stat::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-2deg);width:60px;height:16px;background:#f4d77a80;border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;opacity:.9;}
+.stat label{ color:#7a5a2b; }
+.stat strong{ color:#2b1d0e; }
+.stat small{ color:#7a5a2b; }
+.stat-sub{ display:block; margin-top:5px; font-size:12px; font-weight:800; letter-spacing:.3px; color:#7a5a2b; }
+.stat-sub b{ color:#8a0f20; font-size:14px; font-weight:900; }
+.progress-track{ background:#e2d3b1; }
+.progress-fill{ background: linear-gradient(90deg,#8a0f20,#c8102e,#e0a010); }
+.search, .filter{background:#fffaf0;border:1px solid #b8a070;color:#2b1d0e;box-shadow:inset 1px 1px 2px #00000010;}
+.search::placeholder{ color:#9b8a6a; }
+.search:focus,.filter:focus{outline:2px solid #c8102e;outline-offset:1px;}
+.section-head h2{color:#5a1a12;text-shadow:1px 1px 0 #e8d9b8;letter-spacing:1.5px;}
+.section-head p{ color:#7a5a2b; }
+
+/* ============ CROMOS COMO "COLADOS" ============ */
+.grid{ gap: 22px 18px; padding-top: 8px; }
+.card{
+  background:#fffaf0;
+  border: 3px solid #fffaf0;
+  border-radius: 3px;
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 1px #c9b78a;
+  padding: 6px 6px 46px;
+  overflow: visible;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover{
+  transform: translateY(-3px) rotate(-.6deg);
+  box-shadow:
+    0 4px 8px #00000035,
+    0 14px 26px #00000040,
+    inset 0 0 0 1px #c9b78a;
+}
+.card-art{
+  position: relative;
+  inset: auto;
+  height: 100%;
+  border-radius: 2px;
+  border: 1px solid #d8c8a0;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px var(--rarity-color);
+}
+.card::before{
+  content:'';
+  position:absolute;top:-9px;left:50%;
+  transform:translateX(-50%) rotate(-3deg);
+  width:62px;height:18px;
+  background: linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;
+  border-right:1px dashed #b89a4a;
+  box-shadow:0 1px 3px #0004;
+  z-index:10;pointer-events:none;
+  transition: transform .18s ease;
+}
+.card:hover::before{ transform:translateX(-50%) rotate(1deg); }
+.card-bottom{
+  position:absolute;left:6px;right:6px;bottom:6px;
+  padding: 8px 8px 6px;
+  background: #fffaf0;
+  border-top: 1px dashed #b8a070;
+  color: #2b1d0e;
+}
+.card-number{ color:#8a6a2b; }
+.card-name{ color:#2b1d0e; font-family: var(--site-font-heading); text-shadow: none; }
+.card-meta{ color:#7a5a2b; }
+.card-meta .rarity{ color:#8a0f20; font-weight: 900; }
+.gender-badge{ color:#7a5a2b; }
+.dup-badge{
+  background:#8a0f20;color:#fff;border:2px solid #2b2f36;border-radius:50%;
+  width:32px;height:32px;display:grid;place-items:center;
+  bottom: 52px; right: 8px;font-size:11px;box-shadow: 0 2px 6px #0006;
+  z-index:12;
+}
+
+/* ============ CROMOS EM FALTA ============ */
+.card.missing{
+  --rarity-color:#2b2f36;
+  --accent-color:#ffffff;
+  --meta-color:#c8ccd2;
+  background:#2b2f36 !important;
+  border-color:#2b2f36 !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #3a3f47,
+    inset 0 0 0 5px #2b2f36,
+    inset 0 0 0 1px #4a5058 !important;
+}
+.card.missing::before{
+  background:linear-gradient(180deg,#c8ccd2ee,#8a8f98cc) !important;
+  border-left:1px dashed #e2e5ea !important;
+  border-right:1px dashed #e2e5ea !important;
+  box-shadow:0 1px 3px #0004 !important;
+}
+.card.missing .card-art{
+  background:radial-gradient(ellipse at 50% 30%,#3a3f47 0%,#2b2f36 55%,#181a1f 100%) !important;
+  border-color:#3a3f47 !important;
+  box-shadow:inset 0 0 0 2px #3a3f47,inset 0 0 22px #00000080 !important;
+}
+.card.missing .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff12,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff06 18px 20px) !important;
+}
+.card.missing .card-art::after{
+  background:linear-gradient(180deg,#0000 40%,#181a1fee 100%) !important;
+}
+.card.missing .card-bottom{
+  background:linear-gradient(180deg,#2b2f36 0%,#181a1f 100%) !important;
+  border-top:1px dashed #3a3f47 !important;
+  color:#ffffff !important;
+}
+.card.missing .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important;font-style:normal}
+.card.missing .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card.missing .card-meta{color:#c8ccd2 !important}
+.card.missing .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card.missing .gender-badge{color:#c8ccd2 !important}
+.card.missing::after{display:none !important}
+
+.missing-stage{
+  position:absolute;inset:0;z-index:3;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.card.missing .wwe-logo{
+  position:relative !important;
+  inset:auto !important;
+  z-index:2;
+  width:62%;
+  display:block;
+  opacity:.95;
+}
+.card.missing .wwe-logo img{
+  width:100% !important;
+  height:auto !important;
+  filter:none !important;
+}
+
+/* ============ VIRAR DE PÁGINA ============ */
+@keyframes turnPage{
+  0%   { opacity: 0; transform: rotateY(-14deg) translateX(-24px); filter: blur(2px); }
+  60%  { opacity: 1; transform: rotateY(4deg)  translateX(6px);  filter: blur(0);  }
+  100% { opacity: 1; transform: rotateY(0)    translateX(0);     filter: blur(0);  }
+}
+.grid.turning .card{
+  animation: turnPage .5s cubic-bezier(.2,.8,.2,1) both;
+  transform-origin: left center;
+  animation-delay: calc(var(--i, 0) * 12ms);
+}
+.grid{ position: relative; }
+.grid.turning::after{
+  content:'';
+  position:absolute;inset:0;
+  background: linear-gradient(90deg, #fdf6e3cc 0%, #fdf6e300 60%);
+  transform-origin: left center;
+  animation: pageVeil .55s ease-out both;
+  pointer-events:none;
+  z-index: 5;
+  border-radius: 6px;
+}
+@keyframes pageVeil{
+  0%   { opacity:0; transform: scaleX(0); }
+  40%  { opacity:.9; transform: scaleX(1); }
+  100% { opacity:0; transform: scaleX(1); }
+}
+
+/* Modais em papel */
+.modal, .detail, .battle-modal{
+  background: #fffaf0 !important;
+  border: 2px solid #b8a070 !important;
+  color: #2b1d0e;
+  box-shadow:
+    0 20px 60px #000b,
+    inset 0 0 40px #c9b78a40,
+    0 0 0 6px #fffaf0,
+    0 0 0 7px #b8a070;
+}
+.modal h3, .detail h3, .battle-header h3{ color:#8a0f20;font-family: var(--site-font-heading); }
+.modal p, .detail-status, .battle-modal p{ color:#5a4020; }
+.detail-info .detail-brand{ color:#7a5a2b; }
+.detail-info .detail-gender{ background:#e8d9b8;color:#5a4020;border-color:#b8a070; }
+.detail-info .detail-rarity{ background:#fffaf0; }
+.detail-info .detail-status strong{ color:#8a0f20; }
+.battle-tab{ background:#e8d9b8;color:#5a4020;border-color:#c9b78a; }
+.battle-tab.active{ background:#8a0f20;color:#fff;border-color:#8a0f20; }
+.trade-select, .trade-input{ background:#fffaf0;color:#2b1d0e;border-color:#b8a070; }
+.trade-item{ background:#f5ebd2;border-color:#c9b78a;color:#2b1d0e; }
+.trade-item-sub{ color:#7a5a2b; }
+.trade-item-cards{ color:#5a4020; }
+
+@media (max-width:470px){
+  main.shell{ border-left-width: 8px; padding: 24px 12px 36px; }
+  main.shell::after{ font-size:10px; padding:4px 10px; right:10px; }
+}
+
+/* ============================================================
+   DIFERENCIAÇÃO POR RARIDADE
+   ============================================================ */
+.card{
+  box-shadow:
+    0 2px 4px #00000030,
+    0 8px 16px #00000025,
+    inset 0 0 0 3px var(--rarity-color),
+    inset 0 0 0 5px #fffaf0,
+    inset 0 0 0 1px #c9b78a;
+}
+.card .card-art{
+  box-shadow:
+    inset 0 0 0 2px var(--rarity-color),
+    inset 0 0 22px color-mix(in srgb, var(--rarity-color) 35%, transparent);
+}
+.card .card-meta .rarity{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
+.card .card-number{
+  color: var(--rarity-color);
+  text-shadow: 0 1px 0 #0006;
+}
+
+/* ============================================================
+   COMUM: VERDE (#22c55e) + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Comum"]{
+  background:#052e16 !important;
+  border-color:#22c55e !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #22c55e,
+    inset 0 0 0 5px #052e16,
+    inset 0 0 0 1px #22c55e88,
+    0 0 18px #22c55e44 !important;
+}
+.card[data-rarity="Comum"]::before{
+  background:linear-gradient(180deg,#22c55eee,#15803dcc) !important;
+  border-left:1px dashed #86efac !important;
+  border-right:1px dashed #86efac !important;
+  box-shadow:0 1px 3px #000a !important;
+}
+.card[data-rarity="Comum"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #22c55e55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #14532d 0%, #052e16 42%, #021a0b 100%) !important;
+  border-color:#22c55e !important;
+  box-shadow:
+    inset 0 0 0 2px #22c55e,
+    inset 0 0 26px #22c55e66 !important;
+}
+.card[data-rarity="Comum"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Comum"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#021a0bee 100%) !important;
+}
+.card[data-rarity="Comum"] .card-bottom{
+  background:linear-gradient(180deg,#052e16 0%,#021a0b 100%) !important;
+  border-top:1px dashed #22c55e !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Comum"] .card-name{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Comum"] .card-meta{color:#86efac !important}
+.card[data-rarity="Comum"] .card-meta .rarity{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Comum"] .card-number{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Comum"] .gender-badge{color:#86efac !important}
+
+/* ============================================================
+   RARO: VERDE-MENTA (#2dd4bf) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Raro"]{
+  background:#042f2e !important;
+  border-color:#2dd4bf !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #2dd4bf,
+    inset 0 0 0 5px #042f2e,
+    inset 0 0 0 1px #2dd4bf88,
+    0 0 18px #2dd4bf55 !important;
+}
+.card[data-rarity="Raro"]::before{
+  background:linear-gradient(180deg,#2dd4bfee,#0f766ecc);
+  border-left:1px dashed #99f6e4;
+  border-right:1px dashed #99f6e4;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Raro"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #2dd4bf55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #115e59 0%, #042f2e 42%, #021615 100%) !important;
+  border-color:#2dd4bf !important;
+  box-shadow:
+    inset 0 0 0 2px #2dd4bf,
+    inset 0 0 26px #2dd4bf66 !important;
+}
+.card[data-rarity="Raro"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Raro"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#021615ee 100%) !important;
+}
+.card[data-rarity="Raro"] .card-bottom{
+  background:linear-gradient(180deg,#042f2e 0%,#021615 100%) !important;
+  border-top:1px dashed #2dd4bf !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Raro"] .card-name{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .card-meta{
+  color:#99f6e4 !important;
+}
+.card[data-rarity="Raro"] .card-meta .rarity{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .card-number{
+  color:#ffffff !important;
+  text-shadow:0 1px 2px #0008 !important;
+}
+.card[data-rarity="Raro"] .gender-badge{
+  color:#99f6e4 !important;
+}
+
+/* ============================================================
+   ÉPICO: ROXO (#d99aff) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Épico"]{
+  background:#1a0f26 !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #d99aff,
+    inset 0 0 0 5px #1a0f26,
+    inset 0 0 0 1px #d99aff88,
+    0 0 18px #d99aff55 !important;
+}
+.card[data-rarity="Épico"]::before{
+  background:linear-gradient(180deg,#d99affee,#8a4fbfcc);
+  border-left:1px dashed #eccaff;border-right:1px dashed #eccaff;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Épico"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #d99aff55, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #2a1640 0%, #1a0f26 42%, #0a0510 100%) !important;
+  border-color:#d99aff !important;
+  box-shadow:
+    inset 0 0 0 2px #d99aff,
+    inset 0 0 26px #d99aff66 !important;
+}
+.card[data-rarity="Épico"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Épico"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0a0510ee 100%) !important;
+}
+.card[data-rarity="Épico"] .card-bottom{
+  background:linear-gradient(180deg,#1a0f26 0%,#0a0510 100%) !important;
+  border-top:1px dashed #d99aff !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Épico"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Épico"] .card-meta{color:#e8ccff !important}
+.card[data-rarity="Épico"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Épico"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Épico"] .gender-badge{color:#e8ccff !important}
+
+/* ============================================================
+   LENDÁRIO: DOURADO (#e8a800) EM VOLTA + TEXTO BRANCO
+   ============================================================ */
+.card[data-rarity="Lendário"]{
+  background:#1f1603 !important;
+  border-color:#e8a800 !important;
+  box-shadow:
+    0 2px 4px #00000060,
+    0 8px 16px #00000050,
+    inset 0 0 0 3px #e8a800,
+    inset 0 0 0 5px #1f1603,
+    inset 0 0 0 1px #e8a80088,
+    0 0 20px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"]::before{
+  background:linear-gradient(180deg,#e8a800ee,#a06f00cc);
+  border-left:1px dashed #ffd76a;border-right:1px dashed #ffd76a;
+  box-shadow:0 1px 3px #000a;
+}
+.card[data-rarity="Lendário"] .card-art{
+  background:
+    radial-gradient(ellipse at 50% 30%, #e8a80066, transparent 60%),
+    radial-gradient(ellipse at 50% 34%, #3a2a05 0%, #1f1603 42%, #0c0801 100%) !important;
+  border-color:#e8a800 !important;
+  box-shadow:
+    inset 0 0 0 2px #e8a800,
+    inset 0 0 28px #e8a80077 !important;
+}
+.card[data-rarity="Lendário"] .card-art::before{
+  background:
+    linear-gradient(160deg,#ffffff24,transparent 40%,#00000060 100%),
+    repeating-linear-gradient(135deg,transparent 0 18px,#ffffff0a 18px 20px) !important;
+}
+.card[data-rarity="Lendário"] .card-art::after{
+  background:linear-gradient(180deg,#0000 35%,#0c0801ee 100%) !important;
+}
+.card[data-rarity="Lendário"] .card-bottom{
+  background:linear-gradient(180deg,#1f1603 0%,#0c0801 100%) !important;
+  border-top:1px dashed #e8a800 !important;
+  color:#ffffff !important;
+}
+.card[data-rarity="Lendário"] .card-name{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Lendário"] .card-meta{color:#ffe2a0 !important}
+.card[data-rarity="Lendário"] .card-meta .rarity{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Lendário"] .card-number{color:#ffffff !important;text-shadow:0 1px 2px #0008 !important}
+.card[data-rarity="Lendário"] .gender-badge{color:#ffe2a0 !important}
+
+/* brilho animado do Lendário (faixa dourada) */
+.card[data-rarity="Lendário"]::after{
+  content:'' !important;
+  display:block !important;
+  position:absolute !important;
+  inset:6px !important;
+  border-radius:2px !important;
+  background-image:linear-gradient(110deg,
+    transparent 42%,
+    #fff0b000 44%,
+    #fff8d8b3 50%,
+    #fff0b000 56%,
+    transparent 58%) !important;
+  background-size:300% 100% !important;
+  background-repeat:no-repeat !important;
+  background-position:100% 0;
+  mix-blend-mode:overlay !important;
+  pointer-events:none !important;
+  z-index:5 !important;
+  animation:shineGold 5s ease-in-out infinite !important;
+  animation-delay:1s !important;
+}
+@keyframes shineGold{
+  0%,65% { background-position:100% 0; }
+  100%   { background-position:0% 0; }
+}
+.card[data-rarity="Lendário"] .card-bottom{ z-index:11; }
+
+/* Efeito Lendário nas cartas da saqueta */
+.mini .mini-shine{display:none}
+.mini[data-rarity="Lendário"] .mini-shine{
+  display:block;position:absolute;inset:0;border-radius:7px;z-index:4;pointer-events:none;
+  background-image:linear-gradient(110deg,transparent 40%,#fff0b000 43%,#fff8d8cc 50%,#fff0b000 57%,transparent 60%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  mix-blend-mode:screen;opacity:0;
+}
+.mini.revealed[data-rarity="Lendário"] .mini-shine{
+  opacity:1;
+  animation:shineGoldMini 2.6s ease-in-out infinite;
+  animation-delay:calc(var(--burst-delay,0ms) + 850ms);
+}
+@keyframes shineGoldMini{
+  0%,35% { background-position:100% 0; }
+  100%   { background-position:0% 0; }
+}
+.mini.revealed[data-rarity="Lendário"]::before{opacity:.8;animation-duration:1.6s;}
+
+.mini{
+  box-shadow:
+    0 4px 12px #0008,
+    0 0 18px color-mix(in srgb, var(--rarity-color) 55%, transparent);
+}
+
+/* Legenda das raridades */
+.rarity-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin: 6px 0 18px;
+  font-size: 11px;
+  font-style: italic;
+  color:#7a5a2b;
+}
+.rarity-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.rarity-legend i{
+  display:inline-block;
+  width:14px;height:14px;
+  border-radius:3px;
+  border:2px solid #fffaf0;
+  box-shadow: inset 0 0 0 2px #c9b78a;
+}
+.rarity-legend i.r-comum{ background:#22c55e; box-shadow: inset 0 0 0 2px #22c55e; }
+.rarity-legend i.r-raro{ background:#2dd4bf; box-shadow: inset 0 0 0 2px #2dd4bf; }
+.rarity-legend i.r-epico{ background:#d99aff; box-shadow: inset 0 0 0 2px #d99aff; }
+.rarity-legend i.r-lendario{ background:#e8a800; box-shadow: inset 0 0 0 2px #e8a800; }
+
+.detail-info h3#detailName{
+  color: var(--rarity-color, #4b5563) !important;
+  font-family: var(--site-font-body) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.2px !important;
+  text-shadow: none !important;
+}
+.detail-info .detail-brand{
+  color: #6b7280 !important;
+}
+.detail-info .detail-brand .brand-fallback{
+  color: #6b7280 !important;
+  display: none !important;
+}
+.detail-info .detail-rarity{
+  color: var(--rarity-color, #2e2216) !important;
+  background: #fffaf0 !important;
+  border-color: var(--rarity-color, #2e2216) !important;
+  font-weight: 900;
+}
+.detail-info .detail-gender{
+  background: #e5e7eb !important;
+  color: #4b5563 !important;
+  border-color: #9ca3af !important;
+  font-weight: 900;
+}
+.detail-info .detail-status{
+  color: #6b7280 !important;
+}
+.detail-info .detail-status strong{
+  color: var(--rarity-color) !important;
+  font-weight: 900 !important;
+}
+.attr-label {
+  color: var(--rarity-color) !important;
+  font-weight: 900 !important;
+}
+.attr-value {
+  color: #4b5563 !important;
+  font-weight: 900;
+}
+
+.detail[data-rarity="missing"] .detail-info h3#detailName {
+  color: #6b7280 !important;
+  text-shadow: none !important;
+}
+.detail[data-rarity="missing"] .detail-info .detail-brand {
+  display: none !important;
+}
+.detail[data-rarity="missing"] .detail-info .detail-rarity {
+  color: #6b7280 !important;
+  border-color: #9ca3af !important;
+}
+.detail[data-rarity="missing"] .detail-info .detail-gender {
+  color: #6b7280 !important;
+  background: #e5e7eb !important;
+  border-color: #9ca3af !important;
+}
+.detail[data-rarity="missing"] .attr-label {
+  color: #6b7280 !important;
+}
+.detail[data-rarity="missing"] .attr-value {
+  color: #374151 !important;
+}
+.detail[data-rarity="missing"] .detail-status hr {
+  border-top-color: #9ca3af !important;
+}
+.detail[data-rarity="missing"] .detail-status {
+  color: #6b7280 !important;
+}
+.detail[data-rarity="missing"] .detail-status strong {
+  color: #4b5563 !important;
+}
+.detail[data-rarity="missing"] .detail-photo-wrap {
+  background: radial-gradient(circle at 50% 30%, #6b7280, #2b2f36 75%) !important;
+  filter: grayscale(1) !important;
+  border-color: #4b5563 !important;
+}
+
+.detail-photo-wrap{
+  position: relative;
+  overflow: hidden;
+}
+.detail-photo-wrap::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:12px;
+  background-image:linear-gradient(110deg,
+    transparent 42%,
+    #fff0b000 44%,
+    #fff8d8b3 50%,
+    #fff0b000 56%,
+    transparent 58%);
+  background-size:300% 100%;
+  background-repeat:no-repeat;
+  background-position:100% 0;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:6;
+  animation:shineGold 5s ease-in-out infinite;
+  animation-delay:1s;
+  opacity:0;
+}
+.detail[data-rarity="Lendário"] .detail-photo-wrap::after{
+  opacity:1;
+}
+
+.detail[data-rarity="Lendário"]{
+  box-shadow:
+    0 20px 80px #000b,
+    inset 0 0 40px #c9b78a40,
+    0 0 0 6px #fffaf0,
+    0 0 0 7px #e8a800,
+    0 0 32px #e8a80066 !important;
+  border-color: #e8a800 !important;
+}
+
+@media(max-width:600px){
+  .detail, .battle-modal {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 16px;
+    text-align: center;
+  }
+  .detail-photo-wrap {
+    max-width: 220px;
+    width: 100%;
+    margin: 0 auto;
+    min-height: 280px;
+    aspect-ratio: 3/4.15;
+  }
+  .detail-photo-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .detail-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .detail-info h3#detailName,
+  .detail-info .detail-brand,
+  .detail-info .detail-status,
+  .detail-info .finisher-block {
+    width: 100%;
+  }
+  .detail-info h3#detailName {
+    font-size: 28px;
+    margin: 0 0 8px 0;
+  }
+  .detail-info .detail-brand {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .detail-info .detail-rarity {
+    margin-left: auto;
+    margin-right: 5px;
+  }
+  .detail-info .detail-gender {
+    margin-left: 5px;
+    margin-right: auto;
+  }
+  .detail-info .detail-rarity,
+  .detail-info .detail-gender {
+    height: 28px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .detail-info .detail-status {
+    margin-top: 12px;
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   CAPA DO ÁLBUM
+   ============================================================ */
+#cover{
+  position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;
+  background:
+    radial-gradient(ellipse at 50% 40%, #3a2416 0%, #1a0f08 60%, #080402 100%),
+    repeating-linear-gradient(90deg,#0000 0 40px,#ffffff05 40px 41px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+#cover.hidden{ opacity:0;transform:scale(1.05);pointer-events:none; }
+.cover-book{
+  position:relative;width:min(460px, 92vw);aspect-ratio:3/4.2;
+  background:
+    radial-gradient(ellipse at 30% 20%, #c8102e 0%, #8f071d 45%, #4a0410 100%),
+    repeating-linear-gradient(135deg,#0000 0 18px,#ffffff08 18px 20px);
+  border-radius:6px 14px 14px 6px;
+  box-shadow:
+    0 30px 80px #000c, 0 10px 30px #0008,
+    inset 0 0 0 2px #00000060, inset 8px 0 20px #00000070, inset -4px 0 12px #00000040;
+  padding:34px 28px 28px;display:flex;flex-direction:column;align-items:center;
+  text-align:center;color:#fff;overflow:hidden;transform:rotate(-1.5deg);
+  transition:transform .4s ease;
+}
+.cover-book:hover{ transform:rotate(-1.5deg) translateY(-4px); }
+.cover-book::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:22px;
+  background:
+    linear-gradient(90deg,#00000090,#00000040 40%,transparent),
+    repeating-linear-gradient(0deg,#00000000 0 28px,#00000080 28px 30px);
+  border-right:1px solid #00000080;border-radius:6px 0 0 6px;z-index:2;
+}
+.cover-book::after{
+  content:'';position:absolute;top:-14px;right:24px;width:70px;height:26px;
+  background:linear-gradient(180deg,#f7e08aee,#e8c95fcc);
+  border-left:1px dashed #b89a4a;border-right:1px dashed #b89a4a;
+  box-shadow:0 2px 6px #0006;transform:rotate(6deg);z-index:3;
+}
+.cover-brand{
+  font-family:var(--site-font-heading);font-size:13px;letter-spacing:4px;
+  color:#ffd15b;margin-top:18px;text-shadow:0 2px 4px #0008;z-index:1;
+}
+.cover-title{
+  font-family:var(--site-font-heading);font-size:clamp(38px,9vw,58px);
+  line-height:.9;letter-spacing:1px;margin:14px 0 6px;
+  text-shadow:0 3px 0 #00000050, 0 6px 14px #00000090;z-index:1;
+}
+.cover-title span{ display:block;font-size:.62em;color:#ffd15b;letter-spacing:2px;margin-top:6px; }
+.cover-edition{
+  font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:800;color:#fff;
+  background:#00000055;border:1px solid #ffffff44;padding:6px 14px;border-radius:999px;
+  margin-top:10px;z-index:1;
+}
+.cover-logo{ margin:auto 0;width:60%;max-width:220px;z-index:1; }
+.cover-logo img{ width:100%;height:auto;display:block;filter:drop-shadow(0 4px 12px #000a); }
+.cover-footer{ width:100%;border-top:1px solid #ffffff33;padding-top:14px;margin-top:auto;z-index:1; }
+.cover-footer p{ margin:0 0 12px;font-size:11px;color:#e7dfe2;line-height:1.5; }
+.cover-btn{
+  width:100%;border:0;border-radius:10px;padding:14px 18px;background:#ffd15b;color:#1a0f08;
+  font:inherit;font-weight:900;font-size:15px;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;box-shadow:0 6px 0 #8a6a1a, 0 8px 20px #0008;
+  transition:transform .12s ease, box-shadow .12s ease;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.cover-btn:hover{ transform:translateY(-2px);box-shadow:0 8px 0 #8a6a1a, 0 10px 24px #000a; }
+.cover-btn:active{ transform:translateY(2px);box-shadow:0 2px 0 #8a6a1a, 0 4px 12px #0008; }
+.cover-btn.twitch-btn{ background:#9146FF;color:#fff;box-shadow:0 6px 0 #4a1f8a, 0 8px 20px #0008; }
+.cover-btn.twitch-btn:hover{ box-shadow:0 8px 0 #4a1f8a, 0 10px 24px #000a; }
+.cover-btn.twitch-btn:active{ box-shadow:0 2px 0 #4a1f8a, 0 4px 12px #0008; }
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.mini{opacity:1;transform:none;filter:none}.grid.turning .card{animation:none!important}.grid.turning::after{animation:none!important;display:none;}.card[data-rarity="Lendário"]::after{display:none;}.detail-photo-wrap::after{display:none;}.mini .mini-shine{display:none!important}}
+@media(max-width:720px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:22px}.card-name{font-size:16px}.card-meta{font-size:8px}}
+@media(max-width:470px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{margin-top:25px}.stat label{font-size:9px}.stat strong{font-size:19px}.toolbar .btn{flex:1}.filter{flex:1;min-width:120px}.modal{padding:18px}.mini{font-size:18px}#openPack{min-width:0;width:100%}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* Estado de autenticação inicial: esconde cabeçalho/álbum até sabermos se há sessão */
+(function(){var r=document.documentElement;r.classList.add('auth-pending');
+try{if(localStorage.getItem('wwe_card_vault_was_logged_in')==='1')r.classList.add('hint-in');}catch(e){}})();
+</script>
+<style>
+/* Nunca mostrar a página "pública" (hero + botão Entrar) — só a capa */
+html.auth-pending header, html.auth-pending main,
+html.logged-out header, html.logged-out main{visibility:hidden}
+/* Utilizador que costuma estar logado: sem capa a piscar enquanto a sessão carrega */
+html.hint-in.auth-pending #cover{opacity:0;pointer-events:none;transition:none}
+</style>
+</head>
+<body><div id="app">
+
+<!-- ========== CAPA DO ÁLBUM ========== -->
+<div id="cover">
+  <div class="cover-book">
+    <div class="cover-brand">WWE · OFICIAL</div>
+    <h2 class="cover-title">
+      CARD<br>VAULT
+      <span>Edição 2026</span>
+    </h2>
+    <div class="cover-edition">★ Álbum de Cromos ★</div>
+    <div class="cover-logo">
+      <img src="img/wwe.png" alt="WWE"
+           onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'font-family:Impact,sans-serif;font-size:48px;letter-spacing:4px;color:#fff;text-shadow:0 4px 0 #000;\'>WWE</div>'">
+    </div>
+    <div class="cover-footer">
+      <p id="coverSubtitle">Cola, completa e domina o teu álbum.</p>
+      <button class="cover-btn" id="coverOpenBtn">📖 Abrir Álbum</button>
+    </div>
+  </div>
+</div>
+<!-- ========== FIM DA CAPA ========== -->
+
+<header>
+ <div class="topline">
+  <div class="brand">WWE <span>CARD VAULT</span></div>
+  <div id="auth-area">
+    <button class="btn twitch" id="loginBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 2L1 5.295v14.51h4.659V22h4.066l2.61-2.195h3.799L23 13.266V2H4.265zm16.32 10.263L16.95 16.01h-4.659l-2.42 2.195v-2.195H5.32V3.562h15.265v8.701zm-4.636-5.35v6.042h-1.515V6.913h1.515zm-4.154 0v6.042H10.28V6.913h1.515z"/></svg>
+      Entrar com Twitch
+    </button>
+    <div class="user-info" id="userProfile" style="display:none">
+      <img id="userAvatar" src="" alt="Avatar">
+      <span id="userName">A carregar...</span>
+      <button class="btn ghost" id="logoutBtn" style="padding:4px 8px;font-size:10px;margin-left:8px;">Sair</button>
+    </div>
+  </div>
+ </div>
+ <div class="hero">
+  <div class="eyebrow">Álbum de cromos · Edição 2026</div>
+  <h1>COLECIONA.<br>COMPLETA. DOMINA.</h1>
+  <p>Constrói o teu álbum de Superstars. Descobre cromos, acompanha o progresso e abre saquetas para encontrar raridades.</p>
+ </div>
+</header>
+<main class="shell" id="main-content" style="display:none">
+ <section class="stats" aria-label="Estatísticas da coleção">
+  <div class="stat"><label>Cromos obtidos</label><strong id="ownedCount">0 <small>/ 137</small></strong><span class="stat-sub" id="dupCount">Repetidos: <b>0</b></span></div>
+  <div class="stat"><label>Álbum completo</label><strong id="percent">0%</strong><div class="progress-track"><div class="progress-fill" id="progress"></div></div></div>
+  <div class="stat"><label>Saquetas abertas</label><strong id="packsOpened">0</strong></div>
+  <div class="stat"><label>Raridades</label><strong id="rarityBreakdown" style="font-size:14px;line-height:1.5">—</strong></div>
+ </section>
+ <div class="toolbar">
+  <input class="search" id="search" placeholder="🔎  Procurar Superstar..." aria-label="Procurar Superstar">
+  <select class="filter" id="category" aria-label="Filtrar por categoria">
+   <option value="all">Todas as categorias</option>
+   <option value="RAW">RAW</option>
+   <option value="SmackDown">SmackDown</option>
+   <option value="Legends">Legends</option>
+   <option value="Free Agent">Free Agent</option>
+  </select>
+  <select class="filter" id="genderFilter" aria-label="Filtrar por género">
+   <option value="all">Todos os géneros</option>
+   <option value="Male">Masculino</option>
+   <option value="Female">Feminino</option>
+  </select>
+  <select class="filter" id="rarityFilter" aria-label="Filtrar por raridade">
+   <option value="all">Todas as raridades</option>
+   <option value="Comum">Comum</option>
+   <option value="Raro">Raro</option>
+   <option value="Épico">Épico</option>
+   <option value="Lendário">Lendário</option>
+  </select>
+  <select class="filter" id="ownership" aria-label="Filtrar cromos">
+  <option value="all">Todos os cromos</option>
+  <option value="owned">Na coleção</option>
+  <option value="missing">Em falta</option>
+  <option value="duplicates">Apenas repetidos</option>
+</select>
+  <button class="btn pulse" id="openPack">✦ Abrir saqueta (3)</button>
+  <button class="btn battle-btn" id="openBattleBtn" style="display:none">⚔️ Batalhas</button>
+ </div>
+ <div class="section-head">
+  <div><h2>O TEU ÁLBUM</h2><p>Clica num cromo para ver detalhes. A imagem do lutador só aparece depois de o teres na coleção.</p></div>
+  <span id="visibleCount" style="color:#7a5a2b;font-size:12px;font-style:italic">137 cromos</span>
+ </div>
+ <div class="rarity-legend" aria-label="Legenda de raridades">
+  <span><i class="r-comum"></i> Comum</span>
+  <span><i class="r-raro"></i> Raro</span>
+  <span><i class="r-epico"></i> Épico</span>
+  <span><i class="r-lendario"></i> Lendário</span>
+ </div>
+ <div class="grid" id="cards" aria-live="polite"></div>
+ <div class="footer-note">Protótipo de fã, não oficial. O progresso está guardado na nuvem.</div>
+</main>
+
+<!-- Modal saqueta -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <div class="modal" id="modalBox">
+  <h3 id="modalTitle">SAQUETA ABERTA!</h3>
+  <p id="modalText">Encontraste novos cromos.</p>
+  <div class="pack-cards" id="packCards"></div>
+  <div class="modal-actions">
+   <button class="btn" id="claimPack">Guardar cromos</button>
+   <button class="btn secondary" id="closeModal">Fechar</button>
+  </div>
+  <div class="toast-hint">Dica: podes fechar com ESC</div>
+ </div>
+</div>
+
+<!-- Modal detalhe -->
+<div class="detail-backdrop" id="detailBackdrop" role="dialog" aria-modal="true" aria-labelledby="detailName">
+ <div class="detail" id="detailBox">
+  <button class="detail-close" id="detailClose" aria-label="Fechar detalhes">✕</button>
+  <div class="detail-photo-wrap" id="detailPhotoWrap"></div>
+  <div class="detail-info">
+   <h3 id="detailName">—</h3>
+   <span class="detail-brand" id="detailBrand">—</span>
+   <span class="detail-rarity" id="detailRarity">—</span>
+   <span class="detail-gender" id="detailGender">—</span>
+   <p class="detail-status" id="detailStatus">—</p>
+  </div>
+ </div>
+</div>
+
+<!-- Modal Batalhas -->
+<div class="detail-backdrop" id="battleBackdrop" role="dialog" aria-modal="true">
+ <div class="battle-modal">
+  <button class="detail-close" id="battleClose" aria-label="Fechar">✕</button>
+  
+  <!-- BANNER DE RESULTADO -->
+  <div class="result-banner" id="resultBanner">
+    <div class="result-text" id="resultText">VITÓRIA</div>
+    <div class="result-sub" id="resultSub"></div>
+    <button class="btn" style="margin-top:20px; max-width:200px; background:#fff; color:#000;" onclick="closeBattleBanner()">Continuar</button>
+  </div>
+
+  <div class="battle-header">
+    <h3>⚔️ ARENA DE BATALHAS</h3>
+  </div>
+  <div class="battle-tabs" id="battleTabs">
+    <div class="battle-tab active" data-target="b-send">Desafiar</div>
+    <div class="battle-tab" data-target="b-receive">Desafios Recebidos</div>
+    <div class="battle-tab" data-target="b-history">Histórico</div>
+  </div>
+
+  <div class="battle-content active" id="tab-b-send">
+    <p class="desc" style="font-size:12px;color:#7a5a2b;margin-top:0">
+      Só podes apostar cromos repetidos. Se venceres, roubas a carta do teu amigo. Se perderes, perdes o teu repetido!<br>
+      <strong>Regra de raridade:</strong> o teu adversário só pode responder com uma carta da <strong>mesma raridade</strong> ou <strong>1 rank abaixo</strong> (Lendário → Épico; Épico → Raro; Raro → Comum; Comum → Comum).
+    </p>
+    <select class="trade-select" id="battleMyCard">
+      <option value="">O meu cromo repetido para a batalha...</option>
+    </select>
+    <input type="text" class="trade-input" id="battleFriendName" placeholder="Nome de Twitch do oponente">
+    <button class="btn battle-btn" id="submitBattle" style="width:100%;margin-top:10px;background:#8b5cf6;color:#fff;">Lançar Desafio</button>
+  </div>
+
+  <div class="battle-content" id="tab-b-receive">
+    <div class="trade-list" id="battleReceivedList">
+      <p style="text-align:center;color:#9da1ab;font-size:12px;">A procurar desafios...</p>
+    </div>
+  </div>
+
+  <div class="battle-content" id="tab-b-history">
+    <div class="trade-table-container">
+      <table class="trade-table">
+        <thead>
+          <tr>
+            <th>Cartas Envolvidas</th>
+            <th>Atributo</th>
+            <th>Oponente</th>
+          </tr>
+        </thead>
+        <tbody id="battleHistoryList">
+          <tr><td colspan="3" style="text-align:center;color:#9da1ab;padding:20px;">Ainda não fizeste batalhas.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ================= CONFIGURAÇÃO SUPABASE ================= */
+const SUPABASE_URL = 'https://zrrrpikpmfimmccmbqyo.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Zw7SiOXcBIGVB8Cb-mfMpQ__5G7XneZ';
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ================= CAPA DO ÁLBUM ================= */
+const AUTH_HINT_KEY = 'wwe_card_vault_was_logged_in';
+function showCover(instant){
+  const c=document.getElementById('cover'); if(!c) return;
+  if (instant){ c.style.transition='none'; }
+  c.classList.remove('hidden');
+  if (instant){ void c.offsetWidth; c.style.transition=''; }
+}
+function hideCover(){ const c=document.getElementById('cover'); if(c) c.classList.add('hidden'); }
+function setAuthState(loggedIn){
+  const r=document.documentElement;
+  r.classList.remove('auth-pending','hint-in');
+  r.classList.toggle('logged-out', !loggedIn);
+}
+function setupCover(){
+  const btn = document.getElementById('coverOpenBtn');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    if (document.documentElement.classList.contains('auth-pending')) return;
+    if (!currentUser) {
+      btn.disabled = true;
+      btn.textContent = 'A abrir a Twitch…';
+      await supabaseClient.auth.signInWithOAuth({
+        provider: 'twitch',
+        options: { redirectTo: window.location.origin + window.location.pathname }
+      });
+      return;
+    }
+    hideCover();
+  });
+}
+
+/* ================= DADOS E ATRIBUTOS ================= */
+const wrestlers = [
+ {id:1,   name:'John Cena',                  initials:'CENA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/john-cena.png', forca: 92, agilidade: 78, carisma: 99, finisher:'Attitude Adjustment'},
+ {id:2,   name:'The Rock',                   initials:'ROCK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/the-rock.png', forca: 90, agilidade: 80, carisma: 99, finisher:'Rock Bottom'},
+ {id:3,   name:'Hulk Hogan',                 initials:'HOGAN',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/hulk-hogan.png', forca: 94, agilidade: 55, carisma: 96, finisher:'Atomic Leg Drop'},
+ {id:4,   name:'Ric Flair',                  initials:'FLAIR',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/ric-flair.png', forca: 70, agilidade: 75, carisma: 95, finisher:'Figure-Four Leglock'},
+ {id:5,   name:'André the Giant',            initials:'ANDRÉ',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/andre-giant.png', forca: 99, agilidade: 30, carisma: 85, finisher:'Double Underhook Suplex'},
+ {id:6,   name:'Randy Savage',               initials:'SAVAGE',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/randy-savage.png', forca: 82, agilidade: 89, carisma: 92, finisher:'Flying Elbow Drop'},
+ {id:7,   name:'Stone Cold Steve Austin',    initials:'SCSA',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/stone-cold.png', forca: 88, agilidade: 72, carisma: 97, finisher:'Stone Cold Stunner'},
+ {id:8,   name:'Eddie Guerrero',             initials:'EDDIE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/eddie-guerrero.png', forca: 75, agilidade: 92, carisma: 90, finisher:'Frog Splash'},
+ {id:9,   name:'Mick Foley',                 initials:'FOLEY',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/mick-foley.png', forca: 82, agilidade: 60, carisma: 92, finisher:'Double Arm DDT'},
+ {id:10,  name:'Bret Hart',                  initials:'BRET',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/bret-hart.png', forca: 80, agilidade: 88, carisma: 87, finisher:'Sharpshooter'},
+ {id:11,  name:'Big Show',                   initials:'SHOW',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/big-show.png', forca: 98, agilidade: 40, carisma: 75, finisher:'Chokeslam'},
+ {id:12,  name:'Booker T',                   initials:'BOOK',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/booker-t.png', forca: 82, agilidade: 75, carisma: 86, finisher:'Scissors Kick'},
+ {id:13,  name:'The Undertaker',             initials:'TAKER',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/undertaker.png', forca: 95, agilidade: 65, carisma: 98, finisher:'Tombstone Piledriver'},
+ {id:14,  name:'Kane',                       initials:'KANE',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kane.png', forca: 96, agilidade: 55, carisma: 80, finisher:'Chokeslam from Hell'},
+ {id:15,  name:'CM Punk',                    initials:'PUNK',    brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/cm-punk.png', forca: 78, agilidade: 82, carisma: 95, finisher:'GTS (Go To Sleep)'},
+ {id:16,  name:'Edge',                       initials:'EDGE',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/edge.png', forca: 80, agilidade: 85, carisma: 88, finisher:'Spear'},
+ {id:17,  name:'Shawn Michaels',             initials:'HBK',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/shawn-michaels.png', forca: 78, agilidade: 95, carisma: 93, finisher:'Sweet Chin Music'},
+ {id:18,  name:'Triple H',                   initials:'HHH',     brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/triple-h.png', forca: 89, agilidade: 70, carisma: 90, finisher:'Pedigree'},
+ {id:19,  name:'Batista',                    initials:'ANIMAL',  brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/batista.png', forca: 95, agilidade: 65, carisma: 85, finisher:'Batista Bomb'},
+ {id:20,  name:'Randy Orton',                initials:'RKO',     brand:'SmackDown', rarity:'Lendário', gender:'Male',   image:'img/randy-orton.png', forca: 88, agilidade: 82, carisma: 87, finisher:'RKO'},
+ {id:21,  name:'Kurt Angle',                 initials:'ANGLE',   brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/kurt-angle.png', forca: 85, agilidade: 88, carisma: 82, finisher:'Angle Slam'},
+ {id:22,  name:'Rey Mysterio',               initials:'REY',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/rey-mysterio.png', forca: 60, agilidade: 98, carisma: 90, finisher:'619'},
+ {id:23,  name:'Roman Reigns',               initials:'OTC',     brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/roman-reigns.png', forca: 94, agilidade: 78, carisma: 90, finisher:'Spear'},
+ {id:24,  name:'Seth Rollins',               initials:'SETH',    brand:'RAW',       rarity:'Lendário', gender:'Male',   image:'img/seth-rollins.png', forca: 85, agilidade: 92, carisma: 89, finisher:'Curb Stomp'},
+ {id:25,  name:'Goldberg',                   initials:'BILL',    brand:'Legends',   rarity:'Lendário', gender:'Male',   image:'img/goldberg.png', forca: 97, agilidade: 62, carisma: 84, finisher:'Jackhammer'},
+ {id:26,  name:'Chyna',                      initials:'CHYNA',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/chyna.png', forca: 92, agilidade: 70, carisma: 84, finisher:'Military Press Slam'},
+ {id:27,  name:'Trish Stratus',              initials:'TRISH',   brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/trish-stratus.png', forca: 65, agilidade: 85, carisma: 90, finisher:'Stratusfaction'},
+ {id:28,  name:'Lita',                       initials:'LITA',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/lita.png', forca: 60, agilidade: 92, carisma: 88, finisher:'Litasault'},
+ {id:29,  name:'Beth Phoenix',               initials:'BETH',    brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/beth-phoenix.png', forca: 90, agilidade: 65, carisma: 78, finisher:'Glam Slam'},
+ {id:30,  name:'Mickie James',               initials:'MICKIE',  brand:'Legends',   rarity:'Lendário', gender:'Female', image:'img/mickie-james.png', forca: 68, agilidade: 80, carisma: 85, finisher:'Mickie-DT'},
+ {id:31,  name:'Charlotte Flair',            initials:'QUEEN',   brand:'SmackDown', rarity:'Lendário', gender:'Female', image:'img/charlotte-flair.png', forca: 78, agilidade: 88, carisma: 89, finisher:'Figure-Eight Leglock'},
+ {id:32,  name:'Becky Lynch',                initials:'BECKY',   brand:'RAW',       rarity:'Lendário', gender:'Female', image:'img/becky-lynch.png', forca: 75, agilidade: 85, carisma: 92, finisher:'Dis-Arm-Her'},
+ {id:33,  name:'Cody Rhodes',                initials:'CODY',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/cody-rhodes.png', forca: 85, agilidade: 88, carisma: 93, finisher:'Cross Rhodes'},
+ {id:34,  name:'Rhea Ripley',                initials:'MAMI',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/rhea-ripley.png', forca: 88, agilidade: 82, carisma: 90, finisher:'Riptide'},
+ {id:35,  name:'Liv Morgan',                 initials:'LIV',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/liv-morgan.png', forca: 70, agilidade: 85, carisma: 88, finisher:'Oblivion'},
+ {id:36,  name:'Sami Zayn',                  initials:'SAMI',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/sami-zayn.png', forca: 75, agilidade: 88, carisma: 92, finisher:'Helluva Kick'},
+ {id:37,  name:'Jacob Fatu',                 initials:'FATU',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/jacob-fatu.png', forca: 94, agilidade: 78, carisma: 80, finisher:'Moonsault'},
+ {id:38,  name:'Bayley',                     initials:'BAY',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/bayley.png', forca: 72, agilidade: 86, carisma: 89, finisher:'Rose Plant'},
+ {id:39,  name:'Stephanie Vaquer',           initials:'STEPH',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/stephanie-vaquer.png', forca: 80, agilidade: 90, carisma: 85, finisher:'La Metralleta'},
+ {id:40,  name:'Paige',                      initials:'PAIGE',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/paige.png', forca: 65, agilidade: 82, carisma: 84, finisher:'PTO'},
+ {id:41,  name:'Bron Breakker',              initials:'BRON',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/bron-breakker.png', forca: 93, agilidade: 85, carisma: 78, finisher:'Spear'},
+ {id:42,  name:'Dominik Mysterio',           initials:'DOM',     brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/dominik-mysterio.png', forca: 65, agilidade: 84, carisma: 86, finisher:'Frog Splash'},
+ {id:43,  name:'Jey Uso',                    initials:'YEET',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/jey-uso.png', forca: 80, agilidade: 86, carisma: 91, finisher:'Uso Splash'},
+ {id:44,  name:'Jimmy Uso',                  initials:'JIMMY',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/jimmy-uso.png', forca: 78, agilidade: 85, carisma: 82, finisher:'Uso Splash'},
+ {id:45,  name:'Chad Gable',                 initials:'GABLE',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/chad-gable.png', forca: 78, agilidade: 92, carisma: 75, finisher:'Ankle Lock'},
+ {id:46,  name:'Oba Femi',                   initials:'OBA',     brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/oba-femi.png', forca: 92, agilidade: 75, carisma: 80, finisher:'Falling Powerbomb'},
+ {id:47,  name:'Solo Sikoa',                 initials:'SOLO',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/solo-sikoa.png', forca: 88, agilidade: 72, carisma: 78, finisher:'Samoan Spike'},
+ {id:48,  name:'Alexa Bliss',                initials:'ALEXA',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/alexa-bliss.png', forca: 60, agilidade: 78, carisma: 90, finisher:'Twisted Bliss'},
+ {id:49,  name:'Iyo Sky',                    initials:'SKY',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/iyo-sky.png', forca: 65, agilidade: 96, carisma: 82, finisher:'Over the Moonsault'},
+ {id:50,  name:'LA Knight',                  initials:'YEAH',    brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/la-knight.png', forca: 78, agilidade: 80, carisma: 94, finisher:'BFT (Blunt Force Trauma)'},
+ {id:51,  name:'Tiffany Stratton',           initials:'TIFFY',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/tiffany-stratton.png', forca: 70, agilidade: 88, carisma: 87, finisher:'Precious Drop (PME)'},
+ {id:52,  name:'Asuka',                      initials:'ASUKA',   brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/asuka.png', forca: 72, agilidade: 93, carisma: 85, finisher:'Asuka Lock'},
+ {id:53,  name:'Raquel Rodriguez',           initials:'RAQ',     brand:'RAW',       rarity:'Épico',    gender:'Female', image:'img/raquel-rodriguez.png', forca: 90, agilidade: 65, carisma: 75, finisher:'Texana Bomb'},
+ {id:54,  name:'Jade Cargill',               initials:'JADE',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jade-cargill.png', forca: 88, agilidade: 80, carisma: 82, finisher:'Jaded (DDT)'},
+ {id:55,  name:'Bianca Belair',              initials:'EST',     brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/bianca-belair.png', forca: 85, agilidade: 90, carisma: 88, finisher:'KOD (Kiss of Death)'},
+ {id:56,  name:'Chelsea Green',              initials:'GREEN',   brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/chelsea-green.png', forca: 55, agilidade: 75, carisma: 86, finisher:'Unprettier'},
+ {id:57,  name:'Damian Priest',              initials:'PRIEST',  brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/damian-priest.png', forca: 90, agilidade: 78, carisma: 83, finisher:'South of Heaven'},
+ {id:58,  name:'Drew McIntyre',              initials:'DREW',    brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/drew-mcintyre.png', forca: 92, agilidade: 80, carisma: 85, finisher:'Claymore'},
+ {id:59,  name:'Finn Bálor',                 initials:'BALOR',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/finn-balor.png', forca: 78, agilidade: 92, carisma: 86, finisher:'Coup de Grâce'},
+ {id:60,  name:'Gunther',                    initials:'GUNTR',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/gunther.png', forca: 95, agilidade: 75, carisma: 88, finisher:'Powerbomb'},
+ {id:61,  name:'Jacy Jayne',                 initials:'JACY',    brand:'SmackDown', rarity:'Épico',    gender:'Female', image:'img/jacy-jayne.png', forca: 65, agilidade: 80, carisma: 78, finisher:'Discus Elbow'},
+ {id:62,  name:'Kevin Owens',                initials:'KO',      brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/kevin-owens.png', forca: 85, agilidade: 78, carisma: 90, finisher:'Stunner'},
+ {id:63,  name:'Trick Williams',             initials:'TRICK',   brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/trick-williams.png', forca: 82, agilidade: 84, carisma: 86, finisher:'Trick Shot'},
+ {id:64,  name:'AJ Lee',                     initials:'AJ',      brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/aj-lee.png', forca: 58, agilidade: 82, carisma: 91, finisher:'Black Widow'},
+ {id:65,  name:'Brie Bella',                 initials:'BRIE',    brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/brie-bella.png', forca: 62, agilidade: 75, carisma: 80, finisher:'Brie Mode'},
+ {id:66,  name:'Nikki Bella',                initials:'NIKKI',   brand:'Free Agent',rarity:'Épico',    gender:'Female', image:'img/nikki-bella.png', forca: 70, agilidade: 78, carisma: 85, finisher:'Rack Attack'},
+ {id:67,  name:'Logan Paul',                 initials:'LOGAN',   brand:'RAW',       rarity:'Épico',    gender:'Male',   image:'img/logan-paul.png', forca: 82, agilidade: 90, carisma: 92, finisher:'KO Punch'},
+ {id:68,  name:'The Miz',                    initials:'MIZ',     brand:'SmackDown', rarity:'Épico',    gender:'Male',   image:'img/the-miz.png', forca: 68, agilidade: 76, carisma: 94, finisher:'Skull-Crushing Finale'},
+ {id:69,  name:'Naomi',                      initials:'GLOW',    brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/naomi.png', forca: 72, agilidade: 90, carisma: 86, finisher:'Rear View'},
+ {id:70,  name:'Montez Ford',                initials:'FORD',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/montez-ford.png', forca: 80, agilidade: 92, carisma: 84, finisher:'From the Heavens'},
+ {id:71,  name:'Rusev',                      initials:'RUSEV',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rusev.png', forca: 92, agilidade: 70, carisma: 78, finisher:'The Accolade'},
+ {id:72,  name:'Dragon Lee',                 initials:'LEE',     brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/dragon-lee.png', forca: 65, agilidade: 95, carisma: 75, finisher:'Operation Dragon'},
+ {id:73,  name:'Shinsuke Nakamura',          initials:'SHIN',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/shinsuke-nakamura.png', forca: 80, agilidade: 88, carisma: 85, finisher:'Kinshasa'},
+ {id:74,  name:'Austin Theory',              initials:'THEORY',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/austin-theory.png', forca: 75, agilidade: 85, carisma: 82, finisher:'A-Town Down'},
+ {id:75,  name:'Bronson Reed',               initials:'REED',    brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/bronson-reed.png', forca: 96, agilidade: 60, carisma: 70, finisher:'Tsunami'},
+ {id:76,  name:'Ethan Page',                 initials:'EGO',     brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/ethan-page.png', forca: 78, agilidade: 76, carisma: 83, finisher:'Ego\'s Edge'},
+ {id:77,  name:'Je\'Von Evans',              initials:'JEVON',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jevon-evans.png', forca: 60, agilidade: 94, carisma: 78, finisher:'Corkscrew Moonsault'},
+ {id:78,  name:'JD McDonagh',                initials:'JD',      brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/jd-mcdonagh.png', forca: 65, agilidade: 86, carisma: 72, finisher:'Devil Inside'},
+ {id:79,  name:'Angelo Dawkins',             initials:'ANGELO',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/angelo-dawkins.png', forca: 82, agilidade: 80, carisma: 75, finisher:'Spinebuster'},
+ {id:80,  name:'Otis',                       initials:'OTIS',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/otis.png', forca: 90, agilidade: 55, carisma: 78, finisher:'Caterpillar Elbow'},
+ {id:81,  name:'Blake Monroe',               initials:'BLAKE',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/blake-monroe.png', forca: 70, agilidade: 78, carisma: 80, finisher:'Monroe Driver'},
+ {id:82,  name:'Giulia',                     initials:'GIULIA',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/giulia.png', forca: 72, agilidade: 88, carisma: 86, finisher:'Northern Lights Bomb'},
+ {id:83,  name:'Penta',                      initials:'PENTA',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/penta.png', forca: 80, agilidade: 90, carisma: 85, finisher:'Penta Driver'},
+ {id:84,  name:'Roxanne Perez',              initials:'ROXY',    brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/roxanne-perez.png', forca: 62, agilidade: 88, carisma: 82, finisher:'Pop Rox'},
+ {id:85,  name:'Lyra Valkyria',              initials:'LYRA',    brand:'RAW',       rarity:'Raro',     gender:'Female', image:'img/lyra-valkyria.png', forca: 68, agilidade: 86, carisma: 78, finisher:'Nightwing'},
+ {id:86,  name:'Tatum Paxley',               initials:'TATUM',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/tatum-paxley.png', forca: 60, agilidade: 82, carisma: 80, finisher:'Paxley Cutter'},
+ {id:87,  name:'Carmelo Hayes',              initials:'HAYES',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/carmelo-hayes.png', forca: 72, agilidade: 92, carisma: 85, finisher:'Nothing But Net'},
+ {id:88,  name:'Pete Dunne',                 initials:'DUNNE',   brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/pete-dunne.png', forca: 78, agilidade: 86, carisma: 75, finisher:'Bitter End'},
+ {id:89,  name:'Candice LeRae',              initials:'LERAE',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/candice-lerae.png', forca: 58, agilidade: 84, carisma: 78, finisher:'Wicked Stepsister'},
+ {id:90,  name:'Johnny Gargano',             initials:'JOHNNY',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/johnny-gargano.png', forca: 70, agilidade: 90, carisma: 84, finisher:'One Final Beat'},
+ {id:91,  name:'Jordynne Grace',             initials:'GRACE',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/jordynne-grace.png', forca: 90, agilidade: 75, carisma: 80, finisher:'Grace Driver'},
+ {id:92,  name:'Lash Legend',                initials:'LASH',    brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/lash-legend.png', forca: 88, agilidade: 68, carisma: 78, finisher:'Lash Extension'},
+ {id:93,  name:'Michin',                     initials:'MICHIN',  brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/michin.png', forca: 75, agilidade: 85, carisma: 76, finisher:'Eat Defeat'},
+ {id:94,  name:'Nathan Frazer',              initials:'FRAZER',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/nathan-frazer.png', forca: 65, agilidade: 98, carisma: 78, finisher:'Phoenix Splash'},
+ {id:95,  name:'Nia Jax',                    initials:'NIA',     brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/nia-jax.png', forca: 95, agilidade: 55, carisma: 72, finisher:'Annihilator'},
+ {id:96,  name:'Piper Niven',                initials:'PIPER',   brand:'SmackDown', rarity:'Raro',     gender:'Female', image:'img/piper-niven.png', forca: 88, agilidade: 62, carisma: 70, finisher:'Piper Driver'},
+ {id:97,  name:'R-Truth',                    initials:'TRUTH',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/r-truth.png', forca: 62, agilidade: 75, carisma: 88, finisher:'Truth or Consequences'},
+ {id:98,  name:'Rey Fenix',                  initials:'FENIX',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/rey-fenix.png', forca: 68, agilidade: 96, carisma: 80, finisher:'Black Fire Driver'},
+ {id:99,  name:'Ricky Saints',               initials:'SAINTS',  brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/ricky-saints.png', forca: 74, agilidade: 86, carisma: 82, finisher:'Saints Cutter'},
+ {id:100, name:'Talla Tonga',                initials:'TALLA',   brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/talla-tonga.png', forca: 90, agilidade: 60, carisma: 70, finisher:'Tongan Splash'},
+ {id:101, name:'Tama Tonga',                 initials:'TAMA',    brand:'SmackDown', rarity:'Raro',     gender:'Male',   image:'img/tama-tonga.png', forca: 88, agilidade: 70, carisma: 72, finisher:'Gun Stun'},
+ {id:102, name:'Joe Hendry',                 initials:'HENDRY',  brand:'RAW',       rarity:'Raro',     gender:'Male',   image:'img/joe-hendry.png', forca: 75, agilidade: 78, carisma: 90, finisher:'Standing Ovation'},
+ {id:103, name:'Omos',                       initials:'OMOS',    brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/omos.png', forca: 97, agilidade: 35, carisma: 60, finisher:'Two-Handed Chokeslam'},
+ {id:104, name:'Maxxine Dupri',              initials:'DUPRI',   brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/maxxine-dupri.png', forca: 55, agilidade: 75, carisma: 78, finisher:'Dupri Drop'},
+ {id:105, name:'Jaida Parker',               initials:'JAIDA',   brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/jaida-parker.png', forca: 80, agilidade: 72, carisma: 74, finisher:'Hip Check'},
+ {id:106, name:'Ivy Nile',                   initials:'IVY',     brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/ivy-nile.png', forca: 85, agilidade: 70, carisma: 70, finisher:'Diamond Mine'},
+ {id:107, name:'Royce Keys',                 initials:'KEYS',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/royce-keys.png', forca: 78, agilidade: 76, carisma: 72, finisher:'Keys Cutter'},
+ {id:108, name:'Joaquin Wilde',              initials:'WILDE',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/joaquin-wilde.png', forca: 65, agilidade: 88, carisma: 74, finisher:'Wilde Driver'},
+ {id:109, name:'Cruz Del Toro',              initials:'CRUZ',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/cruz-del-toro.png', forca: 68, agilidade: 86, carisma: 72, finisher:'Torpedo'},
+ {id:110, name:'Rayo Americano',             initials:'RAYO',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/rayo-americano.png', forca: 70, agilidade: 84, carisma: 75, finisher:'Rayo Cutter'},
+ {id:111, name:'El Grande Americano',        initials:'EGA',     brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/el-grande-americano.png', forca: 82, agilidade: 65, carisma: 70, finisher:'Grande Splash'},
+ {id:112, name:'Akira Tozawa',               initials:'TOZAWA',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/akira-tozawa.png', forca: 60, agilidade: 85, carisma: 74, finisher:'Diving Senton'},
+ {id:113, name:'Big Cass',                   initials:'CASS',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/big-cass.png', forca: 92, agilidade: 50, carisma: 68, finisher:'East River Crossing'},
+ {id:114, name:'Bronco Nima',                initials:'NIMA',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bronco-nima.png', forca: 85, agilidade: 62, carisma: 65, finisher:'Nima Driver'},
+ {id:115, name:'Lucien Price',               initials:'PRICE',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/lucien-price.png', forca: 82, agilidade: 68, carisma: 66, finisher:'Price Check'},
+ {id:116, name:'Lola Vice',                  initials:'LOLA',    brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/lola-vice.png', forca: 62, agilidade: 80, carisma: 76, finisher:'Vice Grip'},
+ {id:117, name:'Sol Ruca',                   initials:'SOL',     brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/sol-ruca.png', forca: 60, agilidade: 88, carisma: 78, finisher:'Sol Snatcher'},
+ {id:118, name:'Tyler Bate',                 initials:'BATE',    brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/tyler-bate.png', forca: 82, agilidade: 80, carisma: 72, finisher:'Tyler Driver 97'},
+ {id:119, name:'Ludwig Kaiser',              initials:'KAISER',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/ludwig-kaiser.png', forca: 78, agilidade: 78, carisma: 80, finisher:'Kaiser Roll'},
+ {id:120, name:'Brutus Creed',               initials:'BRUTUS',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/brutus-creed.png', forca: 90, agilidade: 65, carisma: 68, finisher:'Creed Driver'},
+ {id:121, name:'Julius Creed',               initials:'JULIUS',  brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/julius-creed.png', forca: 88, agilidade: 68, carisma: 68, finisher:'Creed Driver'},
+ {id:122, name:'Bravo Americano',            initials:'BRAVO',   brand:'RAW',       rarity:'Comum',    gender:'Male',   image:'img/bravo-americano.png', forca: 80, agilidade: 70, carisma: 72, finisher:'Bravo Bomb'},
+ {id:123, name:'Nattie',                     initials:'NATTIE',  brand:'RAW',       rarity:'Comum',    gender:'Female', image:'img/nattie.png', forca: 75, agilidade: 72, carisma: 70, finisher:'Sharpshooter'},
+ {id:124, name:'Angel',                      initials:'ANGEL',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/angel.png', forca: 78, agilidade: 74, carisma: 70, finisher:'Angel Wings'},
+ {id:125, name:'Axiom',                      initials:'AXIOM',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/axiom.png', forca: 65, agilidade: 90, carisma: 72, finisher:'Golden Ratio'},
+ {id:126, name:'B-Fab',                      initials:'BFAB',    brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/b-fab.png', forca: 70, agilidade: 75, carisma: 68, finisher:'B-Fab Kick'},
+ {id:127, name:'Baron Corbin',               initials:'CORBIN',  brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/baron-corbin.png', forca: 85, agilidade: 68, carisma: 74, finisher:'End of Days'},
+ {id:128, name:'Berto',                      initials:'BERTO',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/berto.png', forca: 72, agilidade: 82, carisma: 70, finisher:'Berto Bomb'},
+ {id:129, name:'Elton Prince',               initials:'ELTON',   brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/elton-prince.png', forca: 68, agilidade: 78, carisma: 76, finisher:'Pretty Deadly'},
+ {id:130, name:'Erik',                       initials:'ERIK',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/erik.png', forca: 88, agilidade: 62, carisma: 66, finisher:'Viking Experience'},
+ {id:131, name:'Fallon Henley',              initials:'FALLON',  brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/fallon-henley.png', forca: 65, agilidade: 78, carisma: 74, finisher:'Henley Cutter'},
+ {id:132, name:'Ivar',                       initials:'IVAR',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/ivar.png', forca: 92, agilidade: 55, carisma: 70, finisher:'Viking Experience'},
+ {id:133, name:'Kiana James',                initials:'KIANA',   brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/kiana-james.png', forca: 62, agilidade: 76, carisma: 72, finisher:'Kiana Kick'},
+ {id:134, name:'Kit Wilson',                 initials:'KIT',     brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/kit-wilson.png', forca: 66, agilidade: 80, carisma: 76, finisher:'Pretty Deadly'},
+ {id:135, name:'Lainey Reid',                initials:'LAINEY',  brand:'SmackDown', rarity:'Comum',    gender:'Female', image:'img/lainey-reid.png', forca: 60, agilidade: 78, carisma: 72, finisher:'Reid Cutter'},
+ {id:136, name:'Matt Cardona',               initials:'MATT',    brand:'SmackDown', rarity:'Comum',    gender:'Male',   image:'img/matt-cardona.png', forca: 74, agilidade: 76, carisma: 82, finisher:'Radio Silence'},
+ {id:137, name:'Danhausen',                  initials:'DANH',    brand:'Free Agent',rarity:'Comum',    gender:'Male',   image:'img/danhausen.png', forca: 55, agilidade: 72, carisma: 85, finisher:'Very Nice, Very Evil'}
+];
+
+const rarityColors={'Comum':'#22c55e','Raro':'#2dd4bf','Épico':'#d99aff','Lendário':'#e8a800'};
+const rarityWeights={'Comum':67,'Raro':27,'Épico':5,'Lendário':1};
+const RARITIES=Object.keys(rarityWeights);
+const rarityOrder = {'Lendário': 1, 'Épico': 2, 'Raro': 3, 'Comum': 4};
+const PACK_SIZE=5;
+const WRESTLER_MAP=new Map(wrestlers.map(w=>[w.id,w]));
+const genderLabels={Male:'Masculino',Female:'Feminino'};
+const MAX_PACKS_PER_DAY = 3;
+const IMG_V = 1;
+
+let state = { ownedCounts: {}, packs: 0, recent: new Set() };
+let currentUser=null;
+let pending=[];
+let detailId=null;
+
+let lastUserId;
+
+function onUser(user){
+  const id = user?.id ?? null;
+  if (id === lastUserId) return;
+  lastUserId = id;
+  handleUser(user);
+}
+
+async function initAuth() {
+  let session = null;
+  try { ({ data: { session } } = await supabaseClient.auth.getSession()); }
+  catch (e) { console.error('getSession falhou', e); }
+  onUser(session?.user);
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    setTimeout(() => onUser(session?.user), 0);
+  });
+}
+
+async function handleUser(user) {
+  currentUser = user;
+  if (user) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    document.getElementById('openBattleBtn').style.display = 'inline-flex';
+    const profile = document.getElementById('userProfile');
+    profile.style.display = 'flex';
+    const twitchName = user.user_metadata.custom_claims?.global_name || user.user_metadata.name || 'Twitch User';
+    document.getElementById('userName').textContent = twitchName;
+    if (user.user_metadata.avatar_url) document.getElementById('userAvatar').src = user.user_metadata.avatar_url;
+    try {
+      await supabaseClient.from('profiles').upsert({ user_id: user.id, username: twitchName.toLowerCase() });
+      await loadState();
+    } catch (e) { console.error(e); }
+    try { localStorage.setItem(AUTH_HINT_KEY,'1'); } catch(_) {}
+    setAuthState(true);
+    hideCover();
+    startBattleNotifications();
+  } else {
+    document.getElementById('loginBtn').style.display = 'flex';
+    document.getElementById('userProfile').style.display = 'none';
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('openBattleBtn').style.display = 'none';
+    stopBattleNotifications();
+    state.ownedCounts = {};
+    state.packs = 0;
+    render();
+    try { localStorage.removeItem(AUTH_HINT_KEY); } catch(_) {}
+    setAuthState(false);
+    showCover(true);
+  }
+  const coverBtn = document.getElementById('coverOpenBtn');
+  const coverSub = document.getElementById('coverSubtitle');
+  if (coverBtn && coverSub) {
+    if (user) {
+      coverBtn.textContent = '📖 Abrir Álbum';
+      coverBtn.classList.remove('twitch-btn');
+      coverSub.textContent = 'Cola, completa e domina o teu álbum.';
+    } else {
+      coverBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 2L1 5.295v14.51h4.659V22h4.066l2.61-2.195h3.799L23 13.266V2H4.265zm16.32 10.263L16.95 16.01h-4.659l-2.42 2.195v-2.195H5.32V3.562h15.265v8.701zm-4.636-5.35v6.042h-1.515V6.913h1.515zm-4.154 0v6.042H10.28V6.913h1.515z"/></svg> Entrar com Twitch';
+      coverBtn.classList.add('twitch-btn');
+      coverBtn.disabled = false;
+      coverSub.textContent = 'Faz login para começares a colecionar.';
+    }
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signInWithOAuth({
+    provider: 'twitch',
+    options: { redirectTo: window.location.origin + window.location.pathname }
+  });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supabaseClient.auth.signOut();
+});
+
+async function loadState() {
+  if (!currentUser) return;
+  try {
+    const { data: cardsData, error: cardsError } = await supabaseClient
+      .from('collections').select('card_id').eq('user_id', currentUser.id);
+    if (cardsError) throw cardsError;
+    state.ownedCounts = {};
+    cardsData.forEach(d => {
+        const id = Number(d.card_id);
+        state.ownedCounts[id] = (state.ownedCounts[id] || 0) + 1;
+    });
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const { data: packData, error: packError } = await supabaseClient
+      .from('daily_packs').select('count')
+      .eq('user_id', currentUser.id).eq('date', today).single();
+    if (packError && packError.code !== 'PGRST116') throw packError;
+    state.packs = packData ? (Number(packData.count) || 0) : 0;
+    const sig = JSON.stringify([state.ownedCounts, state.packs]);
+    if (sig === state.lastSig) return;
+    state.lastSig = sig;
+    render();
+  } catch (e) {
+    console.error('Erro detalhado:', e);
+    toast('Erro ao carregar. Verifica a consola (F12).');
+  }
+}
+
+async function saveCardToCloud(cardId) {
+  if (!currentUser) return;
+  try {
+    await supabaseClient.from('collections').insert([{ user_id: currentUser.id, card_id: cardId }]);
+  } catch (e) {
+    console.error('Erro ao guardar cromo:', e);
+  }
+}
+
+const $=id=>document.getElementById(id);
+const rand=n=>Math.floor(Math.random()*n);
+const norm=s=>String(s||'').trim().toLowerCase();
+
+function weightedPick(pool){
+ const byRarity={};
+ pool.forEach(w=>{(byRarity[w.rarity]=byRarity[w.rarity]||[]).push(w);});
+ const available=RARITIES.filter(r=>byRarity[r]&&byRarity[r].length);
+ if(!available.length)return null;
+ const total=available.reduce((s,r)=>s+rarityWeights[r],0);
+ let roll=Math.random()*total;
+ for(const r of available){
+  roll-=rarityWeights[r];
+  if(roll<=0){const arr=byRarity[r];return arr[rand(arr.length)];}
+ }
+ return byRarity[available[available.length-1]][0];
+}
+
+function pickPack(){
+ const pool = wrestlers;
+ const picked = [];
+ let guard = 0;
+ while (picked.length < PACK_SIZE && guard < 500) {
+   const w = weightedPick(pool);
+   if (!w) break;
+   if (!picked.some(p => p.id === w.id)) picked.push(w);
+   guard++;
+ }
+ const unowned = wrestlers.filter(w => !(state.ownedCounts[w.id] > 0));
+ if (unowned.length && !picked.some(p => !(state.ownedCounts[p.id] > 0))) {
+   const candidates = unowned.filter(w => !picked.some(p => p.id === w.id));
+   const fresh = weightedPick(candidates.length ? candidates : unowned);
+   if (fresh) {
+     if (picked.length >= PACK_SIZE) picked[rand(picked.length)] = fresh;
+     else picked.splice(rand(picked.length + 1), 0, fresh);
+   }
+ }
+ return picked;
+}
+
+let toastTimer;
+function toast(msg){
+ const t=$('toast');
+ t.textContent=msg;
+ t.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+function updateStats(){
+ const total=wrestlers.length;
+ const n = Object.keys(state.ownedCounts)
+   .filter(id => state.ownedCounts[id] > 0 && WRESTLER_MAP.has(Number(id)))
+   .length;
+ $('ownedCount').innerHTML=`${n} <small>/ ${total}</small>`;
+ const dupTotal = Object.keys(state.ownedCounts)
+   .filter(id => WRESTLER_MAP.has(Number(id)))
+   .reduce((sum, id) => sum + Math.max((state.ownedCounts[id] || 0) - 1, 0), 0);
+ $('dupCount').innerHTML = `Repetidos: <b>${dupTotal}</b>`;
+ const pct=total?Math.round(n/total*100):0;
+ $('percent').textContent=pct+'%';
+ $('progress').style.width=pct+'%';
+ const packsSafe = Number(state.packs) || 0;
+ $('packsOpened').innerHTML = `${packsSafe} <small>/ ${MAX_PACKS_PER_DAY}</small>`;
+ const counts={};
+ RARITIES.forEach(r=>counts[r]=0);
+ Object.keys(state.ownedCounts).forEach(id=>{
+     const w=WRESTLER_MAP.get(Number(id));
+     if(w && state.ownedCounts[id] > 0) counts[w.rarity]++;
+ });
+ const totalByRarity={};
+ wrestlers.forEach(w=>totalByRarity[w.rarity]=(totalByRarity[w.rarity]||0)+1);
+ $('rarityBreakdown').innerHTML = RARITIES.map(r => {
+    const got = counts[r], tot = totalByRarity[r] || 0;
+    if(!tot) return '';
+    return `<div style="margin-bottom: 2px;"><span style="color:${rarityColors[r]}">${r}</span> <span style="color:#7a5a2b">${got}/${tot}</span></div>`;
+ }).join('');
+ updatePackButton();
+}
+
+function updatePackButton() {
+  const btn = $('openPack');
+  const packsSafe = Number(state.packs) || 0;
+  const remaining = MAX_PACKS_PER_DAY - packsSafe;
+  if (remaining > 0) {
+    btn.innerHTML = `✦ Abrir saqueta (${remaining})`;
+    btn.classList.remove('disabled');
+    btn.disabled = false;
+  } else {
+    btn.innerHTML = `Esgotadas por hoje`;
+    btn.classList.add('disabled');
+    btn.disabled = true;
+  }
+}
+
+function renderCard(w){
+ const qty = state.ownedCounts[w.id] || 0;
+ const has = qty > 0;
+ const isNew=state.recent.has(w.id);
+ const classes=['card'];
+ if(has)classes.push('owned');
+ else classes.push('missing');
+ if(isNew&&has)classes.push('new-badge');
+
+ const finalImage = w.image + '?v=' + IMG_V;
+
+ let art;
+ if(has && w.image){
+   art = `<img class="card-photo" src="${finalImage}" alt="${w.name}" loading="lazy"
+        onerror="this.style.display='none';">`;
+ } else if(!has){
+   art = `<div class="missing-stage">
+            <div class="wwe-logo"><img src="img/wwe.png" alt="WWE"></div>
+          </div>`;
+ } else {
+   art = '';
+ }
+
+ const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
+ const brandImage = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ const displayName = has ? w.name : '???';
+ const displayNumber = has ? String(w.id).padStart(3,'0') : '—';
+
+ return `<button class="${classes.join(' ')}" style="--rarity-color:${rarityColors[w.rarity]}" data-id="${w.id}" data-rarity="${has ? w.rarity : 'missing'}" aria-label="${has?w.name:'Cromo em falta'}, ${w.brand}, ${w.rarity}, ${genderLabels[w.gender]||w.gender}, ${has?'na coleção':'em falta'}">
+  <div class="card-art">
+   ${art}
+  </div>
+  ${dupBadge}
+  <div class="card-bottom">
+   <div class="card-number">WWE · ${displayNumber}</div>
+   <div class="card-name">${displayName}</div>
+   <div class="card-meta">
+    <span>
+      ${has ? `<img src="${brandImage}" class="brand-img" alt="${w.brand}" onerror="this.style.display='none'">` : ''}
+      <span class="gender-badge">${has ? (w.gender==='Female'?'♀':'♂') : '·'}</span>
+    </span>
+    <span class="rarity">${has ? w.rarity : '—'}</span>
+   </div>
+  </div>
+ </button>`;
+}
+
+function render(animate=false){
+ const q=norm($('search').value);
+ const cat=norm($('category').value);
+ const gen=$('genderFilter').value;
+ const rar=$('rarityFilter').value;
+ const own=$('ownership').value;
+
+const list = wrestlers.filter(w => {
+  if (q) {
+    const hay = norm(w.name) + ' ' + norm(w.brand);
+    if (!hay.includes(q)) return false;
+  }
+  if (cat !== 'all' && norm(w.brand) !== cat) return false;
+  if (gen !== 'all' && w.gender !== gen) return false;
+  if (rar !== 'all' && norm(w.rarity) !== norm(rar)) return false;
+  
+  if (own === 'owned' && !state.ownedCounts[w.id]) return false;
+  if (own === 'missing' && state.ownedCounts[w.id]) return false;
+  
+  if (own === 'duplicates') {
+    const qty = state.ownedCounts[w.id] || 0;
+    if (qty <= 1) return false;
+  }
+  return true;
+});
+
+ list.sort((a, b) => {
+   const rarA = rarityOrder[norm(a.rarity)] || 99;
+   const rarB = rarityOrder[norm(b.rarity)] || 99;
+   const rarDiff = rarA - rarB;
+   if (rarDiff !== 0) return rarDiff;
+   return a.id - b.id;
+ });
+
+ $('visibleCount').textContent=`${list.length} ${list.length===1?'cromo':'cromos'}`;
+ $('visibleCount').style.color='#7a5a2b';
+ $('visibleCount').style.fontStyle='italic';
+
+ const grid = $('cards');
+
+ if(list.length===0){
+  grid.innerHTML=`<div class="empty">
+   <span class="empty-icon">🃏</span>
+   <strong>Nenhum cromo encontrado</strong>
+   Tenta ajustar os filtros ou limpar a pesquisa.
+   <div style="margin-top:14px"><button class="btn secondary" id="clearFilters">Limpar filtros</button></div>
+  </div>`;
+  const cf=$('clearFilters');
+  if(cf)cf.addEventListener('click',clearFilters);
+ }else{
+  grid.innerHTML=list.map((w, i) => {
+    return renderCard(w).replace('class="card', `style="--i:${i}; --rarity-color:${rarityColors[w.rarity]}" class="card`);
+  }).join('');
+  grid.querySelectorAll('.card').forEach(b=>{
+   b.addEventListener('click',()=>openDetail(Number(b.dataset.id)));
+  });
+ }
+
+ if(animate){
+  grid.classList.remove('turning');
+  void grid.offsetWidth;
+  grid.classList.add('turning');
+  setTimeout(()=>grid.classList.remove('turning'), 800);
+ }
+
+ updateStats();
+}
+
+function clearFilters(){
+ $('search').value='';
+ $('category').value='all';
+ $('genderFilter').value='all';
+ $('rarityFilter').value='all';
+ $('ownership').value='all';
+ render(true);
+}
+
+function openPack(){
+ const packsSafe = Number(state.packs) || 0;
+ if(packsSafe >= MAX_PACKS_PER_DAY) {
+   toast('Já abriste as 3 saquetas de hoje. Volta amanhã!');
+   return;
+ }
+
+ pending=pickPack();
+ state.packs = packsSafe + 1;
+
+ const now = new Date();
+ const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+ supabaseClient.from('daily_packs').upsert(
+   { user_id: currentUser.id, date: today, count: state.packs },
+   { onConflict: 'user_id,date' }
+ ).then(({error}) => { if(error) console.error(error); });
+
+ const seenInPack = new Set();
+ const dupMap = pending.map(w => {
+   const isDup = (state.ownedCounts[w.id] > 0) || seenInPack.has(w.id);
+   seenInPack.add(w.id);
+   return isDup;
+ });
+
+ const totalDup = dupMap.filter(Boolean).length;
+ const totalNew = pending.length - totalDup;
+ $('modalText').textContent = totalDup === pending.length
+  ? `Todos os ${pending.length} cromos são duplicados.`
+  : totalDup === 0
+    ? `A tua saqueta contém ${pending.length} cromos novos!`
+    : `${totalNew} novo${totalNew===1?'':'s'} + ${totalDup} duplicado${totalDup===1?'':'s'}.`;
+
+ const bestRarity = pending.reduce((best,w)=>{
+   return (rarityOrder[w.rarity] || 99) < (rarityOrder[best] || 99) ? w.rarity : best;
+ }, 'Comum');
+ $('modalBox').style.setProperty('--pack-glow', (rarityColors[bestRarity] || '#e8a800') + '66');
+
+ $('packCards').innerHTML=pending.map((w,i)=>{
+  const finalImage = w.image + '?v=' + IMG_V;
+  const isDup = dupMap[i];
+  const mc = rarityColors[w.rarity];
+  const inner = w.image
+   ? `<img class="mini-photo" src="${finalImage}" alt="" onerror="this.remove();">`
+   : '';
+  return `<div class="mini ${isDup?'duplicate':''}" data-rarity="${w.rarity}" style="--rarity-color:${mc}; --burst-delay:${i*260}ms; background:radial-gradient(circle at 50% 30%,${mc},#15161c 75%)" title="${isDup?'Já tens este cromo':'Cromo novo'}">
+   ${inner}
+   <span class="mini-shine"></span>
+   <span class="mini-rarity" style="color:${mc}">${w.rarity}</span>
+   ${isDup?'<div class="dup-veil"></div><div class="dup-stamp">DUPLICADO</div>':''}
+  </div>`;
+ }).join('');
+
+ $('modalBackdrop').classList.add('show');
+ $('claimPack').focus();
+
+ requestAnimationFrame(()=>{
+  $('packCards').querySelectorAll('.mini').forEach((el,i)=>{
+   setTimeout(()=>el.classList.add('revealed'), 220 + i*260);
+  });
+ });
+ updateStats();
+}
+
+function claim(){
+ let added=0;
+ pending.forEach(w=>{
+  saveCardToCloud(w.id);
+  if(!state.ownedCounts[w.id]){
+    state.ownedCounts[w.id] = 1;
+    state.recent.add(w.id);
+    added++;
+  } else {
+    state.ownedCounts[w.id]++;
+  }
+ });
+ closeModal();
+ render();
+ if(added){
+  toast(`${added} novo${added===1?' cromo':'s cromos'} guardado${added===1?'':'s'}!`);
+  setTimeout(()=>{state.recent.clear();render();},5000);
+ }else{
+  toast('Desta vez, só duplicados.');
+ }
+}
+
+function closeModal(){
+ $('modalBackdrop').classList.remove('show');
+ $('packCards').querySelectorAll('.mini').forEach(el=>el.classList.remove('revealed'));
+ $('modalBox').style.removeProperty('--pack-glow');
+ pending=[];
+}
+
+function openDetail(id){
+ const w=WRESTLER_MAP.get(id);
+ if(!w)return;
+ detailId=id;
+ const qty = state.ownedCounts[w.id] || 0;
+ const has = qty > 0;
+
+ const photoWrap=$('detailPhotoWrap');
+ photoWrap.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
+
+ const finalImage = w.image + '?v=' + IMG_V;
+ const videoSrc = `videos/${w.id}.mp4`;
+ 
+ const imgHtml = (has && w.image)
+  ? `<img src="${finalImage}" alt="${w.name}" onerror="this.remove();">`
+  : '';
+
+ const videoHtml = has
+  ? `<video class="finisher-video" id="finisherVideo" preload="none" playsinline
+            src="${videoSrc}"
+            onerror="this.style.display='none'; this.classList.remove('playing');">
+     </video>
+     <div class="finisher-hint" id="finisherHint">▶ Clica para ver o finisher</div>`
+  : '';
+
+ photoWrap.innerHTML = has ? (imgHtml + videoHtml) : '';
+
+ if (has) {
+   const video = $('finisherVideo');
+   const hint = $('finisherHint');
+
+   photoWrap.addEventListener('click', () => {
+     if (video.classList.contains('playing')) return;
+     video.classList.add('playing');
+     if (hint) hint.classList.add('hidden');
+     const playPromise = video.play();
+     if (playPromise !== undefined) {
+       playPromise.catch(() => {
+         video.classList.remove('playing');
+         if (hint) hint.classList.remove('hidden');
+       });
+     }
+   });
+
+   video.addEventListener('ended', () => {
+     video.classList.remove('playing');
+     video.currentTime = 0;
+     if (hint) hint.classList.remove('hidden');
+   });
+
+   video.addEventListener('click', (e) => {
+     e.stopPropagation();
+     video.pause();
+     video.classList.remove('playing');
+     video.currentTime = 0;
+     if (hint) hint.classList.remove('hidden');
+   });
+ }
+
+ $('detailName').textContent = has ? w.name : '???';
+
+ const brandImg = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
+ $('detailBrand').innerHTML = has 
+   ? `<img src="${brandImg}" alt="${w.brand}"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="brand-fallback" style="display:none">${w.brand}</span>`
+   : '';
+
+ const rar=$('detailRarity');
+ rar.textContent = has ? w.rarity : 'Em falta';
+ rar.style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#b8a070');
+
+ $('detailGender').textContent = has ? ((w.gender==='Female'?'♀ ':'♂ ')+genderLabels[w.gender]) : '???';
+
+ $('detailStatus').innerHTML =
+   `<div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+      <span class="attr-label">💪 Força:</span> <span class="attr-value">${has ? w.forca : '???'}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+      <span class="attr-label">⚡ Agilidade:</span> <span class="attr-value">${has ? w.agilidade : '???'}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+      <span class="attr-label">🎤 Carisma:</span> <span class="attr-value">${has ? w.carisma : '???'}</span>
+    </div>
+
+    <div class="finisher-block">
+      <span class="finisher-icon">💥</span>
+      <span class="finisher-label">Finisher</span>
+      <span class="finisher-name">${has && w.finisher ? w.finisher : '???'}</span>
+    </div>
+
+    <hr style="border:0; border-top:1px dashed #b8a070; margin: 10px 0;">
+    ${has
+      ? `Tens <strong>${qty} unidade(s)</strong> deste cromo na tua coleção.`
+      : `Ainda <strong>não tens</strong> este cromo. Tenta a tua sorte numa saqueta!`
+    }`;
+
+ $('detailBox').style.setProperty('--rarity-color', has ? rarityColors[w.rarity] : '#6b7280');
+ $('detailBox').classList.toggle('missing', !has);
+ $('detailBox').setAttribute('data-rarity', has ? w.rarity : 'missing');
+
+ $('detailBackdrop').classList.add('show');
+ $('detailClose').focus();
+}
+
+function closeDetail(){
+ $('detailBackdrop').classList.remove('show');
+ detailId=null;
+}
+
+/* ================= SISTEMA DE BATALHAS ================= */
+const openBattleBtn = document.getElementById('openBattleBtn');
+const battleBackdrop = document.getElementById('battleBackdrop');
+
+openBattleBtn.addEventListener('click', async () => {
+  battleBackdrop.classList.add('show');
+  closeBattleBanner();
+  await populateBattleSelects();
+  await loadBattles();
+});
+
+document.getElementById('battleClose').addEventListener('click', () => {
+  battleBackdrop.classList.remove('show');
+  closeBattleBanner();
+});
+
+document.querySelectorAll('.battle-tab').forEach(tab => {
+  tab.addEventListener('click', (e) => {
+    document.querySelectorAll('.battle-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.battle-content').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('tab-' + e.target.dataset.target).classList.add('active');
+  });
+});
+
+async function getReservedCounts() {
+  const reserved = {};
+  try {
+    const { data: bt } = await supabaseClient
+      .from('battles')
+      .select('challenger_card_id')
+      .eq('challenger_id', currentUser.id)
+      .eq('status', 'pending');
+    (bt || []).forEach(b => { reserved[b.challenger_card_id] = (reserved[b.challenger_card_id] || 0) + 1; });
+  } catch (e) {
+    console.error('Erro ao calcular cromos reservados:', e);
+  }
+  return reserved;
+}
+
+const RARITY_RANK = { 'Comum': 1, 'Raro': 2, 'Épico': 3, 'Lendário': 4 };
+
+function canBattle(myCard, theirCard) {
+  if (!myCard || !theirCard) return false;
+  if (myCard.id === theirCard.id) return false;
+  const myRank = RARITY_RANK[myCard.rarity] || 0;
+  const theirRank = RARITY_RANK[theirCard.rarity] || 0;
+  return theirRank === myRank || theirRank === myRank - 1;
+}
+
+async function populateBattleSelects() {
+  const myCardSelect = document.getElementById('battleMyCard');
+  myCardSelect.innerHTML = '<option value="">O meu cromo repetido para a batalha...</option>';
+
+  const reservedNow = await getReservedCounts();
+  const reps = {};
+  Object.keys(state.ownedCounts).forEach(id => {
+    const free = state.ownedCounts[id] - (reservedNow[id] || 0);
+    if (free > 1) {
+      const w = WRESTLER_MAP.get(Number(id));
+      if (w) reps[id] = free - 1;
+    }
+  });
+
+  const groups = { 'Lendário': '', 'Épico': '', 'Raro': '', 'Comum': '' };
+  Object.keys(reps).forEach(id => {
+    const w = WRESTLER_MAP.get(Number(id));
+    if (!w) return;
+    const r = w.rarity;
+    groups[r] += `<option value="${w.id}">${w.name} (x${reps[id]}) — F:${w.forca} A:${w.agilidade} C:${w.carisma}</option>`;
+  });
+
+  let html = '<option value="">O meu cromo repetido para a batalha...</option>';
+  Object.keys(groups).forEach(r => {
+    if (groups[r]) {
+      html += `<optgroup label="${r}">${groups[r]}</optgroup>`;
+    }
+  });
+  myCardSelect.innerHTML = html;
+}
+
+async function loadBattles() {
+  const receivedList = document.getElementById('battleReceivedList');
+  const historyList = document.getElementById('battleHistoryList');
+
+  const { data: received, error: errRec } = await supabaseClient
+    .from('battles')
+    .select('*')
+    .eq('opponent_id', currentUser.id)
+    .eq('status', 'pending');
+
+  if (received && received.length > 0) {
+    const reservedMine = await getReservedCounts();
+    const challengerIds = received.map(b => b.challenger_id);
+    const { data: profiles } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', challengerIds);
+    const profileMap = new Map((profiles || []).map(p => [p.user_id, p.username]));
+
+    receivedList.innerHTML = received.map(b => {
+      const challengerCard = WRESTLER_MAP.get(b.challenger_card_id) || {name:'?'};
+      const challengerName = profileMap.get(b.challenger_id) || 'Desconhecido';
+      
+      let availableCards = '<option value="">Escolhe o teu cromo repetido...</option>';
+      let anyAllowed = false;
+      Object.keys(state.ownedCounts).forEach(id => {
+        const qty = state.ownedCounts[id] - (reservedMine[id] || 0);
+        if (qty > 1) { 
+          const w = WRESTLER_MAP.get(Number(id));
+          if (w && canBattle(w, challengerCard)) {
+            anyAllowed = true;
+            availableCards += `<option value="${w.id}">${w.name} (${w.rarity}, x${qty-1}) — F:${w.forca} A:${w.agilidade} C:${w.carisma}</option>`;
+          }
+        }
+      });
+      if (!anyAllowed) {
+        availableCards = `<option value="">Não tens nenhum cromo repetido válido (${challengerCard.rarity} ou 1 rank abaixo)</option>`;
+      }
+
+      return `
+        <div class="trade-item" style="flex-direction: column; align-items: stretch; margin-bottom:10px;">
+          <div class="trade-item-info">
+            <div class="trade-item-sub">Desafio de: <strong>${challengerName}</strong></div>
+            <div class="trade-item-cards">
+              Ele usou: <strong>${challengerCard.name}</strong> <span style="color:#d99aff;">(${challengerCard.rarity})</span>
+            </div>
+          </div>
+          <select class="trade-select" id="battleCard_${b.id}" style="margin-top:10px; margin-bottom:5px;">
+            ${availableCards}
+          </select>
+          <div class="trade-actions-sm" style="display:flex; gap:5px; margin-top:5px;">
+            <button class="btn" style="background:#22c55e; flex:1;" onclick="acceptBattle(${b.id}, this)" ${!anyAllowed ? 'disabled style="background:#888; flex:1; cursor:not-allowed;"' : ''}>Aceitar</button>
+            <button class="btn secondary" style="flex:1;" onclick="rejectBattle(${b.id}, this)">Recusar</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    receivedList.innerHTML = '<p style="text-align:center;color:#7a5a2b;font-size:12px;">Não tens desafios pendentes.</p>';
+  }
+
+  const { data: history, error: errHist } = await supabaseClient
+    .from('battles')
+    .select('*')
+    .or(`challenger_id.eq.${currentUser.id},opponent_id.eq.${currentUser.id}`)
+    .neq('status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (history && history.length > 0) {
+    const allIds = [...new Set(history.flatMap(b => [b.challenger_id, b.opponent_id]))];
+    const { data: profilesH } = await supabaseClient.from('profiles').select('user_id, username').in('user_id', allIds);
+    const nameMap = new Map((profilesH || []).map(p => [p.user_id, p.username]));
+    const ownerLabel = id => id === currentUser.id ? 'Teu' : 'de ' + (nameMap.get(id) || 'Desconhecido');
+    const attrShort = { forca: 'FOR', agilidade: 'AGI', carisma: 'CAR' };
+
+    historyList.innerHTML = history.map(b => {
+      const isChallenger = b.challenger_id === currentUser.id;
+      const otherId = isChallenger ? b.opponent_id : b.challenger_id;
+      const otherName = nameMap.get(otherId) || 'Desconhecido';
+
+      if (b.status === 'cancelled') {
+        return `<tr><td colspan="3" style="text-align:center;color:#9da1ab;font-size:11px;">Desafio ${isChallenger ? 'para ' + otherName : 'de ' + otherName} foi cancelado (cromo já não estava em duplicado).</td></tr>`;
+      }
+
+      if (b.status === 'rejected') {
+        return `<tr><td colspan="3" style="text-align:center;color:#9da1ab;font-size:11px;">Desafio ${isChallenger ? 'para ' + otherName + ' foi recusado' : 'de ' + otherName + ' foi recusado por ti'}.</td></tr>`;
+      }
+
+      const cCard = WRESTLER_MAP.get(b.challenger_card_id) || { name: '?' };
+      const oCard = WRESTLER_MAP.get(b.opponent_card_id) || { name: '?' };
+      const cVal = b.challenger_val, oVal = b.opponent_val;
+
+      let first, second, firstColor, secondColor, firstVal, secondVal, resultTag, resultColor;
+      if (b.winner_id && b.winner_id === b.opponent_id) {
+        first = { card: oCard, owner: b.opponent_id }; second = { card: cCard, owner: b.challenger_id };
+        firstVal = oVal; secondVal = cVal;
+      } else {
+        first = { card: cCard, owner: b.challenger_id }; second = { card: oCard, owner: b.opponent_id };
+        firstVal = cVal; secondVal = oVal;
+      }
+
+      if (b.winner_id) {
+        firstColor = '#16a34a'; secondColor = '#b91c1c';
+        const iWon = b.winner_id === currentUser.id;
+        resultTag = iWon ? 'Ganhaste' : 'Perdeste';
+        resultColor = iWon ? '#16a34a' : '#b91c1c';
+      } else {
+        firstColor = secondColor = '#d97706';
+        resultTag = 'Empate'; resultColor = '#d97706';
+      }
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight:900;color:${firstColor};line-height:1.2;">${b.winner_id ? '🏆 ' : ''}${first.card.name}</div>
+            <div style="font-size:10px;color:${firstColor};margin-bottom:5px;">${ownerLabel(first.owner)}</div>
+            <div style="font-weight:900;color:${secondColor};line-height:1.2;">${second.card.name}</div>
+            <div style="font-size:10px;color:${secondColor};">${ownerLabel(second.owner)}</div>
+          </td>
+          <td style="text-align:center;">
+            <span style="text-transform:uppercase;font-weight:900;background:#e8a800;padding:2px 5px;border-radius:4px;font-size:9px;color:#000;">${attrShort[b.attribute_compared] || '?'}</span>
+            <div style="font-size:10px;margin-top:4px;"><span style="color:${firstColor};font-weight:900;">${firstVal ?? '?'}</span> - <span style="color:${secondColor};font-weight:900;">${secondVal ?? '?'}</span></div>
+          </td>
+          <td>
+            <strong>${otherName}</strong>
+            <div style="font-size:10px;font-weight:900;color:${resultColor};">${resultTag}</div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } else {
+    historyList.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#9da1ab;padding:20px;">Ainda não fizeste nenhuma batalha.</td></tr>';
+  }
+}
+
+async function submitBattle(btn) {
+  const myCardId = Number(document.getElementById('battleMyCard').value);
+  const friendName = document.getElementById('battleFriendName').value.trim().toLowerCase();
+
+  if (!myCardId || !friendName) {
+    return toast('Escolhe o cromo e escreve o nome do oponente!');
+  }
+
+  if (friendName === document.getElementById('userName').textContent.trim().toLowerCase()) {
+    return toast('Não podes desafiar-te a ti próprio!');
+  }
+
+  if ((state.ownedCounts[myCardId] || 0) < 2) {
+    return toast('Só podes apostar cromos repetidos!');
+  }
+
+  btn.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = 'A enviar...';
+
+  try {
+    const { data: friendData, error: friendErr } = await supabaseClient
+      .from('profiles').select('user_id').eq('username', friendName).single();
+
+    if (friendErr || !friendData) {
+      return toast('Amigo não encontrado. O nome de Twitch está correto?');
+    }
+
+    const reservedNow = await getReservedCounts();
+    if ((state.ownedCounts[myCardId] || 0) - (reservedNow[myCardId] || 0) < 2) {
+      await populateBattleSelects();
+      return toast('Esse cromo já está a ser usado noutro desafio pendente.');
+    }
+
+    const { error: sendErr } = await supabaseClient
+      .from('battles')
+      .insert({
+        challenger_id: currentUser.id,
+        opponent_id: friendData.user_id,
+        challenger_card_id: myCardId,
+        status: 'pending'
+      });
+
+    if (sendErr) throw sendErr;
+
+    toast('Desafio lançado com sucesso!');
+    document.getElementById('battleMyCard').value = '';
+    document.getElementById('battleFriendName').value = '';
+    await loadBattles();
+
+  } catch (error) {
+    console.error('Erro ao lançar desafio:', error);
+    toast('Erro ao lançar desafio: ' + (error.message || 'desconhecido'));
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+document.getElementById('tab-b-send').addEventListener('click', (e) => {
+  const btn = e.target.closest('#submitBattle');
+  if (btn) submitBattle(btn);
+});
+
+window.acceptBattle = async function(battleId, btnElement) {
+  const selectEl = document.getElementById(`battleCard_${battleId}`);
+  const myCardId = Number(selectEl.value);
+  if (!myCardId) return toast('Escolhe um cromo repetido para lutar!');
+
+  btnElement.disabled = true;
+  btnElement.innerHTML = 'A preparar combate...';
+
+  try {
+    const { data: battle } = await supabaseClient.from('battles').select('*').eq('id', battleId).single();
+    if (!battle || battle.status !== 'pending') return toast('Batalha já processada.');
+    if (battle.opponent_id !== currentUser.id) return toast('Este desafio não é para ti.');
+
+    const myCard = WRESTLER_MAP.get(myCardId);
+    const theirCard = WRESTLER_MAP.get(battle.challenger_card_id);
+
+    if (myCard.id === theirCard.id) {
+      return toast('Não podes lutar contra o mesmo lutador!');
+    }
+    if (!canBattle(myCard, theirCard)) {
+      return toast('A raridade da tua carta não é permitida contra esta. Tens de usar a mesma raridade ou 1 rank abaixo.');
+    }
+
+    const [{ data: chCopies }, { data: myCopies }] = await Promise.all([
+      supabaseClient.from('collections').select('id').eq('user_id', battle.challenger_id).eq('card_id', battle.challenger_card_id),
+      supabaseClient.from('collections').select('id').eq('user_id', currentUser.id).eq('card_id', myCardId)
+    ]);
+
+    if (!chCopies || chCopies.length < 2) {
+      await supabaseClient.from('battles').update({ status: 'cancelled' }).eq('id', battleId).eq('status', 'pending');
+      toast('O desafiante já não tem esse cromo em duplicado. Desafio cancelado.');
+      await loadBattles();
+      return;
+    }
+    if (!myCopies || myCopies.length < 2) {
+      toast('Já não tens esse cromo em duplicado. Escolhe outro.');
+      btnElement.disabled = false;
+      btnElement.innerHTML = 'Aceitar';
+      return;
+    }
+
+    const cCard = WRESTLER_MAP.get(battle.challenger_card_id);
+    const oCard = WRESTLER_MAP.get(myCardId);
+
+    document.querySelectorAll('.battle-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.battle-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-b-send').classList.add('active');
+    const arenaContent = document.getElementById('tab-b-send');
+    
+    arenaContent.innerHTML = `
+      <div class="arena-visual">
+        <div class="combat-card-preview" style="--rarity-color:${rarityColors[cCard.rarity]}">
+          <div class="rarity">${cCard.rarity}</div>
+          <div class="name">${cCard.name}</div>
+        </div>
+        <div class="vs-text">VS</div>
+        <div class="combat-card-preview" style="--rarity-color:${rarityColors[oCard.rarity]}">
+          <div class="rarity">${oCard.rarity}</div>
+          <div class="name">${oCard.name}</div>
+        </div>
+      </div>
+      <table class="attr-table">
+        <tr class="attr-row" id="row-forca">
+          <th>Força</th>
+          <td id="p1-forca">${cCard.forca}</td>
+          <td id="p2-forca">${oCard.forca}</td>
+        </tr>
+        <tr class="attr-row" id="row-agilidade">
+          <th>Agilidade</th>
+          <td id="p1-agilidade">${cCard.agilidade}</td>
+          <td id="p2-agilidade">${oCard.agilidade}</td>
+        </tr>
+        <tr class="attr-row" id="row-carisma">
+          <th>Carisma</th>
+          <td id="p1-carisma">${cCard.carisma}</td>
+          <td id="p2-carisma">${oCard.carisma}</td>
+        </tr>
+      </table>
+      <div id="combat-status" style="text-align:center; margin-top:15px; font-weight:900; color:#8a0f20; text-transform:uppercase; letter-spacing:1px;">A sortear o atributo...</div>
+    `;
+
+    const rows = ['row-forca', 'row-agilidade', 'row-carisma'];
+    let step = 0;
+    const interval = setInterval(() => {
+      rows.forEach(r => document.getElementById(r).classList.remove('highlight'));
+      document.getElementById(rows[step % 3]).classList.add('highlight');
+      step++;
+    }, 100);
+
+    setTimeout(async () => {
+      clearInterval(interval);
+      rows.forEach(r => document.getElementById(r).classList.remove('highlight'));
+
+      const attrs = ['forca', 'agilidade', 'carisma'];
+      const attr = attrs[rand(attrs.length)];
+      const rowEl = document.getElementById('row-' + attr);
+      rowEl.classList.add('chosen');
+      document.getElementById('combat-status').textContent = `Atributo escolhido: ${attr.toUpperCase()}`;
+
+      const cVal = cCard[attr];
+      const oVal = oCard[attr];
+      let winnerId = null;
+      if (cVal > oVal) winnerId = battle.challenger_id;
+      else if (oVal > cVal) winnerId = battle.opponent_id;
+
+      const el1 = document.getElementById(`p1-${attr}`);
+      const el2 = document.getElementById(`p2-${attr}`);
+      
+      const showResult = () => {
+        if (winnerId === battle.challenger_id) {
+          el1.classList.add('win-val'); el2.classList.add('lose-val');
+          const gc = gram(cCard), go = gram(oCard);
+          showBattleBanner(false, `${gc.Art} ${cCard.name} do desafiante venceu ${go.art} ${go.poss} ${oCard.name} (${cVal} vs ${oVal}). Perdeste o cromo ${oCard.name}.`);
+        } else if (winnerId === battle.opponent_id) {
+          el1.classList.add('lose-val'); el2.classList.add('win-val');
+          const gc = gram(cCard), go = gram(oCard);
+          showBattleBanner(true, `${go.Art} ${go.poss} ${oCard.name} venceu ${gc.art} ${cCard.name} do desafiante (${oVal} vs ${cVal}). Ganhaste o cromo ${cCard.name}!`);
+        } else {
+          el1.classList.add('win-val'); el2.classList.add('win-val');
+          showBattleBanner(null, `Empate (${cVal} vs ${oVal}). Ninguém perdeu cartas!`);
+        }
+      };
+
+      const winnerCardId = winnerId === battle.challenger_id ? battle.challenger_card_id : (winnerId === battle.opponent_id ? myCardId : null);
+      
+      const { data: updated, error: updErr } = await supabaseClient.from('battles').update({
+        opponent_card_id: myCardId,
+        attribute_compared: attr,
+        challenger_val: cVal,
+        opponent_val: oVal,
+        winner_id: winnerId,
+        winner_card_id: winnerCardId,
+        status: 'accepted'
+      }).eq('id', battleId).eq('status', 'pending').select();
+
+      if (updErr || !updated || updated.length === 0) {
+        console.error('Erro ao gravar batalha:', updErr || 'UPDATE não alterou nenhuma linha (RLS?)');
+        toast('Não foi possível gravar a batalha (já foi processada ou falta permissão).');
+        closeBattleBanner();
+        await loadBattles();
+        return;
+      }
+
+      if (winnerId) {
+        const loserCopyId = winnerId === battle.challenger_id ? myCopies[0].id : chCopies[0].id;
+        const lostCardId = winnerId === battle.challenger_id ? myCardId : battle.challenger_card_id;
+
+        const { data: removed, error: delErr } = await supabaseClient
+          .from('collections').delete().eq('id', loserCopyId).select();
+
+        if (delErr || !removed || removed.length === 0) {
+          console.error('Erro a remover carta ao perdedor (RLS?):', delErr);
+          toast('A batalha foi gravada, mas não foi possível transferir o cromo.');
+        } else {
+          const { error: insErr } = await supabaseClient.from('collections').insert([{ user_id: winnerId, card_id: lostCardId }]);
+          if (insErr) {
+            console.error('Erro a dar carta ao vencedor:', insErr);
+            toast('O cromo foi retirado ao perdedor, mas falhou a entrega ao vencedor.');
+          }
+        }
+      }
+
+      showResult();
+      await loadBattles();
+      await loadState();
+
+    }, 1500);
+
+  } catch(e) {
+    console.error(e);
+    toast('Erro ao processar batalha.');
+    btnElement.disabled = false;
+    btnElement.innerHTML = 'Aceitar Duelo';
+  }
+};
+
+window.rejectBattle = async function(battleId, btnElement) {
+  btnElement.disabled = true;
+  btnElement.innerHTML = '...';
+  try {
+    await supabaseClient.from('battles').update({ status: 'rejected' }).eq('id', battleId);
+    toast('Desafio recusado.');
+    await loadBattles();
+  } catch(e) {
+    btnElement.disabled = false;
+    btnElement.innerHTML = 'Recusar';
+  }
+};
+
+function gram(w) {
+  const f = !!w && w.gender === 'Female';
+  return { art: f ? 'a' : 'o', Art: f ? 'A' : 'O', poss: f ? 'tua' : 'teu' };
+}
+
+function showBattleBanner(isWin, text) {
+  const banner = document.getElementById('resultBanner');
+  const textEl = document.getElementById('resultText');
+  
+  if (isWin === true) {
+    textEl.textContent = 'VITÓRIA';
+    textEl.className = 'result-text text-win';
+  } else if (isWin === false) {
+    textEl.textContent = 'DERROTA';
+    textEl.className = 'result-text text-lose';
+  } else {
+    textEl.textContent = 'EMPATE';
+    textEl.className = 'result-text'; 
+    textEl.style.color = '#f59e0b';
+    textEl.style.textShadow = '0 0 20px #f59e0b';
+  }
+
+  document.getElementById('resultSub').textContent = text;
+  banner.classList.add('show');
+}
+
+function closeBattleBanner() {
+  document.getElementById('resultBanner').classList.remove('show');
+  document.getElementById('tab-b-send').innerHTML = `
+    <p class="desc" style="font-size:12px;color:#7a5a2b;margin-top:0">
+      Só podes apostar cromos repetidos. Se venceres, roubas a carta do teu amigo. Se perderes, perdes o teu repetido!<br>
+      <strong>Regra de raridade:</strong> o teu adversário só pode responder com uma carta da <strong>mesma raridade</strong> ou <strong>1 rank abaixo</strong> (Lendário → Épico; Épico → Raro; Raro → Comum; Comum → Comum).
+    </p>
+    <select class="trade-select" id="battleMyCard">
+      <option value="">O meu cromo repetido para a batalha...</option>
+    </select>
+    <input type="text" class="trade-input" id="battleFriendName" placeholder="Nome de Twitch do oponente">
+    <button class="btn battle-btn" id="submitBattle" style="width:100%;margin-top:10px;background:#8b5cf6;color:#fff;">Lançar Desafio</button>
+  `;
+  document.querySelectorAll('.battle-tab').forEach(t => t.classList.toggle('active', t.dataset.target === 'b-send'));
+  document.querySelectorAll('.battle-content').forEach(c => c.classList.toggle('active', c.id === 'tab-b-send'));
+  populateBattleSelects();
+}
+
+/* ================= NOTIFICAÇÕES DE BATALHA ================= */
+let battleNotifyBusy = false;
+let battleChannel = null;
+let battlePollTimer = null;
+
+async function checkBattleNotifications() {
+  if (!currentUser || battleNotifyBusy) return;
+  if (document.getElementById('resultBanner').classList.contains('show')) return;
+  battleNotifyBusy = true;
+  try {
+    const { data: rows, error } = await supabaseClient
+      .from('battles')
+      .select('*')
+      .eq('challenger_id', currentUser.id)
+      .in('status', ['accepted', 'rejected', 'cancelled'])
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    if (error) { console.error('Erro ao verificar notificações de batalha:', error); return; }
+
+    const seenKey = 'battleSeen_' + currentUser.id;
+    let localSeen = [];
+    try { localSeen = JSON.parse(localStorage.getItem(seenKey) || '[]'); } catch (_) {}
+    const hasCol = rows && rows.length > 0 && 'challenger_seen' in rows[0];
+    const data = (rows || []).filter(b => hasCol ? b.challenger_seen === false : !localSeen.includes(b.id));
+    if (data.length === 0) return;
+
+    const { data: profiles } = await supabaseClient
+      .from('profiles').select('user_id, username')
+      .in('user_id', data.map(b => b.opponent_id));
+    const names = new Map((profiles || []).map(p => [p.user_id, p.username]));
+    const nameOf = b => names.get(b.opponent_id) || 'O teu oponente';
+
+    if (hasCol) {
+      const { error: seenErr } = await supabaseClient
+        .from('battles').update({ challenger_seen: true }).in('id', data.map(b => b.id));
+      if (seenErr) console.error('Erro ao marcar como visto:', seenErr);
+    } else {
+      try { localStorage.setItem(seenKey, JSON.stringify([...localSeen, ...data.map(b => b.id)].slice(-200))); } catch (_) {}
+    }
+
+    await loadState();
+
+    const accepted = data.filter(b => b.status === 'accepted');
+    const rejected = data.filter(b => b.status === 'rejected');
+
+    if (accepted.length === 0) {
+      toast(data.length > 1
+        ? `${data.length} desafios teus foram recusados ou cancelados.`
+        : (data[0].status === 'cancelled'
+            ? `O teu desafio a ${nameOf(data[0])} foi cancelado: já não tinhas esse cromo em duplicado.`
+            : `${nameOf(data[0])} recusou o teu desafio.`));
+      return;
+    }
+
+    const b = accepted[0];
+    const mine = WRESTLER_MAP.get(b.challenger_card_id) || { name: '?' };
+    const theirs = WRESTLER_MAP.get(b.opponent_card_id) || { name: '?' };
+    const attrNames = { forca: 'Força', agilidade: 'Agilidade', carisma: 'Carisma' };
+    const attr = attrNames[b.attribute_compared] || b.attribute_compared || '?';
+    const who = nameOf(b);
+    const score = `${b.challenger_val} vs ${b.opponent_val}`;
+    const gm = gram(mine), gt = gram(theirs);
+
+    document.getElementById('battleBackdrop').classList.add('show');
+    await loadBattles();
+
+    if (b.winner_id === currentUser.id) {
+      showBattleBanner(true, `${who} aceitou o desafio! ${gm.Art} ${gm.poss} ${mine.name} venceu ${gt.art} ${theirs.name} em ${attr} (${score}). Ganhaste o cromo ${theirs.name}!`);
+    } else if (b.winner_id) {
+      showBattleBanner(false, `${who} aceitou o desafio! ${gm.Art} ${gm.poss} ${mine.name} perdeu contra ${gt.art} ${theirs.name} em ${attr} (${score}). Perdeste o cromo ${mine.name}.`);
+    } else {
+      showBattleBanner(null, `${who} aceitou o desafio! ${mine.name} vs ${theirs.name} em ${attr} (${score}). Empate, ninguém perdeu cromos.`);
+    }
+
+    if (data.length > 1) toast(`Tens mais ${data.length - 1} resultado(s) no Histórico.`);
+  } catch (e) {
+    console.error('Erro nas notificações de batalha:', e);
+  } finally {
+    battleNotifyBusy = false;
+  }
+}
+
+function startBattleNotifications() {
+  if (!currentUser) return;
+  checkBattleNotifications();
+  if (!battleChannel) {
+    battleChannel = supabaseClient
+      .channel('battles-' + currentUser.id)
+      .on('postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'battles', filter: `challenger_id=eq.${currentUser.id}` },
+        () => checkBattleNotifications())
+      .subscribe();
+  }
+  if (!battlePollTimer) battlePollTimer = setInterval(checkBattleNotifications, 45000);
+}
+
+function stopBattleNotifications() {
+  if (battleChannel) { supabaseClient.removeChannel(battleChannel); battleChannel = null; }
+  if (battlePollTimer) { clearInterval(battlePollTimer); battlePollTimer = null; }
+}
+
+/* ================= GERAL ================= */
+function setupKeyboard(){
+ document.addEventListener('keydown',e=>{
+  const packOpen=$('modalBackdrop').classList.contains('show');
+  const detailOpen=$('detailBackdrop').classList.contains('show');
+  const battleOpen=$('battleBackdrop').classList.contains('show');
+
+  if(e.key==='Escape'){
+   if(packOpen){e.preventDefault();closeModal();}
+   else if(detailOpen){e.preventDefault();closeDetail();}
+   else if(battleOpen){e.preventDefault();$('battleBackdrop').classList.remove('show');}
+   return;
+  }
+  if(!packOpen&&!detailOpen&&!battleOpen)return;
+
+  if(e.key==='Enter'&&packOpen){
+   e.preventDefault();
+   claim();
+  }
+ });
+ $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeModal();});
+ $('detailBackdrop').addEventListener('click',e=>{if(e.target===$('detailBackdrop'))closeDetail();});
+ $('battleBackdrop').addEventListener('click',e=>{if(e.target===$('battleBackdrop'))$('battleBackdrop').classList.remove('show');});
+}
+
+function init(){
+ $('search').addEventListener('input',()=>render(true));
+ $('category').addEventListener('change',()=>render(true));
+ $('genderFilter').addEventListener('change',()=>render(true));
+ $('rarityFilter').addEventListener('change',()=>render(true));
+ $('ownership').addEventListener('change',()=>render(true));
+ $('openPack').addEventListener('click',openPack);
+ $('claimPack').addEventListener('click',claim);
+ $('closeModal').addEventListener('click',closeModal);
+ $('detailClose').addEventListener('click',closeDetail);
+ setupCover();
+ setupKeyboard();
+ initAuth();
+}
+init();
+</script>
+</body></html>
