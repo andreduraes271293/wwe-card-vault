@@ -1199,24 +1199,28 @@ main.shell::after{
 }
 .card[data-rarity="missing"]:hover{box-shadow:0 2px 4px #0007,0 14px 26px #0008,inset 0 1px 0 #ffffff1f !important}
 
-/* a fita-cola desaparece; só fica o selo "NOVO!" */
-.card:not(.new-badge)::before{display:none !important}
+/* a fita-cola mantém-se; o "NOVO!" passa a ser um selo à parte */
 .card.new-badge::before{
-  content:'NOVO!' !important;
-  display:block !important;
-  position:absolute !important;
-  top:12px !important;left:12px !important;
-  width:auto !important;height:auto !important;
-  transform:none !important;
-  background:linear-gradient(180deg,#ffd15b,#e0a010) !important;
-  color:#2b1d0e !important;
-  border:none !important;
-  border-radius:3px !important;
-  padding:4px 7px !important;
-  font-family:var(--site-font-heading);
-  font-size:9px;font-weight:900;letter-spacing:1px;line-height:1;
-  box-shadow:0 2px 6px #0008 !important;
-  z-index:12 !important;
+  content:'' !important;
+  top:-9px !important;left:50% !important;
+  width:62px !important;height:18px !important;
+  padding:0 !important;border-radius:0 !important;
+  transform:translateX(-50%) rotate(-3deg);
+  animation:none !important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 85%,#fff),color-mix(in srgb,var(--c) 65%,#000)) !important;
+  border-left:1px dashed color-mix(in srgb,var(--c) 50%,#fff) !important;
+  border-right:1px dashed color-mix(in srgb,var(--c) 50%,#fff) !important;
+  border-top:none !important;border-bottom:none !important;
+  box-shadow:0 1px 3px #000a !important;
+  z-index:10 !important;
+}
+.card.new-badge:hover::before{transform:translateX(-50%) rotate(1deg)}
+.new-tag{
+  position:absolute;top:12px;left:12px;z-index:12;
+  background:linear-gradient(180deg,#ffd15b,#e0a010);color:#2b1d0e;
+  border-radius:3px;padding:4px 7px;
+  font-family:var(--site-font-heading);font-size:9px;font-weight:900;letter-spacing:1px;line-height:1;
+  box-shadow:0 2px 6px #0008;animation:pop .5s ease;
 }
 
 /* zona da imagem */
@@ -1293,7 +1297,9 @@ main.shell::after{
 /* cromos em falta: espaço vazio, discreto */
 .card.missing{background:linear-gradient(160deg,#262a30,#121418) !important}
 .card.missing .card-art{background:radial-gradient(ellipse at 50% 35%,#30353d 0%,#1c1f24 60%,#0f1114 100%) !important;box-shadow:inset 0 0 0 1px #3a3f47,inset 0 0 28px #0009 !important}
-.card.missing .wwe-logo{opacity:.35 !important;filter:grayscale(1)}
+.card.missing .missing-stage{inset:0 0 74px 0 !important;z-index:4 !important}
+.card.missing .wwe-logo{opacity:1 !important;filter:drop-shadow(0 4px 10px #000a) !important;width:60% !important}
+.card.missing .wwe-logo img{filter:none !important;opacity:1 !important}
 .card.missing .card-number,.card.missing .card-name{color:#8b929c !important;text-shadow:none !important}
 .card.missing .card-meta .rarity{background:transparent;border-color:#3a3f47;color:#6b727c !important}
 .card.missing .card-bottom::before{background:linear-gradient(90deg,#3a3f47,transparent)}
@@ -1322,7 +1328,7 @@ main.shell::after{
   .card .card-meta .rarity{padding:1px 6px;font-size:7px}
   .card .brand-img{height:12px;margin-right:3px}
   .card .dup-badge{width:22px !important;height:22px !important;font-size:8px !important;top:8px !important;right:8px !important}
-  .card.new-badge::before{top:8px !important;left:8px !important;font-size:7px;padding:3px 5px !important}
+  .new-tag{top:8px;left:8px;font-size:7px;padding:3px 5px}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1953,6 +1959,7 @@ function renderCard(w){
    art = '';
  }
 
+ const newTag = (isNew&&has) ? '<div class="new-tag">NOVO!</div>' : '';
  const dupBadge = qty > 1 ? `<div class="dup-badge">x${qty}</div>` : '';
  const brandImage = `img/${w.brand.toLowerCase().replace(/\s+/g, '-')}.png`;
  const displayName = has ? w.name : '???';
@@ -1962,7 +1969,7 @@ function renderCard(w){
   <div class="card-art">
    ${art}
   </div>
-  ${dupBadge}
+  ${dupBadge}${newTag}
   <div class="card-bottom">
    <div class="card-number">WWE · ${displayNumber}</div>
    <div class="card-name">${displayName}</div>
