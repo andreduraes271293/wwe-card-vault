@@ -1166,7 +1166,7 @@ main.shell::after{
 .card[data-rarity="missing"]{--c:#4a5058;--c-mid:#262a30;--c-deep:#121418}
 
 /* moldura: cartão limpo, sem fita-cola nem tracejados */
-.card{
+.card[data-rarity]{
   border-radius:10px !important;
   padding:5px !important;
   border:1px solid color-mix(in srgb,var(--c) 70%,#000) !important;
@@ -1188,7 +1188,7 @@ main.shell::after{
     inset 0 0 0 1px #00000066 !important;
 }
 .card[data-rarity="missing"]{box-shadow:0 1px 2px #0007,0 4px 10px #0005,inset 0 1px 0 #ffffff14,inset 0 0 0 1px #00000066 !important}
-.card:hover{
+.card[data-rarity]:hover{
   transform:translateY(-6px) scale(1.015) !important;
   border-color:var(--c) !important;
   box-shadow:
@@ -1224,36 +1224,38 @@ main.shell::after{
 }
 
 /* zona da imagem */
-.card .card-art{
+.card[data-rarity] .card-art{
   border:none !important;
   border-radius:6px !important;
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb,var(--c) 85%,transparent),
     inset 0 0 28px #0008 !important;
 }
-.card .card-art::before{
+.card[data-rarity] .card-art::before{
   background:linear-gradient(165deg,#ffffff22 0%,transparent 34%,transparent 62%,#00000066 100%) !important;
 }
-.card:hover .card-art::before{
+.card[data-rarity]:hover .card-art::before{
   background:linear-gradient(165deg,#ffffff38 0%,transparent 38%,transparent 62%,#00000066 100%) !important;
 }
-.card .card-photo{filter:contrast(1.06) saturate(1.06)}
+.card[data-rarity] .card-photo{filter:contrast(1.06) saturate(1.06)}
 
 /* placa do nome */
-.card .card-bottom{
+.card[data-rarity] .card-bottom{
   left:5px !important;right:5px !important;bottom:5px !important;
   padding:34px 10px 9px !important;
+  display:flex !important;flex-direction:column;
+  min-height:112px;
   background:linear-gradient(180deg,transparent 0%,#000000c8 48%,#000000f0 100%) !important;
   border-top:none !important;
   border-radius:0 0 6px 6px;
   z-index:11;
 }
-.card .card-bottom::before{
+.card[data-rarity] .card-bottom::before{
   content:'';position:absolute;left:10px;right:10px;top:27px;height:1px;
   background:linear-gradient(90deg,var(--c),transparent);
   opacity:.75;
 }
-.card .card-number{
+.card[data-rarity] .card-number{
   font-size:8px !important;
   letter-spacing:2px !important;
   font-weight:800 !important;
@@ -1261,16 +1263,19 @@ main.shell::after{
   text-shadow:none !important;
   opacity:.95;
 }
-.card .card-name{
+.card[data-rarity] .card-name{
   font-size:clamp(14px,1.55vw,19px) !important;
   letter-spacing:.6px;
   text-transform:uppercase;
   color:#fff !important;
   text-shadow:0 1px 3px #000a !important;
   margin-top:4px !important;
+  line-height:1.08;
+  min-height:2.16em;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
 }
-.card .card-meta{margin-top:7px !important;font-size:8px !important;letter-spacing:.8px}
-.card .card-meta .rarity{
+.card[data-rarity] .card-meta{margin-top:auto !important;padding-top:7px;font-size:8px !important;letter-spacing:.8px}
+.card[data-rarity] .card-meta .rarity{
   color:#fff !important;
   background:color-mix(in srgb,var(--c) 26%,#000);
   border:1px solid color-mix(in srgb,var(--c) 65%,transparent);
@@ -1280,11 +1285,11 @@ main.shell::after{
   letter-spacing:1.2px;
   text-shadow:none !important;
 }
-.card .gender-badge{font-size:11px !important;color:color-mix(in srgb,var(--c) 50%,#fff) !important}
-.card .brand-img{height:16px;margin-right:5px;filter:drop-shadow(0 1px 2px #000a)}
+.card[data-rarity] .gender-badge{font-size:11px !important;color:color-mix(in srgb,var(--c) 50%,#fff) !important}
+.card[data-rarity] .brand-img{height:16px;margin-right:5px;filter:drop-shadow(0 1px 2px #000a)}
 
 /* repetidos */
-.card .dup-badge{
+.card[data-rarity] .dup-badge{
   top:12px !important;bottom:auto !important;right:12px !important;
   width:28px !important;height:28px !important;
   font-size:10px !important;font-weight:900;
@@ -1320,14 +1325,14 @@ main.shell::after{
 .card[data-rarity="Lendário"]::after{inset:5px !important;border-radius:6px !important}
 
 @media(max-width:720px){
-  .card{padding:4px !important;border-radius:8px !important}
-  .card .card-bottom{left:4px !important;right:4px !important;bottom:4px !important;padding:26px 7px 7px !important}
-  .card .card-bottom::before{top:20px;left:7px;right:7px}
-  .card .card-name{font-size:12px !important;letter-spacing:.3px}
-  .card .card-number{font-size:7px !important;letter-spacing:1.4px !important}
-  .card .card-meta .rarity{padding:1px 6px;font-size:7px}
-  .card .brand-img{height:12px;margin-right:3px}
-  .card .dup-badge{width:22px !important;height:22px !important;font-size:8px !important;top:8px !important;right:8px !important}
+  .card[data-rarity]{padding:4px !important;border-radius:8px !important}
+  .card[data-rarity] .card-bottom{left:4px !important;right:4px !important;bottom:4px !important;padding:26px 7px 7px !important;min-height:84px}
+  .card[data-rarity] .card-bottom::before{top:20px;left:7px;right:7px}
+  .card[data-rarity] .card-name{font-size:12px !important;letter-spacing:.3px}
+  .card[data-rarity] .card-number{font-size:7px !important;letter-spacing:1.4px !important}
+  .card[data-rarity] .card-meta .rarity{padding:1px 6px;font-size:7px}
+  .card[data-rarity] .brand-img{height:12px;margin-right:3px}
+  .card[data-rarity] .dup-badge{width:22px !important;height:22px !important;font-size:8px !important;top:8px !important;right:8px !important}
   .new-tag{top:8px;left:8px;font-size:7px;padding:3px 5px}
 }
 </style>
